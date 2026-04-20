@@ -11,7 +11,7 @@ function renderProducts(products) {
     }
 
     grid.innerHTML = products.map(p => `
-        <article class="product-card" onclick="location.href='pages/producto.html?id=${p.id}'">
+        <article class="product-card" onclick="location.href='/frontend/src/pages/producto.html?id=${p.id}'">
             <img 
                 src="${p.product_images[0]?.url || '/public/placeholder.jpg'}" 
                 alt="${p.name}"
