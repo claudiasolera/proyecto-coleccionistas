@@ -4,12 +4,12 @@ import { supabase } from '../db.js'
 const router = express.Router()
 
 router.post('/register', async (req, res) => {
-    const { name, email, dni, address } = req.body
+    const { name, last_name, email, dni, address, phone } = req.body
     
     try {
         const { data, error } = await supabase
             .from('users')
-            .insert([{ name, email, dni, address }])
+            .insert([{ name, last_name, email, dni, address, phone }])
             .select()
 
         if (error) throw error

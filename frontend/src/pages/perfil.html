@@ -23,8 +23,16 @@
                     <input type="text" name="name" class="retro-input" required>
                 </div>
                 <div style="margin-top:1rem;">
+                    <label>Apellidos:</label>
+                    <input type="text" name="last_name" class="retro-input" required>
+                </div>
+                <div style="margin-top:1rem;">
                     <label>E-mail:</label>
                     <input type="email" name="email" class="retro-input" required>
+                </div>
+                <div style="margin-top:1rem;">
+                    <label>Teléfono:</label>
+                    <input type="tel" name="phone" class="retro-input" required>
                 </div>
                 <div style="margin-top:1rem;">
                     <label>DNI:</label>
@@ -34,9 +42,9 @@
                     <label>Dirección:</label>
                     <input type="text" name="address" class="retro-input" required>
                 </div>
-                <div style="margin-top:2rem;">
-                    <button type="submit" class="retro-button">Guardar Datos</button>
-                    <button type="button" class="retro-button" style="background:#ffcccc;" onclick="location.href='../../index.html'">Volver</button>
+                <div style="margin-top:2rem; display: flex; gap: 1rem;">
+                    <button type="submit" class="retro-button" aria-label="Guardar cambios en mi perfil de usuario">Guardar Datos</button>
+                    <button type="button" class="retro-button" style="background:#ffcccc;" onclick="location.href='../../index.html'" aria-label="Volver a la página principal del bazar">Volver</button>
                 </div>
             </form>
         </section>
