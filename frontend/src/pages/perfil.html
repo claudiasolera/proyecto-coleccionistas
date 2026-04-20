@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Perfil - Coleccionistas</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <style>
+        .container { max-width: 600px; margin: 3rem auto; padding: 0 1rem; }
+        header { text-align: center; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PERFIL DEL COLECCIONISTA</h1>
+            <p>Gestiona tus datos personales y dirección de envío.</p>
+        </header>
+
+        <section class="retro-container">
+            <form id="profile-form">
+                <div>
+                    <label>Nombre:</label>
+                    <input type="text" name="name" class="retro-input" required>
+                </div>
+                <div style="margin-top:1rem;">
+                    <label>E-mail:</label>
+                    <input type="email" name="email" class="retro-input" required>
+                </div>
+                <div style="margin-top:1rem;">
+                    <label>DNI:</label>
+                    <input type="text" name="dni" class="retro-input" required aria-label="Documento de identidad">
+                </div>
+                <div style="margin-top:1rem;">
+                    <label>Dirección:</label>
+                    <input type="text" name="address" class="retro-input" required>
+                </div>
+                <div style="margin-top:2rem;">
+                    <button type="submit" class="retro-button">Guardar Datos</button>
+                    <button type="button" class="retro-button" style="background:#ffcccc;" onclick="location.href='../../index.html'">Volver</button>
+                </div>
+            </form>
+        </section>
+    </div>
+    <script type="module" src="../js/perfil.js"></script>
+</body>
+</html>
