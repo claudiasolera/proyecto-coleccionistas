@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Realtime - Coleccionistas</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <style>
+        body { padding: 2rem; }
+        .window {
+            background: #c0c0c0;
+            border: 2px outset #fff;
+            box-shadow: 4px 4px 0 #000;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: white;
+            padding: 3px 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-content {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #messages {
+            height: 300px;
+            background: #fff;
+            border: 2px inset #808080;
+            overflow-y: scroll;
+            padding: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        .message { margin-bottom: 8px; }
+        .msg-user { color: #0000ff; font-weight: bold; }
+        .msg-admin { color: #ff0000; font-weight: bold; }
+        .msg-time { color: #666; font-size: 0.7rem; }
+        
+        .chat-input-area {
+            display: flex;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <div class="title-bar">
+            <span>CHAT_VENDEDOR.EXE</span>
+            <span style="cursor: pointer;" onclick="location.href='perfil.html'">[X]</span>
+        </div>
+        <div class="chat-content">
+            <div id="messages">
+                <div class="message"><i>[Sistema]: Intentando conectar con el servidor de colecciones...</i></div>
+                <div class="message"><i>[Sistema]: Conectado. Bienvenido al chat oficial.</i></div>
+            </div>
+            <form id="chat-form" class="chat-input-area">
+                <input type="text" id="chat-input" class="retro-input" placeholder="Escribe tu duda aqui..." required aria-label="Mensaje para el administrador">
+                <button type="submit" class="retro-button" aria-label="Enviar mensaje">ENVIAR</button>
+            </form>
+        </div>
+    </div>
+
+    <p style="text-align: center; font-size: 0.8rem; margin-top: 2rem;">
+        Pulsar <b>ALT + S</b> para enviar | <a href="../../index.html">Volver al Bazar</a>
+    </p>
+
+    <!-- Cargamos Supabase desde CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="../js/chat.js"></script>
+</body>
+</html>
