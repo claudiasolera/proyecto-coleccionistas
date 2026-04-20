@@ -42,6 +42,21 @@ async function loadProducts(filters = {}) {
     renderProducts(products)
 }
 
+async function loadCategories() {
+    const res = await fetch('http://localhost:3000/api/categories')
+    const categories = await res.json()
+
+    const select = document.getElementById('category')
+    categories.forEach(cat => {
+        const option = document.createElement('option')
+        option.value = cat.id
+        option.textContent = cat.name
+        select.appendChild(option)
+    })
+}
+
+
+
 btnFilter.addEventListener('click', () => {
     const filters = {}
     const category = document.getElementById('category').value
@@ -63,3 +78,5 @@ btnClear.addEventListener('click', () => {
 })
 
 loadProducts()
+
+loadCategories()
