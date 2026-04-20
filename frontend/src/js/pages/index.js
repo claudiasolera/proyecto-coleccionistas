@@ -1,4 +1,5 @@
 import { getProducts } from '../api/products.js'
+import { addFavorite } from '../api/favoritos.js'
 
 const grid = document.getElementById('products-grid')
 const btnFilter = document.getElementById('btn-filter')
@@ -11,9 +12,9 @@ function renderProducts(products) {
     }
 
     grid.innerHTML = products.map(p => `
-        <article class="product-card" onclick="location.href='pages/producto.html?id=${p.id}'">
+        <article class="product-card" onclick="location.href='src/pages/producto.html?id=${p.id}'">
             <img 
-                src="${p.product_images[0]?.url || '/public/placeholder.jpg'}" 
+                src="${p.product_images?.[0]?.url || 'https://via.placeholder.com/150'}" 
                 alt="${p.name}"
             >
             <div class="product-card-body">
@@ -22,13 +23,17 @@ function renderProducts(products) {
                 <span class="product-card-status status-${p.status}">${p.status}</span>
                 <button 
                     class="retro-button btn-favourite"
-                    aria-label="Add ${p.name} to favourites"
-                    onclick="event.stopPropagation()">
+                    aria-label="Añadir página a favoritos"
+                    onclick="event.stopPropagation(); window.handleFavorite('${p.id}')">
                     ♡ Favorito
                 </button>
             </div>
         </article>
     `).join('')
+}
+
+window.handleFavorite = async (productId) => {
+    await addFavorite(productId);
 }
 
 async function loadProducts(filters = {}) {
