@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda de Coleccionistas</title>
+    <link rel="stylesheet" href="src/css/variables.css">
+    <link rel="stylesheet" href="src/css/layout.css">
+    <link rel="stylesheet" href="src/css/components.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <h1 class="site-title">Tienda de Coleccionistas</h1>
+        <nav class="site-nav">
+            <a href="index.html">Catálogo</a>
+            <a href="src/pages/perfil.html">Mi Cuenta</a>
+            <a href="src/pages/favoritos.html">Favoritos</a>
+        </nav>
+    </header>
+
+    <main class="main-layout">
+
+        <aside class="sidebar">
+            <div class="retro-container">
+                <h2>Filtros</h2>
+
+                <label for="category">Categoría</label>
+                <select id="category" class="retro-input">
+                    <option value="">Todas</option>
+                </select>
+
+                <label for="from">Desde</label>
+                <input type="date" id="from" class="retro-input">
+
+                <label for="to">Hasta</label>
+                <input type="date" id="to" class="retro-input">
+
+                <button id="btn-filter" class="retro-button" style="margin-top: 1rem; width: 100%">
+                    Aplicar Filtros
+                </button>
+
+                <button id="btn-clear" class="retro-button" style="margin-top: 0.5rem; width: 100%">
+                    Limpiar
+                </button>
+            </div>
+        </aside>
+
+        <section class="catalogue">
+            <div id="products-grid" class="products-grid">
+                <p id="loading">Cargando productos...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script type="module" src="src/js/pages/index.js"></script>
+</body>
+</html>
