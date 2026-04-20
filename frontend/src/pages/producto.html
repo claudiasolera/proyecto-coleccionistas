@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producto - Tienda de Coleccionistas</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <h1 class="site-title"><a href="../../index.html" style="text-decoration:none; color:inherit">The Collectors Shop</a></h1>
+        <nav class="site-nav">
+            <a href="../../index.html">Catálogo</a>
+            <a href="perfil.html">Mi Cuenta</a>
+            <a href="favoritos.html">Favoritos</a>
+        </nav>
+    </header>
+
+    <main class="product-detail-layout">
+
+        <section class="product-gallery retro-container">
+            <img id="main-image" src="" alt="Product image">
+            <div id="thumbnails" class="thumbnails"></div>
+        </section>
+
+        <section class="product-info retro-container">
+            <span id="product-status" class="product-card-status"></span>
+            <h1 id="product-name"></h1>
+            <p id="product-price" class="product-detail-price"></p>
+
+            <table class="product-meta">
+                <tr>
+                    <td>Marca</td>
+                    <td id="product-brand">—</td>
+                </tr>
+                <tr>
+                    <td>Año</td>
+                    <td id="product-year">—</td>
+                </tr>
+                <tr>
+                    <td>Dimensiones</td>
+                    <td id="product-dimensions">—</td>
+                </tr>
+                <tr>
+                    <td>Categoría</td>
+                    <td id="product-category">—</td>
+                </tr>
+                <tr>
+                    <td>Publicado</td>
+                    <td id="product-published">—</td>
+                </tr>
+            </table>
+
+            <p id="product-description" class="product-description"></p>
+
+            <div class="product-actions">
+                <button 
+                    id="btn-favourite" 
+                    class="retro-button"
+                    aria-label="Add to favourites">
+                    ♡ Añadir a Favoritos
+                </button>
+                <button 
+                    id="btn-chat" 
+                    class="retro-button"
+                    aria-label="Ask the seller">
+                    ✉ Preguntar al Vendedor
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <script type="module" src="../js/pages/producto.js"></script>
+</body>
+</html>
