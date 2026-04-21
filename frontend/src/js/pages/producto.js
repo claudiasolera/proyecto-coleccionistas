@@ -44,6 +44,18 @@ async function loadProduct() {
     statusEl.textContent = product.status
     statusEl.classList.add(`status-${product.status}`)
 
+    // Lógica del botón COMPRAR
+    const btnBuy = document.getElementById('btn-buy')
+    if (product.status !== 'available') {
+        btnBuy.disabled = true;
+        btnBuy.style.background = '#ccc';
+        btnBuy.innerText = 'PRODUCTO VENDIDO';
+    } else {
+        btnBuy.onclick = () => {
+            location.href = `checkout.html?id=${product.id}`;
+        };
+    }
+
     // Page title
     document.title = `${product.name} — Tienda de Coleccionistas`
 }
