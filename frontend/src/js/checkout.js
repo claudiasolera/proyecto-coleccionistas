@@ -54,31 +54,40 @@ shippingForm.addEventListener('change', (e) => {
     updateTotal();
 });
 
-// Pagar y actualizar stock
+// Pagar y redirigir a Stripe
 btnPay.addEventListener('click', async () => {
     const method = shippingForm.logistics.value;
     const total = productPrice + shippingPrice;
 
-    if (!confirm(`¿Confirmar pago de ${formatCurrency(total)} por envío ${method}?`)) return;
-
     try {
         btnPay.disabled = true;
-        btnPay.innerText = 'PROCESANDO PAGO...';
+        btnPay.innerText = 'CONECTANDO CON PASARELA...';
 
-        const order = await apiFetch('/pedidos', {
+        // 1. Crear sesión en Stripe
+        const session = await apiFetch('/pagos/create-checkout-session', {
             method: 'POST',
             body: JSON.stringify({
-                user_id: userId,
+                name: document.getElementById('product-summary').querySelector('strong').innerText,
+                price: total,
                 product_id: productId,
-                shipping_method: method,
-                total_amount: total
+                user_id: userId,
+                shipping_method: method
             })
         });
 
-        alert('✨ COMPRA REALIZADA CON ÉXITO. El producto ha sido marcado como VENDIDO.');
-        window.location.href = 'perfil.html';
+        // 2. Guardar datos temporales para cuando volvamos del pago
+        localStorage.setItem('pendingOrder', JSON.stringify({
+            user_id: userId,
+            product_id: productId,
+            shipping_method: method,
+            total_amount: total
+        }));
+
+        // 3. Redirigir a pasarela oficial
+        window.location.href = session.url;
+        
     } catch (err) {
-        alert('Error en la transacción: ' + err.message);
+        alert('Error con Stripe: ' + err.message);
         btnPay.disabled = false;
         btnPay.innerText = 'PAGAR AHORA';
     }

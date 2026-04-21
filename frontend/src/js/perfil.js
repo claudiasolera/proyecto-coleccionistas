@@ -7,6 +7,28 @@ window.addEventListener('DOMContentLoaded', async () => {
     const userId = localStorage.getItem('userId');
     if (userId) {
         console.log('Intentando cargar perfil del usuario:', userId);
+        
+        // --- LOGICA DE RETORNO DE PAGO (Módulo 3) ---
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            const pendingOrder = JSON.parse(localStorage.getItem('pendingOrder'));
+            if (pendingOrder) {
+                try {
+                    await apiFetch('/pedidos', {
+                        method: 'POST',
+                        body: JSON.stringify(pendingOrder)
+                    });
+                    localStorage.removeItem('pendingOrder');
+                    alert('✅ PAGO CONFIRMADO POR STRIPE. El artículo ya es tuyo.');
+                    // Limpiar la URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                } catch (err) {
+                    console.error('Error al finalizar pedido:', err);
+                }
+            }
+        }
+        // --------------------------------------------
+
         try {
             const user = await apiFetch(`/users/${userId}`);
             // Rellenar cada campo del formulario dinámicamente si existe en la respuesta
