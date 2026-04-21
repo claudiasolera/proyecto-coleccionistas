@@ -1,4 +1,4 @@
-import { getProduct } from '../api/products.js'
+import { getProduct } from '../api/productos.js'
 
 const params = new URLSearchParams(window.location.search)
 const id = params.get('id')

@@ -1,4 +1,4 @@
-import { getProducts } from '../api/products.js'
+import { getProducts } from '../api/productos.js'
 import { addFavorite } from '../api/favoritos.js'
 
 const grid = document.getElementById('products-grid')
@@ -55,17 +55,17 @@ async function loadCategories() {
     })
 }
 
-
-
 btnFilter.addEventListener('click', () => {
     const filters = {}
     const category = document.getElementById('category').value
     const from = document.getElementById('from').value
     const to = document.getElementById('to').value
+    const search = document.getElementById('search').value
 
     if (category) filters.category = category
     if (from) filters.from = from
     if (to) filters.to = to
+    if (search) filters.search = search
 
     loadProducts(filters)
 })

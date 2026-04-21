@@ -1,16 +1,16 @@
 import { supabase } from '../lib/supabase.js'
 
 export async function getProducts(req, res) {
-    const { category, from, to } = req.query
+    const { category, from, to, search } = req.query
 
     let query = supabase
         .from('active_products')
         .select('*, product_images(*), categories(name)')
 
     if (category) query = query.eq('category_id', category)
-
     if (from) query = query.gte('published_at', from)
     if (to) query = query.lte('published_at', to)
+    if (search) query = query.ilike('name', `%${search}%`)
 
     const { data, error } = await query
 
