@@ -41,7 +41,12 @@ async function loadProduct() {
 
     // Status
     const statusEl = document.getElementById('product-status')
-    statusEl.textContent = product.status
+    const statusLabels = {
+        available: 'Disponible',
+        reserved: 'Reservado',
+        sold: 'Vendido'
+    }
+    statusEl.textContent = statusLabels[product.status] || product.status
     statusEl.classList.add(`status-${product.status}`)
 
     // Lógica del botón COMPRAR
