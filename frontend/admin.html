@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>GESTIÓN - El Bazar</title>
+    <link rel="stylesheet" href="src/css/variables.css">
+    <link rel="stylesheet" href="src/css/layout.css">
+    <link rel="stylesheet" href="src/css/components.css">
+    <style>
+        .tabs-container { display: flex; gap: 5px; margin-bottom: -2px; padding-left: 1rem; }
+        .tab-button { padding: 10px 20px; background: #d0d0d0; border: 2px solid #000; border-bottom: none; cursor: pointer; font-family: var(--font-accent); font-weight: bold; text-transform: uppercase; border-radius: 10px 10px 0 0; transition: 0.2s; }
+        .tab-button.active { background: var(--clr-bg); padding-top: 15px; margin-top: -5px; box-shadow: none; position: relative; z-index: 2; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .stock-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .stock-table th, .stock-table td { border: 1px solid #000; padding: 8px; text-align: left; }
+        .stock-table tr:nth-child(even) { background: #f0f0f0; }
+    </style>
+</head>
+<body style="background: #808080;">
+
+    <header class="site-header">
+        <h1 class="site-title">SISTEMA DE GESTIÓN (MODO CHAT)</h1>
+        <nav class="site-nav">
+            <a href="index.html">Ver Tienda</a>
+            <a href="src/pages/chat_admin.html">Chats</a>
+        </nav>
+    </header>
+
+    <main style="max-width: 1000px; margin: 3rem auto; padding: 0 1rem;">
+        
+        <div class="tabs-container">
+            <button class="tab-button active" onclick="showTab('product-tab', this)">📦 PRODUCTOS</button>
+            <button class="tab-button" onclick="showTab('category-tab', this)">🏷️ CATEGORÍAS</button>
+            <button class="tab-button" onclick="showTab('inventory-tab', this); refreshInventory();">📜 INVENTARIO</button>
+        </div>
+
+        <div class="retro-container" style="border-top-left-radius: 0; position: relative; z-index: 1; min-height: 500px;">
+            
+            <!-- PRODUCTOS -->
+            <div id="product-tab" class="tab-content active">
+                <h2>ALTA DE NUEVO ARTÍCULO</h2>
+                <form id="product-form" style="margin-top: 1rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label>Nombre:</label><input type="text" name="name" class="retro-input" required>
+                            <label>Marca:</label><input type="text" name="brand" class="retro-input">
+                            <label>Precio (€):</label><input type="number" step="0.01" name="price" class="retro-input" required>
+                        </div>
+                        <div>
+                            <label>Categoría:</label><select id="select-category" name="category_id" class="retro-input" required></select>
+                            <label>Año:</label><input type="text" name="year" class="retro-input">
+                            <label>Medidas:</label><input type="text" name="dimensions" class="retro-input">
+                        </div>
+                    </div>
+                    <label>Descripción:</label><textarea name="description" class="retro-input" style="height: 60px;"></textarea>
+                    <label>Galería URLs:</label><textarea id="img-urls" class="retro-input" style="height: 60px;"></textarea>
+                    <button type="submit" class="retro-button" style="width: 100%; background: #90ee90; margin-top: 1rem;">PUBLICAR</button>
+                </form>
+            </div>
+
+            <!-- CATEGORÍAS -->
+            <div id="category-tab" class="tab-content">
+                <h2>GESTIÓN DE CATEGORÍAS</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem;">
+                    <form id="category-form">
+                        <label>Nombre:</label><input type="text" name="name" class="retro-input" required>
+                        <label>Descripción:</label><textarea name="description" class="retro-input" style="height: 60px;"></textarea>
+                        <button type="submit" class="retro-button" style="width: 100%; margin-top: 1rem;">CREAR CATEGORÍA</button>
+                    </form>
+                    <div style="background: #fff; border: 2px inset #808080; padding: 10px; height: 250px; overflow-y: auto;">
+                        <strong>Categorías existentes:</strong>
+                        <ul id="categories-list" style="margin-top: 10px;"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INVENTARIO -->
+            <div id="inventory-tab" class="tab-content">
+                <h2>INVENTARIO Y STOCK</h2>
+                <div style="margin-top: 1rem; background: #fff; border: 2px inset #808080; max-height: 400px; overflow-y: auto;">
+                    <table class="stock-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-body"></tbody>
+                    </table>
+                </div>
+                <p style="font-size: 0.7rem; color: #444; margin-top: 10px;">* Para reservar a un coleccionista específico, usa el botón de reserva dentro de los CHATS.</p>
+            </div>
+
+        </div>
+    </main>
+
+    <script type="module">
+        import { apiFetch } from './src/js/utils.js';
+
+        window.showTab = (tabId, btn) => {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        };
+
+        const productForm = document.getElementById('product-form');
+        const categoryForm = document.getElementById('category-form');
+        const selectCategory = document.getElementById('select-category');
+        const listCategory = document.getElementById('categories-list');
+        const inventoryBody = document.getElementById('inventory-body');
+
+        async function refreshData() {
+            const categories = await apiFetch('/categories');
+            selectCategory.innerHTML = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            listCategory.innerHTML = categories.map(c => `<li>• ${c.name}</li>`).join('');
+        }
+
+        window.refreshInventory = async () => {
+            const products = await apiFetch('/products');
+            inventoryBody.innerHTML = products.map(p => `
+                <tr>
+                    <td>${p.name}</td>
+                    <td style="font-weight:bold; color: ${p.status === 'available' ? 'green' : (p.status === 'reserved' ? 'orange' : 'red')}">
+                        ${p.status.toUpperCase()}
+                    </td>
+                    <td>
+                        ${p.status === 'reserved' ? 
+                            `<button onclick="releaseStatus('${p.id}')" class="retro-button" style="font-size:0.6rem; padding: 2px 5px; background: #90ee90;">LIBERAR</button>` 
+                            : '--'}
+                    </td>
+                </tr>
+            `).join('');
+        };
+
+        window.releaseStatus = async (id) => {
+            if (!confirm('¿Liberar este producto y ponerlo a la venta de nuevo?')) return;
+            try {
+                await apiFetch(`/admin/${id}/status`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ status: 'available', reserved_for: null })
+                });
+                refreshInventory();
+            } catch (err) { alert(err.message); }
+        };
+
+        categoryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(categoryForm).entries());
+            try { await apiFetch('/categories', { method: 'POST', body: JSON.stringify(data) }); categoryForm.reset(); refreshData(); } catch (err) { alert(err.message); }
+        });
+
+        productForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(productForm).entries());
+            data.images = document.getElementById('img-urls').value.split('\n').filter(u => u.trim());
+            try { await apiFetch('/admin', { method: 'POST', body: JSON.stringify(data) }); alert('¡Publicado!'); productForm.reset(); } catch (err) { alert(err.message); }
+        });
+
+        refreshData();
+    </script>
+</body>
+</html>

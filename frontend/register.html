@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>REGISTRO - El Bazar</title>
+    <link rel="stylesheet" href="src/css/variables.css">
+    <link rel="stylesheet" href="src/css/layout.css">
+    <link rel="stylesheet" href="src/css/components.css">
+</head>
+<body style="background: #c0c0c0;">
+
+    <header class="site-header">
+        <h1 class="site-title">Tienda de Coleccionistas</h1>
+        <nav class="site-nav">
+            <a href="index.html">Catálogo</a>
+            <a href="login.html">Volver al Login</a>
+        </nav>
+    </header>
+
+    <main style="max-width: 500px; margin: 2rem auto; padding: 1rem;">
+        <div class="retro-container">
+            <div style="background: #000080; color: #fff; padding: 5px; margin: -1.5rem -1.5rem 1rem -1.5rem; font-weight: bold;">
+                NUEVO_USUARIO.EXE
+            </div>
+            
+            <h2 style="font-size: 1.1rem; border-bottom: 2px solid #000; margin-bottom: 1rem;">CREAR CUENTA</h2>
+            
+            <form id="register-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <label>Nombre:</label>
+                    <input type="text" name="name" class="retro-input" required>
+                    
+                    <label>Apellidos:</label>
+                    <input type="text" name="last_name" class="retro-input" required>
+                </div>
+
+                <label style="margin-top: 1rem;">E-mail:</label>
+                <input type="email" name="email" class="retro-input" required>
+
+                <label style="margin-top: 1rem;">Contraseña:</label>
+                <input type="password" name="password" class="retro-input" required minlength="6">
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem;">
+                    <label>DNI:</label>
+                    <input type="text" name="dni" class="retro-input" required>
+                    
+                    <label>Teléfono:</label>
+                    <input type="tel" name="phone" class="retro-input" required>
+                </div>
+
+                <label style="margin-top: 1rem;">Dirección de Envío:</label>
+                <input type="text" name="address" class="retro-input" required>
+
+                <button type="submit" class="retro-button" style="width: 100%; margin-top: 1.5rem; background: #90ee90; font-weight: bold;">
+                    FINALIZAR REGISTRO
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script type="module">
+        import { apiFetch, validators } from './src/js/utils.js';
+
+        const form = document.getElementById('register-form');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(form).entries());
+
+            // Validaciones básicas
+            if (!validators.email(data.email)) return alert('Email no válido');
+            if (!validators.phone(data.phone)) return alert('Teléfono debe tener 9 dígitos');
+
+            try {
+                const user = await apiFetch('/users/register', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+                
+                // Autologin: Guardamos la sesión al instante
+                localStorage.setItem('userId', user.id);
+                localStorage.setItem('userName', user.name);
+
+                // Redirección directa al catálogo
+                window.location.href = 'index.html';
+            } catch (err) {
+                alert('Error al registrar: ' + err.message);
+            }
+        });
+    </script>
+</body>
+</html>

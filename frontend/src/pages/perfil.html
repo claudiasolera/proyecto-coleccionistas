@@ -4,59 +4,69 @@
     <meta charset="UTF-8">
     <title>Mi Perfil - Coleccionistas</title>
     <link rel="stylesheet" href="../css/variables.css">
-    <style>
-        .container { max-width: 600px; margin: 3rem auto; padding: 0 1rem; }
-        header { text-align: center; margin-bottom: 2rem; }
-    </style>
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>PERFIL DEL COLECCIONISTA</h1>
-            <p>Gestiona tus datos personales y dirección de envío.</p>
-        </header>
+    <header class="site-header">
+        <h1 class="site-title">Tienda de Coleccionistas</h1>
+        <nav class="site-nav">
+            <!-- Menú dinámico -->
+        </nav>
+    </header>
 
-        <section class="retro-container">
-            <form id="profile-form">
-                <div>
-                    <label>Nombre:</label>
-                    <input type="text" name="name" class="retro-input" required>
-                </div>
-                <div style="margin-top:1rem;">
-                    <label>Apellidos:</label>
-                    <input type="text" name="last_name" class="retro-input" required>
-                </div>
-                <div style="margin-top:1rem;">
-                    <label>E-mail:</label>
-                    <input type="email" name="email" class="retro-input" required>
-                </div>
-                <div style="margin-top:1rem;">
-                    <label>Teléfono:</label>
-                    <input type="tel" name="phone" class="retro-input" required>
-                </div>
-                <div style="margin-top:1rem;">
-                    <label>DNI:</label>
-                    <input type="text" name="dni" class="retro-input" required aria-label="Documento de identidad">
-                </div>
-                <div style="margin-top:1rem;">
-                    <label>Dirección:</label>
+    <script type="module" src="../js/header.js"></script>
+
+    <main class="container" style="max-width: 800px; margin: 2rem auto; padding: 0 1rem;">
+        <div style="margin-bottom: 2rem;">
+            <h1 style="border-bottom: 3px solid var(--clr-primary); display: inline-block;"> PANEL DE CONTROL</h1>
+            <p style="font-family: var(--font-accent); font-size: 0.9rem;">Bienvenido de nuevo, Coleccionista.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            
+            <!-- INFORMACIÓN PERSONAL -->
+            <section class="retro-container">
+                <h2 style="font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 2px solid #000;">DATOS PERSONALES</h2>
+                <form id="profile-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <label>Nombre:</label>
+                        <input type="text" name="name" class="retro-input" required>
+                        <label>Apellidos:</label>
+                        <input type="text" name="last_name" class="retro-input" required>
+                    </div>
+
+                    <label style="margin-top: 1rem;">Mi Dirección de Envío:</label>
                     <input type="text" name="address" class="retro-input" required>
-                </div>
-                <div style="margin-top:2rem; display: flex; gap: 1rem;">
-                    <button type="submit" class="retro-button" aria-label="Guardar cambios en mi perfil de usuario">Guardar Datos</button>
-                    <button type="button" class="retro-button" style="background:#ffcccc;" onclick="location.href='../../index.html'" aria-label="Volver a la página principal del bazar">Volver</button>
-                </div>
-            </form>
-        </section>
 
-        <!-- SECCIÓN DE FAVORITOS (Híbrida) -->
-        <section class="retro-container">
-            <h2 style="font-size: 1.2rem; border-bottom: 2px solid #000; padding-bottom: 0.5rem;">MIS FAVORITOS</h2>
-            <div id="favorites-list" style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); margin-top: 1rem;">
-                <p style="font-style: italic; color: #666;">Cargando tus tesoros guardados...</p>
-            </div>
-        </section>
-    </div>
+                    <label style="margin-top: 1rem;">Teléfono de Contacto:</label>
+                    <input type="tel" name="phone" class="retro-input" required>
+
+                    <div style="background: #ffffcc; padding: 10px; border: 1px dashed #000; margin-top: 1.5rem; font-size: 0.8rem;">
+                        <p><strong>Nota:</strong> Para cambiar tu E-mail o DNI contacta con el Admin.</p>
+                    </div>
+
+                    <button type="submit" class="retro-button" style="width: 100%; margin-top: 1.5rem; background: #90ee90;">
+                        ACTUALIZAR MIS DATOS
+                    </button>
+                </form>
+            </section>
+
+            <!-- SECCIÓN DE FAVORITOS -->
+            <section id="favoritos" class="retro-container">
+                <h2 style="font-size: 1.1rem; border-bottom: 2px solid #000; padding-bottom: 0.5rem;">MIS TESOROS GUARDADOS</h2>
+                <div id="favorites-list" style="display: grid; gap: 1rem; grid-template-columns: 1fr; margin-top: 1rem;">
+                    <p style="font-style: italic; color: #666;">Cargando favoritos...</p>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>© 2026 EL BAZAR DEL COLECCIONISTA</p>
+    </footer>
+
     <script type="module" src="../js/perfil.js"></script>
 </body>
 </html>

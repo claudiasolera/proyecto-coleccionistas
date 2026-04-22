@@ -1,70 +1,101 @@
-const SUPABASE_URL = 'https://spbxbltadppuduvhphsy.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwYnhibHRhZHBwdWR1dmhwaHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzMDg2MTUsImV4cCI6MjA5MTg4NDYxNX0.NcaP85vdzoA9rJUkt6V0R_hYCYYt3s_XGInu4FyetwU';
+import { supabase } from './supabase.js';
+import { apiFetch } from './utils.js';
 
-const { createClient } = window.supabase; 
-const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+const chatWindow = document.getElementById('chat-window');
 const chatForm = document.getElementById('chat-form');
 const chatInput = document.getElementById('chat-input');
-const messagesContainer = document.getElementById('messages');
+const btnAttach = document.getElementById('btn-attach');
+const productModal = document.getElementById('product-modal');
+const closeModal = document.getElementById('close-modal');
+const productListAttach = document.getElementById('product-list-attach');
 
-const userName = localStorage.getItem('userId') ? 'Coleccionista_' + localStorage.getItem('userId').slice(0,4) : 'Invitado_90s';
+const userId = localStorage.getItem('userId');
 
-const channel = client.channel('bazar-chat', {
-    config: { broadcast: { self: true } }
-});
+if (!userId) {
+    alert('Identifícate primero para hablar con el vendedor.');
+    window.location.href = '../../login.html';
+}
 
-channel
-    .on('broadcast', { event: 'new_msg' }, ({ payload }) => {
-        renderMessage(payload);
-    })
-    .subscribe((status) => {
-        console.log('Estado del chat:', status);
-    });
+async function init() {
+    loadHistory();
+    subscribeToMessages();
+}
+
+async function loadHistory() {
+    try {
+        const messages = await apiFetch(`/messages/history/${userId}`);
+        chatWindow.innerHTML = messages.map(m => `
+            <div style="margin-bottom: 10px; color: ${m.sender_id === 'admin' ? 'blue' : 'black'}">
+                <strong>${m.sender_id === 'admin' ? 'VENDEDOR' : 'TÚ'}:</strong> ${m.text}
+            </div>
+        `).join('');
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    } catch (err) {
+        console.error("Error al cargar historial");
+    }
+}
+
+// Lógica de Adjuntar
+btnAttach.onclick = async () => {
+    productModal.style.display = 'flex';
+    const products = await apiFetch('/products');
+    productListAttach.innerHTML = products.map(p => `
+        <div class="product-select-item" onclick="sendProduct('${p.id}', '${p.name}')">
+            <span>${p.name}</span>
+            <strong>${p.price} €</strong>
+        </div>
+    `).join('');
+};
+
+window.sendProduct = async (id, name) => {
+    productModal.style.display = 'none';
+    try {
+        await apiFetch('/messages', {
+            method: 'POST',
+            body: JSON.stringify({
+                sender_id: userId,
+                receiver_id: 'admin',
+                text: `INTERESADO EN: ${name}`,
+                product_id: id
+            })
+        });
+    } catch (err) {
+        alert('Error al adjuntar producto');
+    }
+};
+
+closeModal.onclick = () => productModal.style.display = 'none';
 
 chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const text = chatInput.value.trim();
+    const text = chatInput.value;
     if (!text) return;
+    chatInput.value = '';
 
     try {
-        const payload = {
-            user: userName,
-            text: text,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            isAdmin: false
-        };
-
-        await channel.send({
-            type: 'broadcast',
-            event: 'new_msg',
-            payload: payload
+        await apiFetch('/messages', {
+            method: 'POST',
+            body: JSON.stringify({
+                sender_id: userId,
+                receiver_id: 'admin',
+                text: text
+            })
         });
-
-        chatInput.value = '';
     } catch (err) {
-        console.error('Error al enviar:', err);
+        alert('Error al enviar mensaje');
     }
 });
 
-function renderMessage(payload) {
-    const div = document.createElement('div');
-    div.className = 'message';
-    div.innerHTML = `
-        <span class="msg-time">[${payload.timestamp}]</span>
-        <span class="${payload.isAdmin ? 'msg-admin' : 'msg-user'}">${payload.isAdmin ? 'ADMIN' : payload.user}:</span>
-        <span class="msg-text">${payload.text}</span>
-    `;
-    messagesContainer.appendChild(div);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+function subscribeToMessages() {
+    supabase
+        .channel('public:messages')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+            const newMsg = payload.new;
+            if (newMsg.sender_id === userId || newMsg.receiver_id === userId) {
+                loadHistory();
+            }
+        })
+        .subscribe();
 }
 
-// Simulamos bienvenida del admin
-setTimeout(() => {
-    renderMessage({
-        user: 'Admin',
-        text: '¡Hola! Bienvenido al Bazar. ¿En qué te puedo ayudar?',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        isAdmin: true
-    });
-}, 1500);
+init();

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>CENTRAL DE CHATS (ADMIN) - El Bazar</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        .admin-chat-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            height: 80vh;
+            gap: 1rem;
+        }
+        .user-list {
+            background: #fff;
+            border: 2px inset #808080;
+            overflow-y: auto;
+        }
+        .user-item {
+            padding: 1rem;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .user-item:hover, .user-item.active {
+            background: var(--clr-primary);
+            color: #fff;
+        }
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            background: #c0c0c0;
+            border: 2px outset #fff;
+        }
+        #chat-window {
+            flex: 1;
+            background: #fff;
+            margin: 10px;
+            border: 2px inset #808080;
+            padding: 1rem;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <h1 class="site-title">CENTRAL DE CHATS - ADMIN</h1>
+        <nav class="site-nav">
+            <a href="../../index.html">Ver Tienda</a>
+            <a href="../../admin.html">Panel Admin</a>
+        </nav>
+    </header>
+
+    <main class="admin-chat-layout" style="padding: 0 2rem;">
+        <!-- Lista de Usuarios -->
+        <aside class="user-list">
+            <div style="padding: 10px; background: #808080; color: #fff; font-weight: bold; font-size: 0.8rem;">
+                CONVERSACIONES ACTIVAS
+            </div>
+            <div id="users-items">
+                <!-- Se cargan por JS -->
+            </div>
+        </aside>
+
+        <!-- Ventana de Chat -->
+        <section class="chat-area">
+            <div id="user-info-bar" style="background: #808080; color: #fff; padding: 10px; font-size: 0.8rem; border-bottom: 2px solid #000;">
+                SELECCIONA UN CLIENTE PARA VER SUS DATOS...
+            </div>
+            <div id="chat-window">
+                <p style="color: #666; text-align: center;">Selecciona un usuario de la izquierda para responder...</p>
+            </div>
+            <form id="admin-reply-form" style="padding: 10px; display: flex; gap: 5px;">
+                <input type="text" id="admin-input" class="retro-input" placeholder="Escribe tu respuesta..." required disabled>
+                <button type="submit" id="btn-send" class="retro-button" disabled>RESPONDER</button>
+            </form>
+        </section>
+    </main>
+
+    <script type="module" src="../js/chat_admin.js"></script>
+</body>
+</html>

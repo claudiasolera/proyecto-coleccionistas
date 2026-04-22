@@ -25,8 +25,8 @@ function renderProducts(products) {
                 tabindex="0"
                 role="button"
                 aria-label="Ver producto ${p.name}, precio ${Number(p.price).toFixed(2)} euros"
-                onclick="location.href='/frontend/src/pages/producto.html?id=${p.id}'"
-                onkeydown="if(event.key==='Enter') location.href='/frontend/src/pages/producto.html?id=${p.id}'">
+                onclick="location.href='/src/pages/producto.html?id=${p.id}'"
+                onkeydown="if(event.key==='Enter') location.href='/src/pages/producto.html?id=${p.id}'">
             <img 
                 src="${p.product_images?.[0]?.url || 'https://via.placeholder.com/150'}" 
                 alt="${p.name}"

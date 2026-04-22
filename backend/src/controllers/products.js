@@ -12,6 +12,11 @@ export async function getProducts(req, res) {
     if (to) query = query.lte('published_at', to)
     if (search) query = query.ilike('name', `%${search}%`)
 
+    // REGLA DE NEGOCIO: No mostrar "Vendidos" de más de 14 días
+    const fourteenDaysAgo = new Date()
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14)
+    query = query.or(`status.neq.sold,sold_at.gte.${fourteenDaysAgo.toISOString()}`)
+
     const { data, error } = await query
 
     if (error) return res.status(500).json({ error })

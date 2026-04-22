@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>ENTRAR - El Bazar</title>
+    <link rel="stylesheet" href="src/css/variables.css">
+    <link rel="stylesheet" href="src/css/layout.css">
+    <link rel="stylesheet" href="src/css/components.css">
+</head>
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
+
+    <header class="site-header">
+        <h1 class="site-title">Tienda de Coleccionistas</h1>
+        <nav class="site-nav">
+            <a href="index.html">Catálogo</a>
+        </nav>
+    </header>
+
+    <main style="flex: 1; display: flex; align-items: center; justify-content: center;">
+        <div class="retro-container" style="max-width: 400px; width: 100%;">
+            <div style="background: var(--clr-primary); color: #fff; padding: 5px 10px; margin: -1.5rem -1.5rem 1.5rem -1.5rem; font-weight: bold;">
+                LOGIN_SESSION.EXE
+            </div>
+            
+            <form id="login-form">
+                <label>E-mail:</label>
+                <input type="email" id="email" class="retro-input" required placeholder="ejemplo@correo.com">
+                
+                <label style="margin-top: 1rem;">Contraseña:</label>
+                <input type="password" id="password" class="retro-input" required placeholder="********">
+                
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="retro-button" style="flex: 1;">ENTRAR</button>
+                    <button type="button" class="retro-button" onclick="location.href='register.html'" style="flex: 1; font-size: 0.8rem;">SOY NUEVO</button>
+                </div>
+            </form>
+            
+            <p id="error-msg" style="color: red; font-size: 0.8rem; margin-top: 1rem; display: none; text-align: center;">Credenciales incorrectas.</p>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>© 2026 EL BAZAR DEL COLECCIONISTA</p>
+    </footer>
+
+    <script type="module">
+        import { apiFetch } from './src/js/utils.js';
+
+        const form = document.getElementById('login-form');
+        const errorMsg = document.getElementById('error-msg');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Ahora usamos el endpoint de /login con POST
+                const user = await apiFetch('/users/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+                
+                localStorage.setItem('userId', user.id);
+                localStorage.setItem('userName', user.name);
+                window.location.href = 'index.html';
+                
+            } catch (err) {
+                errorMsg.style.display = 'block';
+                errorMsg.innerText = err.message;
+            }
+        });
+    </script>
+</body>
+</html>

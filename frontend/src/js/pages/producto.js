@@ -49,12 +49,41 @@ async function loadProduct() {
     statusEl.textContent = statusLabels[product.status] || product.status
     statusEl.classList.add(`status-${product.status}`)
 
-    // Lógica del botón COMPRAR
-    const btnBuy = document.getElementById('btn-buy')
-    if (product.status !== 'available') {
+    // Lógica de botones según Sesión
+    const btnBuy = document.getElementById('btn-buy');
+    const btnFav = document.getElementById('btn-favourite');
+    const btnChat = document.getElementById('btn-chat');
+    const userId = localStorage.getItem('userId');
+
+    if (!userId) {
+        // Invitado
+        btnBuy.innerText = 'ENTRA PARA COMPRAR';
+        btnBuy.onclick = () => window.location.href = '../../login.html';
+        btnFav.style.display = 'none';
+        btnChat.style.display = 'none';
+    } else {
+        // Configurar botón de CHAT (Solo navegación)
+        btnChat.onclick = () => {
+            location.href = 'chat.html';
+        };
+
+        if (product.status === 'sold') {
         btnBuy.disabled = true;
         btnBuy.style.background = '#ccc';
         btnBuy.innerText = 'PRODUCTO VENDIDO';
+    } else if (product.status === 'reserved') {
+        // ¿Soy yo el afortunado?
+        if (userId === product.reserved_for) {
+            btnBuy.innerText = 'COMPRAR MI RESERVA';
+            btnBuy.style.background = 'var(--clr-primary)';
+            btnBuy.onclick = () => {
+                location.href = `checkout.html?id=${product.id}`;
+            };
+        } else {
+            btnBuy.disabled = true;
+            btnBuy.style.background = 'orange';
+            btnBuy.innerText = 'PRODUCTO RESERVADO';
+        }
     } else {
         btnBuy.onclick = () => {
             location.href = `checkout.html?id=${product.id}`;

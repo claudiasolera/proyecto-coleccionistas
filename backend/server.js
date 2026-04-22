@@ -9,6 +9,8 @@ import usersRouter from './src/routes/users.js'
 import favoritosRouter from './src/routes/favoritos.js'
 import pedidosRouter from './src/routes/pedidos.js'
 import pagosRouter from './src/routes/pagos.js'
+import adminRouter from './src/routes/admin.js'
+import messagesRouter from './src/routes/messages.js'
 
 dotenv.config()
 const app = express()
@@ -28,7 +30,10 @@ app.use('/api/users', usersRouter)
 app.use('/api/favoritos', favoritosRouter)
 app.use('/api/pedidos', pedidosRouter)
 app.use('/api/pagos', pagosRouter)
+app.use('/api/admin', adminRouter)
+app.use('/api/messages', messagesRouter)
 
-app.listen(process.env.PORT, () => {
-    console.log(`Servidor corriendo en puerto ${process.env.PORT}`)
-})
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 SERVIDOR ESCUCHANDO EN PUERTO: ${PORT}`);
+});

@@ -1,46 +1,120 @@
 :root {
-    --bg-color: #f5f5dc;
-    --text-color: #1a1a1a;
-    --border-color: #000000;
-    --font-serif: 'Times New Roman', Times, serif;
-    --solid-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+    /* Paleta Retro Premium */
+    --clr-bg: #f4ecd8;         /* Crema tipo papel antiguo */
+    --clr-panel: #ffffff;      /* Blanco puro para contraste */
+    --clr-text: #2b2b2b;       /* Negro suave para lectura */
+    --clr-accent: #8b4513;     /* Marrón cuero */
+    --clr-primary: #000080;    /* Azul Windows Clásico */
+    --clr-success: #2e8b57;    /* Verde bosque */
+    --clr-border: #000000;     /* Bordes negros sólidos */
+    
+    /* Efectos 90s */
+    --shadow-retro: 4px 4px 0px rgba(0,0,0,1);
+    --shadow-retro-small: 2px 2px 0px rgba(0,0,0,1);
+    --border-width: 2px;
+    
+    /* Tipografías */
+    --font-main: 'Times New Roman', serif;
+    --font-accent: 'Courier New', monospace;
 }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: var(--font-serif);
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+body {
+    background-color: var(--clr-bg);
+    color: var(--clr-text);
+    font-family: var(--font-main);
+    line-height: 1.6;
+}
+
+/* UTILIDADES RETRO */
 .retro-container {
-    border: 2px solid var(--border-color);
-    background: white;
-    box-shadow: var(--solid-shadow);
+    background-color: var(--clr-panel);
+    border: var(--border-width) solid var(--clr-border);
+    box-shadow: var(--shadow-retro);
     padding: 1.5rem;
     margin-bottom: 2rem;
 }
 
+.retro-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: var(--border-width) inset #808080;
+    background: #fff;
+    font-family: var(--font-accent);
+    margin-bottom: 1rem;
+}
+
+.retro-input:focus {
+    outline: 2px solid var(--clr-primary);
+}
+
 .retro-button {
-    font-family: var(--font-serif);
-    background: #e0e0e0;
-    border: 2px solid var(--border-color);
+    background-color: var(--clr-panel);
+    border: var(--border-width) outset #fff;
+    box-shadow: var(--shadow-retro-small);
+    color: var(--clr-text);
     padding: 0.5rem 1rem;
     cursor: pointer;
-    box-shadow: 2px 2px 0px #000;
+    font-family: var(--font-accent);
     font-weight: bold;
     text-transform: uppercase;
+    transition: transform 0.1s;
 }
 
 .retro-button:active {
-    box-shadow: none;
     transform: translate(2px, 2px);
+    box-shadow: none;
+    border-style: inset;
 }
 
-.retro-input {
-    border: 2px solid var(--border-color);
-    padding: 0.5rem;
-    width: 100%;
-    margin-top: 0.5rem;
+.retro-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* HEADER GLOBAL UNIFICADO */
+.site-header {
+    background-color: var(--clr-text);
+    color: var(--clr-bg);
+    padding: 1rem 2rem;
+    border-bottom: 4px solid var(--clr-primary);
+    margin-bottom: 2rem;
+}
+
+.site-title {
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+}
+
+.site-nav a {
+    color: var(--clr-bg);
+    text-decoration: none;
+    margin-right: 1.5rem;
+    font-weight: bold;
+    font-family: var(--font-accent);
+    text-transform: uppercase;
+}
+
+.site-nav a:hover {
+    text-decoration: underline;
+    color: #fff;
+}
+
+/* FOOTER GLOBAL */
+.site-footer {
+    background-color: var(--clr-text);
+    color: var(--clr-bg);
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-top: 5rem;
+    border-top: 8px double var(--clr-bg);
+    font-family: var(--font-accent);
 }
