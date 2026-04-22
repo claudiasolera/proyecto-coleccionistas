@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Mi Perfil - Coleccionistas</title>
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="../css/layout.css">
     <link rel="stylesheet" href="../css/components.css">
 </head>
+
 <body>
     <header class="site-header">
         <h1 class="site-title">Tienda de Coleccionistas</h1>
@@ -23,8 +25,7 @@
             <p style="font-family: var(--font-accent); font-size: 0.9rem;">Bienvenido de nuevo, Coleccionista.</p>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-            
+        <div>
             <!-- INFORMACIÓN PERSONAL -->
             <section class="retro-container">
                 <h2 style="font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 2px solid #000;">DATOS PERSONALES</h2>
@@ -42,32 +43,33 @@
                     <label style="margin-top: 1rem;">Teléfono de Contacto:</label>
                     <input type="tel" name="phone" class="retro-input" required>
 
-                    <div style="background: #ffffcc; padding: 10px; border: 1px dashed #000; margin-top: 1.5rem; font-size: 0.8rem;">
+                    <div
+                        style="background: #ffffcc; padding: 10px; border: 1px dashed #000; margin-top: 1.5rem; font-size: 0.8rem;">
                         <p><strong>Nota:</strong> Para cambiar tu E-mail o DNI contacta con el Admin.</p>
                     </div>
 
-                    <button type="submit" class="retro-button" style="width: 100%; margin-top: 1.5rem; background: #90ee90;">
+                    <button type="submit" class="retro-button"
+                        style="width: 100%; margin-top: 1.5rem; background: #90ee90;">
                         ACTUALIZAR MIS DATOS
                     </button>
                 </form>
-            </section>
 
-            <!-- SECCIÓN DE FAVORITOS -->
-            <section id="favoritos" class="retro-container">
-                <h2 style="font-size: 1.1rem; border-bottom: 2px solid #000; padding-bottom: 0.5rem;">MIS TESOROS GUARDADOS</h2>
-                <div id="favorites-list" style="display: grid; gap: 1rem; grid-template-columns: 1fr; margin-top: 1rem;">
-                    <p style="font-style: italic; color: #666;">Cargando favoritos...</p>
-                </div>
-            </section>
+                <hr style="margin: 2rem 0; border: 1px dashed #ccc;">
 
+                <button id="btn-logout" class="retro-button" style="width: 100%; border: 2px solid red; color: red;">
+                    CERRAR SESIÓN (LOGOUT)
+                </button>
+            </section>
         </div>
     </main>
 
     <footer class="site-footer">
         <p>© 2026 EL BAZAR DEL COLECCIONISTA - BUSCANDO TESOROS DESDE 1990</p>
-        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">Terminal: COLEC_SYS_V2.0.1 | Conectado vía RT-Modem</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">Terminal: COLEC_SYS_V2.0.1 | Conectado vía
+            RT-Modem</p>
     </footer>
 
     <script type="module" src="../js/perfil.js"></script>
 </body>
+
 </html>

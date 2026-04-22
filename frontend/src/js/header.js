@@ -27,15 +27,13 @@ export async function initHeader() {
         navHTML += `
             <a href="/admin.html">PANEL ADMIN</a>
             <a href="/src/pages/chat_admin.html">CENTRAL DE CHATS</a>
-            <a href="#" id="btn-logout">CERRAR SESIÓN</a>
+            <a href="/src/pages/perfil.html">MI PERFIL</a>
         `;
     } else {
         // USUARIO NORMAL
         navHTML += `
             <a href="/src/pages/perfil.html">MI PERFIL</a>
-            <a href="/src/pages/perfil.html#favoritos">FAVORITOS</a>
             <a href="/src/pages/chat.html">CHAT VENDEDOR</a>
-            <a href="#" id="btn-logout">CERRAR SESIÓN</a>
         `;
     }
 
@@ -43,16 +41,6 @@ export async function initHeader() {
     const nav = header.querySelector('.site-nav');
     if (nav) {
         nav.innerHTML = navHTML;
-        
-        // Lógica de logout
-        const btnLogout = document.getElementById('btn-logout');
-        if (btnLogout) {
-            btnLogout.addEventListener('click', (e) => {
-                e.preventDefault();
-                localStorage.clear();
-                window.location.href = '/index.html';
-            });
-        }
     }
 }
 
