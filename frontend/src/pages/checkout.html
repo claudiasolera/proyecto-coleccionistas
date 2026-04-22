@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Cierre de Venta - El Bazar</title>
     <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
     <style>
         .checkout-grid { display: grid; grid-template-columns: 1fr 300px; gap: 2rem; max-width: 900px; margin: 2rem auto; padding: 1rem; }
         .summary-box { background: #fff; border: 2px solid #000; padding: 1rem; box-shadow: 4px 4px 0px #000; }
@@ -12,14 +14,16 @@
         input[type="radio"]:checked + label { font-weight: bold; }
     </style>
 </head>
+<body style="background: #808080;">
+
     <header class="site-header">
         <h1 class="site-title">Tienda de Coleccionistas</h1>
         <nav class="site-nav">
-            <a href="../../index.html">Catálogo</a>
-            <a href="perfil.html">Mi Cuenta</a>
-            <a href="perfil.html#favoritos">Favoritos</a>
+            <!-- Menú dinámico -->
         </nav>
     </header>
+
+    <script type="module" src="../js/header.js"></script>
 
     <main class="checkout-grid">
         <!-- Parte 1: Logística -->

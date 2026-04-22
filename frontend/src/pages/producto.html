@@ -13,11 +13,11 @@
     <header class="site-header">
         <h1 class="site-title">Tienda de Coleccionistas</h1>
         <nav class="site-nav">
-            <a href="../../index.html">Catálogo</a>
-            <a href="perfil.html">Mi Cuenta</a>
-            <a href="perfil.html#favoritos">Favoritos</a>
+            <!-- Menú dinámico -->
         </nav>
     </header>
+
+    <script type="module" src="../js/header.js"></script>
 
     <div style="padding: 1rem 2rem;">
         <button class="retro-button" onclick="history.back()">← Volver al Catálogo</button>
@@ -77,8 +77,7 @@
                 <button 
                     id="btn-chat" 
                     class="retro-button"
-                    aria-label="Ask the seller"
-                    onclick="location.href='chat.html'">
+                    aria-label="Ask the seller">
                     ✉ Preguntar al Vendedor
                 </button>
             </div>

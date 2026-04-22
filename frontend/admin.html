@@ -21,12 +21,13 @@
 <body style="background: #808080;">
 
     <header class="site-header">
-        <h1 class="site-title">SISTEMA DE GESTIÓN (MODO CHAT)</h1>
+        <h1 class="site-title">Tienda de Coleccionistas</h1>
         <nav class="site-nav">
-            <a href="index.html">Ver Tienda</a>
-            <a href="src/pages/chat_admin.html">Chats</a>
+            <!-- Menú dinámico -->
         </nav>
     </header>
+
+    <script type="module" src="src/js/header.js"></script>
 
     <main style="max-width: 1000px; margin: 3rem auto; padding: 0 1rem;">
         
@@ -96,6 +97,11 @@
 
         </div>
     </main>
+
+    <footer class="site-footer">
+        <p>© 2026 EL BAZAR DEL COLECCIONISTA - BUSCANDO TESOROS DESDE 1990</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">Terminal: COLEC_SYS_V2.0.1 | Conectado vía RT-Modem</p>
+    </footer>
 
     <script type="module">
         import { apiFetch } from './src/js/utils.js';
