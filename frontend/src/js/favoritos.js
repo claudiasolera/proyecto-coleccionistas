@@ -68,7 +68,7 @@ async function renderTab() {
         return;
     }
 
-    // Renderizado de elementos (sin cambios)
+    // Renderizado de elementos (Igual que en el catálogo)
     for (const fav of filtered) {
         if (currentTab === 'products') {
             try {
@@ -80,13 +80,29 @@ async function renderTab() {
                     article.className = 'product-card';
                     article.onclick = () => location.href = `producto.html?id=${p.id}`;
                     article.innerHTML = `
-                        <img src="${imgUrl}" alt="${p.name}">
-                        <div class="product-card-body">
-                            <h2 class="product-card-title">${p.name}</h2>
-                            <p class="product-card-price">${Number(p.price).toFixed(2)} €</p>
-                            <span class="product-card-status status-${p.status}">${formatStatus(p.status)}</span>
-                            <button class="retro-button" style="margin-top: 15px; width: 100%; background: #ffcccc; color: #900;"
-                                onclick="event.stopPropagation(); window.removeFavorite('${fav.id}')">ELIMINAR</button>
+                        <div style="position: relative; width: 100%; border-bottom: 2px solid #000;">
+                            <img src="${imgUrl}" alt="${p.name}" style="display: block; width: 100%; object-fit: cover;">
+                            <!-- Badge de Estado -->
+                            <div class="product-card-status status-${p.status}" 
+                                 style="position: absolute; top: 10px; left: 10px; margin: 0; font-size: 0.7rem; z-index: 2;">
+                                ${formatStatus(p.status)}
+                            </div>
+                        </div>
+
+                        <div class="product-card-body" style="padding: 15px; flex: 1; display: flex; flex-direction: column;">
+                            <h2 class="product-card-title" style="margin-bottom: 5px;">${p.name}</h2>
+                            <p class="product-card-price" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 15px;">${Number(p.price).toFixed(2)} €</p>
+                            
+                            <div style="display: flex; gap: 8px; margin-top: auto;">
+                                <button class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 12px;">
+                                    VER DETALLES
+                                </button>
+                                <button class="retro-button" 
+                                        style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #d63031; padding: 0;"
+                                        onclick="event.stopPropagation(); window.removeFavorite('${fav.id}')">
+                                    ♥
+                                </button>
+                            </div>
                         </div>
                     `;
                     list.appendChild(article);
@@ -103,15 +119,24 @@ async function renderTab() {
                     article.style.cursor = 'pointer';
                     article.onclick = () => location.href = `../../index.html?category=${c.id}`;
                     article.innerHTML = `
-                        <div style="height: 250px; background: #fcfcfc; display: flex; align-items: center; justify-content: center; border-bottom: 2px solid #000;">
+                        <div style="height: 250px; background: #fcfcfc; display: flex; align-items: center; justify-content: center; border-bottom: 2px solid #000; position: relative;">
                             <span style="font-size: 6rem; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1));">📁</span>
+                            <div class="product-card-status status-available" style="position: absolute; top: 10px; left: 10px;">CATEGORÍA</div>
                         </div>
-                        <div class="product-card-body">
-                            <h2 class="product-card-title">${c.name}</h2>
-                            <p class="product-card-price" style="font-size: 0.8rem; height: 1.2rem;">Colección Completa</p>
-                            <span class="product-card-status status-available">CATEGORÍA</span>
-                            <button class="retro-button" style="margin-top: 15px; width: 100%; background: #ffcccc; color: #900;"
-                                onclick="event.stopPropagation(); window.removeFavorite('${fav.id}')">ELIMINAR</button>
+                        <div class="product-card-body" style="padding: 15px; flex: 1; display: flex; flex-direction: column;">
+                            <h2 class="product-card-title" style="margin-bottom: 5px;">${c.name}</h2>
+                            <p class="product-card-price" style="font-size: 0.8rem; height: 1.2rem; margin-bottom: 15px;">Colección Completa</p>
+                            
+                            <div style="display: flex; gap: 8px; margin-top: auto;">
+                                <button class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 12px;">
+                                    VER COLECCIÓN
+                                </button>
+                                <button class="retro-button" 
+                                        style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #d63031; padding: 0;"
+                                        onclick="event.stopPropagation(); window.removeFavorite('${fav.id}')">
+                                    ♥
+                                </button>
+                            </div>
                         </div>
                     `;
                     list.appendChild(article);

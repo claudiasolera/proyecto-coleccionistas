@@ -52,11 +52,11 @@ function renderProducts(products) {
                 </div>
             </div>
 
-            <div class="product-card-body" style="padding: 15px;">
+            <div class="product-card-body" style="padding: 15px; flex: 1; display: flex; flex-direction: column;">
                 <h2 class="product-card-title" style="margin-bottom: 5px;">${p.name}</h2>
                 <p class="product-card-price" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 15px;">${Number(p.price).toFixed(2)} €</p>
                 
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 8px; margin-top: auto;">
                     <button class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 12px;">
                         VER DETALLES
                     </button>
