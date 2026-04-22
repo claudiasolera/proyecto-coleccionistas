@@ -54,7 +54,7 @@ body {
 }
 
 .retro-button {
-    background-color: var(--clr-panel);
+    background-color: #e5e5e5; /* Gris suave para que resalte el relieve blanco */
     border: var(--border-width) outset #fff;
     box-shadow: var(--shadow-retro-small);
     color: var(--clr-text);

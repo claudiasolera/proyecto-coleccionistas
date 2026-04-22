@@ -34,27 +34,39 @@ function renderProducts(products) {
 
     grid.innerHTML = products.map(p => {
         const fav = isFavorite(p.id)
+        const imgUrl = p.product_images?.[0]?.url || 'https://via.placeholder.com/150'
+        
         return `
         <article class="product-card" 
                 tabindex="0"
                 role="button"
-                aria-label="Ver producto ${p.name}, precio ${Number(p.price).toFixed(2)} euros"
-                onclick="location.href='/src/pages/producto.html?id=${p.id}'"
-                onkeydown="if(event.key==='Enter') location.href='/src/pages/producto.html?id=${p.id}'">
-            <img 
-                src="${p.product_images?.[0]?.url || 'https://via.placeholder.com/150'}" 
-                alt="${p.name}"
-            >
-            <div class="product-card-body">
-                <h2 class="product-card-title">${p.name}</h2>
-                <p class="product-card-price">${Number(p.price).toFixed(2)} €</p>
-                <span class="product-card-status status-${p.status}">${formatStatus(p.status)}</span>
-                <button 
-                    class="retro-button btn-favourite ${fav ? 'fav-active' : ''}"
-                    aria-label="${fav ? 'Quitar' : 'Añadir'} ${p.name} de favoritos"
-                    onclick="event.stopPropagation(); window.handleFavorite('${p.id}')">
-                    ${fav ? '♥ En Favoritos' : '♡ Favorito'}
-                </button>
+                onclick="location.href='/src/pages/producto.html?id=${p.id}'">
+            
+            <div style="position: relative; width: 100%; border-bottom: 2px solid #000;">
+                <img src="${imgUrl}" alt="${p.name}" style="display: block; width: 100%; object-fit: cover;">
+                
+                <!-- Badge de Estado arriba a la izquierda -->
+                <div class="product-card-status status-${p.status}" 
+                     style="position: absolute; top: 10px; left: 10px; margin: 0; font-size: 0.7rem; z-index: 2;">
+                    ${formatStatus(p.status)}
+                </div>
+            </div>
+
+            <div class="product-card-body" style="padding: 15px;">
+                <h2 class="product-card-title" style="margin-bottom: 5px;">${p.name}</h2>
+                <p class="product-card-price" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 15px;">${Number(p.price).toFixed(2)} €</p>
+                
+                <div style="display: flex; gap: 8px;">
+                    <button class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 12px;">
+                        VER DETALLES
+                    </button>
+                    <!-- Corazón aquí abajo junto a detalles -->
+                    <button class="retro-button" 
+                            style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: ${fav ? '#d63031' : 'inherit'}; padding: 0;"
+                            onclick="event.stopPropagation(); window.handleFavorite('${p.id}')">
+                        ${fav ? '♥' : '♡'}
+                    </button>
+                </div>
             </div>
         </article>
     `}).join('')
@@ -62,16 +74,24 @@ function renderProducts(products) {
 
 window.handleFavorite = async (productId) => {
     const fav = userFavorites.find(f => f.product_id === productId)
+    const btn = document.querySelector(`[onclick*="window.handleFavorite('${productId}')"]`)
     
     if (fav) {
         await removeFavorite(fav.id)
+        if (btn) {
+            btn.innerHTML = '♡'
+            btn.style.color = 'inherit'
+        }
     } else {
         await addFavorite(productId)
+        if (btn) {
+            btn.innerHTML = '♥'
+            btn.style.color = '#d63031'
+        }
     }
     
     userFavorites = await getFavorites()
     updateCategoryFavUI()
-    await loadProducts({ category: selectCategory.value })
 }
 
 // Lógica de Favoritos para CATEGORÍAS
@@ -85,7 +105,7 @@ function updateCategoryFavUI() {
     btnFavCategory.style.display = 'inline-block'
     const isFav = isCategoryFavorite(catId)
     btnFavCategory.innerHTML = isFav ? '♥' : '♡'
-    btnFavCategory.style.background = isFav ? '#ffcccc' : ''
+    btnFavCategory.style.color = isFav ? '#d63031' : 'inherit'
 }
 
 selectCategory.addEventListener('change', updateCategoryFavUI)
