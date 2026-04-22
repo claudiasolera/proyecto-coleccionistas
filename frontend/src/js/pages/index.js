@@ -1,9 +1,11 @@
 import { getProducts } from '../api/productos.js'
-import { addFavorite } from '../api/favoritos.js'
+import { addFavorite, getFavorites } from '../api/favoritos.js'
 
 const grid = document.getElementById('products-grid')
 const btnFilter = document.getElementById('btn-filter')
 const btnClear = document.getElementById('btn-clear')
+
+let userFavorites = []
 
 function formatStatus(status) {
     const labels = {
@@ -14,13 +16,19 @@ function formatStatus(status) {
     return labels[status] || status
 }
 
+function isFavorite(productId) {
+    return userFavorites.some(f => f.product_id === productId)
+}
+
 function renderProducts(products) {
     if (products.length === 0) {
         grid.innerHTML = '<p>No se han encontrado productos.</p>'
         return
     }
 
-    grid.innerHTML = products.map(p => `
+    grid.innerHTML = products.map(p => {
+        const fav = isFavorite(p.id)
+        return `
         <article class="product-card" 
                 tabindex="0"
                 role="button"
@@ -36,18 +44,21 @@ function renderProducts(products) {
                 <p class="product-card-price">${Number(p.price).toFixed(2)} €</p>
                 <span class="product-card-status status-${p.status}">${formatStatus(p.status)}</span>
                 <button 
-                    class="retro-button btn-favourite"
-                    aria-label="Añadir ${p.name} a favoritos"
+                    class="retro-button btn-favourite ${fav ? 'fav-active' : ''}"
+                    aria-label="${fav ? 'Quitar' : 'Añadir'} ${p.name} de favoritos"
                     onclick="event.stopPropagation(); window.handleFavorite('${p.id}')">
-                    ♡ Favorito
+                    ${fav ? '♥ En Favoritos' : '♡ Favorito'}
                 </button>
             </div>
         </article>
-    `).join('')
+    `}).join('')
 }
 
 window.handleFavorite = async (productId) => {
-    await addFavorite(productId);
+    await addFavorite(productId)
+    userFavorites = await getFavorites()
+    const products = await getProducts()
+    renderProducts(products)
 }
 
 async function loadProducts(filters = {}) {
@@ -59,7 +70,6 @@ async function loadProducts(filters = {}) {
 async function loadCategories() {
     const res = await fetch('http://localhost:3000/api/categories')
     const categories = await res.json()
-
     const select = document.getElementById('category')
     categories.forEach(cat => {
         const option = document.createElement('option')
@@ -75,12 +85,10 @@ btnFilter.addEventListener('click', () => {
     const from = document.getElementById('from').value
     const to = document.getElementById('to').value
     const search = document.getElementById('search').value
-
     if (category) filters.category = category
     if (from) filters.from = from
     if (to) filters.to = to
     if (search) filters.search = search
-
     loadProducts(filters)
 })
 
@@ -91,6 +99,10 @@ btnClear.addEventListener('click', () => {
     loadProducts()
 })
 
-loadProducts()
+async function init() {
+    userFavorites = await getFavorites()
+    await loadProducts()
+    await loadCategories()
+}
 
-loadCategories()
+init()

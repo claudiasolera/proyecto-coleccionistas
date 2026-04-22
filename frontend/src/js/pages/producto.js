@@ -84,10 +84,11 @@ async function loadProduct() {
             btnBuy.style.background = 'orange';
             btnBuy.innerText = 'PRODUCTO RESERVADO';
         }
-    } else {
-        btnBuy.onclick = () => {
-            location.href = `checkout.html?id=${product.id}`;
-        };
+        } else {
+            btnBuy.onclick = () => {
+                location.href = `checkout.html?id=${product.id}`;
+            };
+        }
     }
 
     // Page title

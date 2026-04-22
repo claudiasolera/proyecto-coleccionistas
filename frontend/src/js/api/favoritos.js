@@ -26,3 +26,12 @@ export async function addFavorite(productId, categoryId) {
         alert('Error: ' + err.message);
     }
 }
+
+export async function getFavorites() {
+    const userId = localStorage.getItem('userId')
+    if (!userId) return []
+
+    const res = await fetch(`${API_URL}/favoritos/${userId}`)
+    if (!res.ok) return []
+    return res.json()
+}

@@ -3,12 +3,10 @@ import { supabase } from '../db.js'
 
 const router = Router()
 
-// Crear un nuevo producto (Solo Admin)
 router.post('/', async (req, res) => {
     const { name, description, price, category_id, brand, year, dimensions, images } = req.body
 
     try {
-        // 1. Insertar el producto
         const { data: product, error: pError } = await supabase
             .from('products')
             .insert([{ 
@@ -27,7 +25,6 @@ router.post('/', async (req, res) => {
 
         if (pError) throw pError
 
-        // 2. Insertar las imágenes (si hay)
         if (images && images.length > 0) {
             const imageData = images.map(url => ({
                 product_id: product.id,
@@ -39,7 +36,10 @@ router.post('/', async (req, res) => {
 
         res.status(201).json(product)
     } catch (error) {
-// Actualizar estado de un producto (Disponible / Reservado)
+        res.status(500).json({ message: error.message })
+    }
+})
+
 router.put('/:id/status', async (req, res) => {
     const { id } = req.params
     const { status, reserved_for } = req.body
