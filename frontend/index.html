@@ -29,9 +29,14 @@
                 <input type="text" id="search" class="retro-input" placeholder="Buscar por nombre...">
 
                 <label for="category">Categoría</label>
-                <select id="category" class="retro-input">
-                    <option value="">Todas</option>
-                </select>
+                <div style="display: flex; gap: 5px; align-items: stretch; margin-bottom: 1rem;">
+                    <select id="category" class="retro-input" style="flex: 1; margin: 0;">
+                        <option value="">Todas</option>
+                    </select>
+                    <button id="btn-fav-category" class="retro-button" style="padding: 0 12px; display: none; line-height: 1; flex-shrink: 0;" title="Añadir categoría a favoritos">
+                        ♡
+                    </button>
+                </div>
 
                 <label for="sort">Ordenar por</label>
                 <select id="sort" class="retro-input">

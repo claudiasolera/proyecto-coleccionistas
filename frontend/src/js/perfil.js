@@ -10,7 +10,7 @@ if (!userId) {
 
 // 1. CARGAR DATOS AL INICIAR
 window.addEventListener('DOMContentLoaded', async () => {
-    
+
     // --- LOGICA DE RETORNO DE PAGO ---
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('success') === 'true') {

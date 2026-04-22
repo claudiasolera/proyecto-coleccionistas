@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Favoritos - Coleccionistas</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        .fav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: -3px; /* Para que solape con el borde de la caja */
+            padding-left: 10px;
+        }
+        .fav-tab {
+            padding: 10px 20px;
+            background: #eee;
+            border: 3px solid #000;
+            border-bottom: none;
+            cursor: pointer;
+            font-family: var(--font-accent);
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+        .fav-tab.active {
+            background: #fff;
+            padding-top: 15px;
+            margin-top: -5px;
+            z-index: 2;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <h1 class="site-title">Tienda de Coleccionistas</h1>
+        <nav class="site-nav">
+            <!-- Menú dinámico -->
+        </nav>
+    </header>
+
+    <script type="module" src="../js/header.js"></script>
+
+    <main class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+        <div style="margin-bottom: 2rem;">
+            <h1 style="border-bottom: 3px solid var(--clr-primary); display: inline-block;"> MI ARCHIVERO PERSONAL</h1>
+            <p style="font-family: var(--font-accent); font-size: 0.9rem;">Consulta tus expedientes guardados.</p>
+        </div>
+
+        <div class="fav-tabs">
+            <button class="fav-tab active" id="tab-products">📦 Piezas Individuales</button>
+            <button class="fav-tab" id="tab-categories">📁 Colecciones</button>
+        </div>
+
+        <section class="retro-container" id="main-archive" style="border-width: 3px; min-height: 500px; position: relative; z-index: 1; 
+                 background: #fdfaf0; 
+                 background-image: linear-gradient(#e5e0d0 1px, transparent 1px); 
+                 background-size: 100% 30px;">
+            <div id="favorites-list" class="products-grid">
+                <!-- Se cargará dinámicamente -->
+                <p style="text-align: center; grid-column: 1/-1; padding: 3rem; opacity: 0.5;">Cargando archivos...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>© 2026 EL BAZAR DEL COLECCIONISTA - BUSCANDO TESOROS DESDE 1990</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">Terminal: COLEC_SYS_V2.0.1 | Conectado vía RT-Modem</p>
+    </footer>
+
+    <script type="module" src="../js/favoritos.js"></script>
+</body>
+
+</html>

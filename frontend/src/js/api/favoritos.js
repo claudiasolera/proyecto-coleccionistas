@@ -20,10 +20,10 @@ export async function addFavorite(productId, categoryId) {
         
         if (!res.ok) throw new Error('Error al guardar favorito');
         
-        alert('✨ AÑADIDO A TUS TESOROS');
+        // Eliminado el alert invasivo para una mejor experiencia
         return await res.json();
     } catch (err) {
-        alert('Error: ' + err.message);
+        console.error('Error:', err.message);
     }
 }
 

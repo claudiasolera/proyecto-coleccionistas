@@ -4,6 +4,8 @@ import { addFavorite, getFavorites, removeFavorite } from '../api/favoritos.js'
 const grid = document.getElementById('products-grid')
 const btnFilter = document.getElementById('btn-filter')
 const btnClear = document.getElementById('btn-clear')
+const selectCategory = document.getElementById('category')
+const btnFavCategory = document.getElementById('btn-fav-category')
 
 let userFavorites = []
 
@@ -18,6 +20,10 @@ function formatStatus(status) {
 
 function isFavorite(productId) {
     return userFavorites.some(f => f.product_id === productId)
+}
+
+function isCategoryFavorite(catId) {
+    return userFavorites.some(f => f.category_id === catId)
 }
 
 function renderProducts(products) {
@@ -64,8 +70,40 @@ window.handleFavorite = async (productId) => {
     }
     
     userFavorites = await getFavorites()
-    await loadProducts()
+    updateCategoryFavUI()
+    await loadProducts({ category: selectCategory.value })
 }
+
+// Lógica de Favoritos para CATEGORÍAS
+function updateCategoryFavUI() {
+    const catId = selectCategory.value
+    if (!catId) {
+        btnFavCategory.style.display = 'none'
+        return
+    }
+
+    btnFavCategory.style.display = 'inline-block'
+    const isFav = isCategoryFavorite(catId)
+    btnFavCategory.innerHTML = isFav ? '♥' : '♡'
+    btnFavCategory.style.background = isFav ? '#ffcccc' : ''
+}
+
+selectCategory.addEventListener('change', updateCategoryFavUI)
+
+btnFavCategory.addEventListener('click', async () => {
+    const catId = selectCategory.value
+    if (!catId) return
+
+    const fav = userFavorites.find(f => f.category_id === catId)
+    if (fav) {
+        await removeFavorite(fav.id)
+    } else {
+        await addFavorite(null, catId)
+    }
+
+    userFavorites = await getFavorites()
+    updateCategoryFavUI()
+})
 
 async function loadProducts(filters = {}) {
     grid.innerHTML = '<p>Cargando productos...</p>'
@@ -76,18 +114,17 @@ async function loadProducts(filters = {}) {
 async function loadCategories() {
     const res = await fetch('http://localhost:3000/api/categories')
     const categories = await res.json()
-    const select = document.getElementById('category')
     categories.forEach(cat => {
         const option = document.createElement('option')
         option.value = cat.id
         option.textContent = cat.name
-        select.appendChild(option)
+        selectCategory.appendChild(option)
     })
 }
 
 btnFilter.addEventListener('click', () => {
     const filters = {}
-    const category = document.getElementById('category').value
+    const category = selectCategory.value
     const search = document.getElementById('search').value
     const sort = document.getElementById('sort').value
 
@@ -99,16 +136,30 @@ btnFilter.addEventListener('click', () => {
 })
 
 btnClear.addEventListener('click', () => {
-    document.getElementById('category').value = ''
+    selectCategory.value = ''
     document.getElementById('search').value = ''
     document.getElementById('sort').value = 'newest'
+    updateCategoryFavUI()
     loadProducts({ sort: 'newest' })
 })
 
 async function init() {
     userFavorites = await getFavorites()
-    await loadProducts()
+    
+    // Leer parámetros de la URL
+    const params = new URLSearchParams(window.location.search)
+    const categoryParam = params.get('category')
+
     await loadCategories()
+    
+    if (categoryParam) {
+        selectCategory.value = categoryParam
+        await loadProducts({ category: categoryParam })
+    } else {
+        await loadProducts()
+    }
+    
+    updateCategoryFavUI()
 }
 
 init()

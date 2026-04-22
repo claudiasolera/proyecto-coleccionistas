@@ -12,8 +12,11 @@ router.get('/:user_id', async (req, res) => {
                 id,
                 product_id,
                 category_id,
-                products (name, price),
-                categories (name)
+                products (
+                    *,
+                    product_images (url)
+                ),
+                categories (*)
             `)
             .eq('user_id', req.params.user_id)
 

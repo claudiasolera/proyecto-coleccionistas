@@ -30,7 +30,7 @@ export async function getProduct(req, res) {
     const { id } = req.params
 
     const { data, error } = await supabase
-        .from('active_products')
+        .from('products')
         .select('*, product_images(*), categories(name)')
         .eq('id', id)
         .single()

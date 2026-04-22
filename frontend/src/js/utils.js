@@ -28,7 +28,11 @@ export const apiFetch = async (endpoint, options = {}) => {
             const error = await response.json();
             throw new Error(error.message || 'Error en la petición');
         }
-        return await response.json();
+        // Si no hay contenido (status 204) o el body está vacío, devolvemos null
+        if (response.status === 204) return null;
+        
+        const text = await response.text();
+        return text ? JSON.parse(text) : null;
     } catch (error) {
         console.error('API Fetch Error:', error);
         throw error;

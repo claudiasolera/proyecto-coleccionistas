@@ -32,8 +32,9 @@ export async function initHeader() {
     } else {
         // USUARIO NORMAL
         navHTML += `
+            <a href="/src/pages/chat.html">CHAT</a>
+            <a href="/src/pages/favoritos.html">FAVORITOS</a>
             <a href="/src/pages/perfil.html">MI PERFIL</a>
-            <a href="/src/pages/chat.html">CHAT VENDEDOR</a>
         `;
     }
 
