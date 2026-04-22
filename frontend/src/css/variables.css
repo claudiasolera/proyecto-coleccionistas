@@ -125,3 +125,9 @@ body {
     border-top: 8px double var(--clr-bg);
     font-family: var(--font-accent);
 }
+
+/* ACCESIBILIDAD */
+:focus-visible {
+    outline: 3px solid var(--clr-primary);
+    outline-offset: 2px;
+}

@@ -123,8 +123,8 @@
 .btn-favourite.fav-active,
 #btn-favourite.fav-active {
     background-color: #ffcccc !important;
-    border-color: #cc0000 !important;
-    color: #cc0000 !important;
+    border-color: #990000 !important;
+    color: #990000 !important;
 }
 
 /* CARRUSEL */
