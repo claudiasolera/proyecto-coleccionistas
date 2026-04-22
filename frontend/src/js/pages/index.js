@@ -82,21 +82,21 @@ async function loadCategories() {
 btnFilter.addEventListener('click', () => {
     const filters = {}
     const category = document.getElementById('category').value
-    const from = document.getElementById('from').value
-    const to = document.getElementById('to').value
     const search = document.getElementById('search').value
+    const sort = document.getElementById('sort').value
+
     if (category) filters.category = category
-    if (from) filters.from = from
-    if (to) filters.to = to
     if (search) filters.search = search
+    if (sort) filters.sort = sort
+
     loadProducts(filters)
 })
 
 btnClear.addEventListener('click', () => {
     document.getElementById('category').value = ''
-    document.getElementById('from').value = ''
-    document.getElementById('to').value = ''
-    loadProducts()
+    document.getElementById('search').value = ''
+    document.getElementById('sort').value = 'newest'
+    loadProducts({ sort: 'newest' })
 })
 
 async function init() {

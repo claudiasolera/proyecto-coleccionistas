@@ -50,10 +50,12 @@
     padding: 4px 8px;
     border: 1px solid var(--clr-border);
     display: inline-block;
+    align-self: flex-start;
 }
 
 .status-available { background: #e0ffd0; }
-.status-sold      { background: #ffd0d0; color: #800000; }
+.status-sold      { background: #ffd0d0; }
+.status-reserved { background: #fff3cd; }
 
 /* DETALLE DE PRODUCTO */
 .product-detail-price {
@@ -118,10 +120,11 @@
     border-bottom: 1px dashed #ccc;
 }
 
-.btn-favourite.fav-active {
-    background-color: #ffcccc;
-    border-color: #cc0000;
-    color: #cc0000;
+.btn-favourite.fav-active,
+#btn-favourite.fav-active {
+    background-color: #ffcccc !important;
+    border-color: #cc0000 !important;
+    color: #cc0000 !important;
 }
 
 /* CARRUSEL */

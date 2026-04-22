@@ -1,4 +1,5 @@
 import { getProduct } from '../api/productos.js'
+import { addFavorite, getFavorites } from '../api/favoritos.js'
 
 const params = new URLSearchParams(window.location.search)
 const id = params.get('id')
@@ -83,9 +84,22 @@ async function loadProduct() {
         btnFav.style.display = 'none';
         btnChat.style.display = 'none';
     } else {
-        btnChat.onclick = () => {
-            location.href = 'chat.html';
-        };
+        // Comprobar si ya es favorito
+        const favorites = await getFavorites()
+        const isFav = favorites.some(f => f.product_id === product.id)
+
+        btnFav.textContent = isFav ? '♥ En Favoritos' : '♡ Añadir a Favoritos'
+        btnFav.classList.toggle('fav-active', isFav)
+
+        btnFav.onclick = async () => {
+            if (!isFav) {
+                await addFavorite(product.id)
+                btnFav.textContent = '♥ En Favoritos'
+                btnFav.classList.add('fav-active')
+            }
+        }
+
+        btnChat.onclick = () => location.href = 'chat.html';
 
         if (product.status === 'sold') {
             btnBuy.disabled = true;
@@ -95,18 +109,14 @@ async function loadProduct() {
             if (userId === product.reserved_for) {
                 btnBuy.innerText = 'COMPRAR MI RESERVA';
                 btnBuy.style.background = 'var(--clr-primary)';
-                btnBuy.onclick = () => {
-                    location.href = `checkout.html?id=${product.id}`;
-                };
+                btnBuy.onclick = () => location.href = `checkout.html?id=${product.id}`;
             } else {
                 btnBuy.disabled = true;
                 btnBuy.style.background = 'orange';
                 btnBuy.innerText = 'PRODUCTO RESERVADO';
             }
         } else {
-            btnBuy.onclick = () => {
-                location.href = `checkout.html?id=${product.id}`;
-            };
+            btnBuy.onclick = () => location.href = `checkout.html?id=${product.id}`;
         }
     }
 

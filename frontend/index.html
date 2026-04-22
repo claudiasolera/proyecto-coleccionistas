@@ -33,11 +33,13 @@
                     <option value="">Todas</option>
                 </select>
 
-                <label for="from">Desde</label>
-                <input type="date" id="from" class="retro-input">
-
-                <label for="to">Hasta</label>
-                <input type="date" id="to" class="retro-input">
+                <label for="sort">Ordenar por</label>
+                <select id="sort" class="retro-input">
+                    <option value="newest">Novedades</option>
+                    <option value="oldest">Más antiguos</option>
+                    <option value="price_asc">Precio: menor a mayor</option>
+                    <option value="price_desc">Precio: mayor a menor</option>
+                </select>
 
                 <button id="btn-filter" class="retro-button" style="margin-top: 1rem; width: 100%">
                     Aplicar Filtros
