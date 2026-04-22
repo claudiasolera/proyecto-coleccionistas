@@ -32,9 +32,15 @@
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    align-items: start;
 }
 
-.product-gallery img {
+.product-gallery {
+    overflow: hidden;
+    min-width: 0;
+}
+
+.product-gallery > .carousel img#main-image {
     width: 100%;
     border: var(--border-width) solid var(--clr-border);
     box-shadow: var(--shadow-retro);

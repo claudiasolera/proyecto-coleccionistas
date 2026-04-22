@@ -13,21 +13,43 @@ async function loadProduct() {
         return
     }
 
-    // Main image
+    // Galería con carrusel
+    const images = product.product_images
+    let currentIndex = 0
+
     const mainImage = document.getElementById('main-image')
-    mainImage.src = product.product_images[0]?.url || '/public/placeholder.jpg'
+    mainImage.src = images[0]?.url || '/public/placeholder.jpg'
     mainImage.alt = product.name
 
-    // Thumbnails
     const thumbnails = document.getElementById('thumbnails')
-    thumbnails.innerHTML = product.product_images.map((img, i) => `
+    thumbnails.innerHTML = images.map((img, i) => `
         <img 
             src="${img.url}" 
-            alt="${product.name} image ${i + 1}"
+            alt="${product.name} imagen ${i + 1}"
             class="thumbnail ${i === 0 ? 'active' : ''}"
-            onclick="document.getElementById('main-image').src = '${img.url}'"
+            onclick="goToImage(${i})"
         >
     `).join('')
+
+    window.goToImage = (index) => {
+        currentIndex = index
+        mainImage.src = images[currentIndex].url
+        document.querySelectorAll('.thumbnail').forEach((t, i) => {
+            t.classList.toggle('active', i === currentIndex)
+        })
+    }
+
+    document.querySelector('.carousel-prev').onclick = () => {
+        if (images.length <= 1) return
+        currentIndex = (currentIndex - 1 + images.length) % images.length
+        goToImage(currentIndex)
+    }
+
+    document.querySelector('.carousel-next').onclick = () => {
+        if (images.length <= 1) return
+        currentIndex = (currentIndex + 1) % images.length
+        goToImage(currentIndex)
+    }
 
     // Info
     document.getElementById('product-name').textContent = product.name
@@ -56,34 +78,31 @@ async function loadProduct() {
     const userId = localStorage.getItem('userId');
 
     if (!userId) {
-        // Invitado
         btnBuy.innerText = 'ENTRA PARA COMPRAR';
         btnBuy.onclick = () => window.location.href = '../../login.html';
         btnFav.style.display = 'none';
         btnChat.style.display = 'none';
     } else {
-        // Configurar botón de CHAT (Solo navegación)
         btnChat.onclick = () => {
             location.href = 'chat.html';
         };
 
         if (product.status === 'sold') {
-        btnBuy.disabled = true;
-        btnBuy.style.background = '#ccc';
-        btnBuy.innerText = 'PRODUCTO VENDIDO';
-    } else if (product.status === 'reserved') {
-        // ¿Soy yo el afortunado?
-        if (userId === product.reserved_for) {
-            btnBuy.innerText = 'COMPRAR MI RESERVA';
-            btnBuy.style.background = 'var(--clr-primary)';
-            btnBuy.onclick = () => {
-                location.href = `checkout.html?id=${product.id}`;
-            };
-        } else {
             btnBuy.disabled = true;
-            btnBuy.style.background = 'orange';
-            btnBuy.innerText = 'PRODUCTO RESERVADO';
-        }
+            btnBuy.style.background = '#ccc';
+            btnBuy.innerText = 'PRODUCTO VENDIDO';
+        } else if (product.status === 'reserved') {
+            if (userId === product.reserved_for) {
+                btnBuy.innerText = 'COMPRAR MI RESERVA';
+                btnBuy.style.background = 'var(--clr-primary)';
+                btnBuy.onclick = () => {
+                    location.href = `checkout.html?id=${product.id}`;
+                };
+            } else {
+                btnBuy.disabled = true;
+                btnBuy.style.background = 'orange';
+                btnBuy.innerText = 'PRODUCTO RESERVADO';
+            }
         } else {
             btnBuy.onclick = () => {
                 location.href = `checkout.html?id=${product.id}`;
@@ -91,7 +110,6 @@ async function loadProduct() {
         }
     }
 
-    // Page title
     document.title = `${product.name} — Tienda de Coleccionistas`
 }
 
