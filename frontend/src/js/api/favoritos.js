@@ -35,3 +35,10 @@ export async function getFavorites() {
     if (!res.ok) return []
     return res.json()
 }
+
+export async function removeFavorite(favoriteId) {
+    const res = await fetch(`${API_URL}/favoritos/${favoriteId}`, {
+        method: 'DELETE'
+    })
+    return res.ok
+}

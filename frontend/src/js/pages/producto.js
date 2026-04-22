@@ -1,5 +1,5 @@
 import { getProduct } from '../api/productos.js'
-import { addFavorite, getFavorites } from '../api/favoritos.js'
+import { addFavorite, getFavorites, removeFavorite } from '../api/favoritos.js'
 
 const params = new URLSearchParams(window.location.search)
 const id = params.get('id')
@@ -84,16 +84,22 @@ async function loadProduct() {
         btnFav.style.display = 'none';
         btnChat.style.display = 'none';
     } else {
-        // Comprobar si ya es favorito
         const favorites = await getFavorites()
-        const isFav = favorites.some(f => f.product_id === product.id)
+        const favEntry = favorites.find(f => f.product_id === product.id)
+        let isFav = !!favEntry
 
         btnFav.textContent = isFav ? '♥ En Favoritos' : '♡ Añadir a Favoritos'
         btnFav.classList.toggle('fav-active', isFav)
 
         btnFav.onclick = async () => {
-            if (!isFav) {
+            if (isFav) {
+                await removeFavorite(favEntry.id)
+                isFav = false
+                btnFav.textContent = '♡ Añadir a Favoritos'
+                btnFav.classList.remove('fav-active')
+            } else {
                 await addFavorite(product.id)
+                isFav = true
                 btnFav.textContent = '♥ En Favoritos'
                 btnFav.classList.add('fav-active')
             }

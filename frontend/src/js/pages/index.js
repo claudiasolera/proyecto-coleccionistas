@@ -1,5 +1,5 @@
 import { getProducts } from '../api/productos.js'
-import { addFavorite, getFavorites } from '../api/favoritos.js'
+import { addFavorite, getFavorites, removeFavorite } from '../api/favoritos.js'
 
 const grid = document.getElementById('products-grid')
 const btnFilter = document.getElementById('btn-filter')
@@ -55,10 +55,16 @@ function renderProducts(products) {
 }
 
 window.handleFavorite = async (productId) => {
-    await addFavorite(productId)
+    const fav = userFavorites.find(f => f.product_id === productId)
+    
+    if (fav) {
+        await removeFavorite(fav.id)
+    } else {
+        await addFavorite(productId)
+    }
+    
     userFavorites = await getFavorites()
-    const products = await getProducts()
-    renderProducts(products)
+    await loadProducts()
 }
 
 async function loadProducts(filters = {}) {
