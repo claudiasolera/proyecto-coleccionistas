@@ -1,18 +1,25 @@
 :root {
     /* Paleta Retro Premium */
-    --clr-bg: #f4ecd8;         /* Crema tipo papel antiguo */
-    --clr-panel: #ffffff;      /* Blanco puro para contraste */
-    --clr-text: #2b2b2b;       /* Negro suave para lectura */
-    --clr-accent: #8b4513;     /* Marrón cuero */
-    --clr-primary: #000080;    /* Azul Windows Clásico */
-    --clr-success: #2e8b57;    /* Verde bosque */
-    --clr-border: #000000;     /* Bordes negros sólidos */
-    
+    --clr-bg: #f4ecd8;
+    /* Crema tipo papel antiguo */
+    --clr-panel: #ffffff;
+    /* Blanco puro para contraste */
+    --clr-text: #2b2b2b;
+    /* Negro suave para lectura */
+    --clr-accent: #8b4513;
+    /* Marrón cuero */
+    --clr-primary: #000080;
+    /* Azul Windows Clásico */
+    --clr-success: #2e8b57;
+    /* Verde bosque */
+    --clr-border: #000000;
+    /* Bordes negros sólidos */
+
     /* Efectos 90s */
-    --shadow-retro: 4px 4px 0px rgba(0,0,0,1);
-    --shadow-retro-small: 2px 2px 0px rgba(0,0,0,1);
+    --shadow-retro: 4px 4px 0px rgba(0, 0, 0, 1);
+    --shadow-retro-small: 2px 2px 0px rgba(0, 0, 0, 1);
     --border-width: 2px;
-    
+
     /* Tipografías */
     --font-main: 'Times New Roman', serif;
     --font-accent: 'Courier New', monospace;
@@ -54,7 +61,8 @@ body {
 }
 
 .retro-button {
-    background-color: #e5e5e5; /* Gris suave para que resalte el relieve blanco */
+    background-color: #e5e5e5;
+    /* Gris suave para que resalte el relieve blanco */
     border: var(--border-width) outset #fff;
     box-shadow: var(--shadow-retro-small);
     color: var(--clr-text);
@@ -113,6 +121,11 @@ body {
 .site-nav a:hover {
     text-decoration: underline;
     color: #fff;
+}
+
+.site-nav a.active {
+    color: #fff;
+    border-bottom: 2px solid #fff; /* Subrayado blanco para máxima visibilidad */
 }
 
 /* FOOTER GLOBAL */
