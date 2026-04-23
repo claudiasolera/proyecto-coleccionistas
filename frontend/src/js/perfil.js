@@ -1,4 +1,4 @@
-import { apiFetch } from './utils.js';
+import { apiFetch, showNotification } from './utils.js';
 
 const form = document.getElementById('profile-form');
 const userId = localStorage.getItem('userId');
@@ -22,7 +22,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                     body: JSON.stringify(pendingOrder)
                 });
                 localStorage.removeItem('pendingOrder');
-                alert('✅ PAGO CONFIRMADO. El artículo ya es suyo.');
+                showNotification('PAGO CONFIRMADO. El artículo ya es suyo.', 'success');
                 window.history.replaceState({}, document.title, window.location.pathname);
             } catch (err) {
                 console.error('Error al finalizar pedido:', err);
@@ -52,9 +52,9 @@ form.addEventListener('submit', async (e) => {
             method: 'PUT',
             body: JSON.stringify(data)
         });
-        alert('✨ TUS DATOS HAN SIDO ACTUALIZADOS');
+        showNotification('TUS DATOS HAN SIDO ACTUALIZADOS', 'success');
     } catch (err) {
-        alert('Error al actualizar: ' + err.message);
+        showNotification('Error al actualizar: ' + err.message, 'error');
     }
 });
 

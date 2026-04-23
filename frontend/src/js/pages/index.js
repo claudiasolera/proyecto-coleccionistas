@@ -1,5 +1,6 @@
 import { getProducts } from '../api/productos.js'
 import { addFavorite, getFavorites, removeFavorite } from '../api/favoritos.js'
+import { showNotification } from '../utils.js'
 
 const grid = document.getElementById('products-grid')
 const btnFilter = document.getElementById('btn-filter')
@@ -76,22 +77,28 @@ window.handleFavorite = async (productId) => {
     const fav = userFavorites.find(f => f.product_id === productId)
     const btn = document.querySelector(`[onclick*="window.handleFavorite('${productId}')"]`)
     
-    if (fav) {
-        await removeFavorite(fav.id)
-        if (btn) {
-            btn.innerHTML = '♡'
-            btn.style.color = 'inherit'
+    try {
+        if (fav) {
+            await removeFavorite(fav.id)
+            if (btn) {
+                btn.innerHTML = '♡'
+                btn.style.color = 'inherit'
+            }
+            showNotification('Elemento retirado del archivo', 'success')
+        } else {
+            await addFavorite(productId)
+            if (btn) {
+                btn.innerHTML = '♥'
+                btn.style.color = '#d63031'
+            }
+            showNotification('Objeto archivado correctamente', 'success')
         }
-    } else {
-        await addFavorite(productId)
-        if (btn) {
-            btn.innerHTML = '♥'
-            btn.style.color = '#d63031'
-        }
+        
+        userFavorites = await getFavorites()
+        updateCategoryFavUI()
+    } catch (err) {
+        showNotification('Error en la ficha de archivo: ' + err.message, 'error')
     }
-    
-    userFavorites = await getFavorites()
-    updateCategoryFavUI()
 }
 
 // Lógica de Favoritos para CATEGORÍAS
@@ -115,14 +122,20 @@ btnFavCategory.addEventListener('click', async () => {
     if (!catId) return
 
     const fav = userFavorites.find(f => f.category_id === catId)
-    if (fav) {
-        await removeFavorite(fav.id)
-    } else {
-        await addFavorite(null, catId)
-    }
+    try {
+        if (fav) {
+            await removeFavorite(fav.id)
+            showNotification('Categoría retirada del índice', 'success')
+        } else {
+            await addFavorite(null, catId)
+            showNotification('Colección guardada en favoritos', 'success')
+        }
 
-    userFavorites = await getFavorites()
-    updateCategoryFavUI()
+        userFavorites = await getFavorites()
+        updateCategoryFavUI()
+    } catch (err) {
+        showNotification('Fallo al actualizar índice: ' + err.message, 'error')
+    }
 })
 
 async function loadProducts(filters = {}) {

@@ -166,3 +166,52 @@
     transform: translate(2px, 2px);
     box-shadow: none;
 }
+
+/* SISTEMA DE NOTIFICACIONES RETRO */
+.retro-notification-container {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 10000;
+}
+
+.retro-notification {
+    background: #fdfaf0; /* Color papel antiguo */
+    color: #333;
+    border: 3px outset #e5e5e5;
+    padding: 14px 28px;
+    font-family: var(--font-accent);
+    font-size: 0.95rem;
+    box-shadow: 6px 6px 0px rgba(0,0,0,0.2);
+    min-width: 280px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: default;
+    animation: slideInRight 0.35s ease-out;
+}
+
+.retro-notification.success {
+    border-left: 12px solid #2ecc71;
+}
+
+.retro-notification.error {
+    border-left: 12px solid #d63031;
+}
+
+.retro-notification-fade-out {
+    animation: slideOutRight 0.3s ease-in forwards;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(120%); opacity: 0; }
+}

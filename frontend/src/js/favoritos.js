@@ -1,4 +1,4 @@
-import { apiFetch } from './utils.js';
+import { apiFetch, showNotification } from './utils.js';
 
 const userId = localStorage.getItem('userId');
 let allFavorites = [];
@@ -163,9 +163,10 @@ document.getElementById('tab-categories').addEventListener('click', () => {
 window.removeFavorite = async (id) => {
     try {
         await apiFetch(`/favoritos/${id}`, { method: 'DELETE' });
+        showNotification('ARCHIVO ACTUALIZADO: ELEMENTO RETIRADO', 'success');
         loadFavorites();
     } catch (err) {
-        alert('Error: ' + err.message);
+        showNotification('ERROR AL RETIRAR ELEMENTO: ' + err.message, 'error');
     }
 };
 

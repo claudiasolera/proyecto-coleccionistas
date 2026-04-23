@@ -38,3 +38,44 @@ export const apiFetch = async (endpoint, options = {}) => {
         throw error;
     }
 };
+
+/**
+ * Muestra una notificación retro en pantalla
+ * @param {string} message - Mensaje a mostrar
+ * @param {string} type - 'success' o 'error'
+ */
+export const showNotification = (message, type = 'success') => {
+    let container = document.querySelector('.retro-notification-container');
+    
+    // Crear el contenedor si no existe
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'retro-notification-container';
+        document.body.appendChild(container);
+    }
+
+    // Crear la notificación
+    const notification = document.createElement('div');
+    notification.className = `retro-notification ${type}`;
+    
+    const icon = type === 'success' ? '📎' : '⚠️'; // Iconos de oficina retro
+    
+    notification.innerHTML = `
+        <span style="font-size: 1.2rem;">${icon}</span>
+        <span style="letter-spacing: 1px;">- ${message.toUpperCase()} -</span>
+    `;
+
+    container.appendChild(notification);
+
+    // Auto-eliminar con efecto fade-out
+    setTimeout(() => {
+        notification.classList.add('retro-notification-fade-out');
+        notification.addEventListener('animationend', () => {
+            notification.remove();
+            // Limpiar contenedor si está vacío
+            if (container.childNodes.length === 0) {
+                container.remove();
+            }
+        });
+    }, 4000);
+};
