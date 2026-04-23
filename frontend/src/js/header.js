@@ -10,22 +10,17 @@ export async function initHeader() {
     const userId = localStorage.getItem('userId');
     const userRole = localStorage.getItem('userRole');
     
-    // Función centralizada para generar el HTML del menú
     const getNavHTML = (role) => {
         let html = `<a href="/index.html">Catálogo</a>`;
-        
         if (!userId) {
-            // Caso: INVITADO
             html += `<a href="/login.html" class="nav-highlight">ENTRAR</a>`;
         } else if (role === 'admin') {
-            // Caso: ADMINISTRADOR
             html += `
                 <a href="/admin.html">PANEL ADMIN</a>
                 <a href="/src/pages/chat_admin.html">CENTRAL DE CHATS</a>
                 <a href="/src/pages/perfil.html">MI PERFIL</a>
             `;
         } else {
-            // Caso: USUARIO REGISTRADO
             html += `
                 <a href="/src/pages/chat.html">CHAT</a>
                 <a href="/src/pages/favoritos.html">FAVORITOS</a>
@@ -35,39 +30,66 @@ export async function initHeader() {
         return html;
     };
 
-    // 1. Renderizado instantáneo basado en el estado local (Sin parpadeos)
+    // 1. Renderizado instantáneo
     nav.innerHTML = getNavHTML(userRole);
 
-    // 3. Marcar link activo
+    // 2. Marcar link activo
     const currentPath = window.location.pathname;
-    nav.querySelectorAll('a').forEach(link => {
-        const href = link.getAttribute('href');
-        // Normalizamos rutas para comparar (evitamos problemas con / vs /index.html)
-        if (currentPath.endsWith(href) || (currentPath === '/' && href === '/index.html')) {
-            link.classList.add('active');
-        }
-    });
+    const highlightActive = () => {
+        nav.querySelectorAll('a').forEach(link => {
+            const href = link.getAttribute('href');
+            if (currentPath.endsWith(href) || (currentPath === '/' && href === '/index.html')) {
+                link.classList.add('active');
+            }
+        });
+    };
+    highlightActive();
 
-    // 2. Validación de seguridad en segundo plano (Opcional)
+    // 3. Validación de rol y radares de mensajes
     if (userId) {
+        // Validación de seguridad (segundo plano)
         try {
             const user = await apiFetch(`/users/${userId}`);
             if (user && user.role !== userRole) {
                 localStorage.setItem('userRole', user.role);
                 nav.innerHTML = getNavHTML(user.role);
-                // Re-marcar activo tras actualización de rol
-                nav.querySelectorAll('a').forEach(link => {
-                    const href = link.getAttribute('href');
-                    if (currentPath.endsWith(href) || (currentPath === '/' && href === '/index.html')) {
-                        link.classList.add('active');
-                    }
-                });
+                highlightActive();
             }
-        } catch (err) {
-            console.warn("No se pudo validar el rol en segundo plano:", err.message);
-        }
+        } catch (err) { console.warn("Validación de rol omitida"); }
+
+        // --- RADARES DE MENSAJES ---
+        const updateBadges = async () => {
+            try {
+                if (userRole === 'admin') {
+                    // Radar Admin: Total de todos los usuarios
+                    const { totalUnread } = await apiFetch('/messages/admin/unread-total');
+                    const adminChatLink = nav.querySelector('a[href="/src/pages/chat_admin.html"]');
+                    refreshBadge(adminChatLink, totalUnread);
+                } else {
+                    // Radar Usuario: Mensajes del admin
+                    const { unreadCount } = await apiFetch(`/messages/unread/${userId}`);
+                    const userChatLink = nav.querySelector('a[href="/src/pages/chat.html"]');
+                    refreshBadge(userChatLink, unreadCount);
+                }
+            } catch (err) {}
+        };
+
+        const refreshBadge = (link, count) => {
+            if (!link) return;
+            const oldBadge = link.querySelector('.unread-badge-mini');
+            if (oldBadge) oldBadge.remove();
+            if (count > 0) {
+                const badge = document.createElement('span');
+                badge.className = 'unread-badge-mini';
+                badge.innerText = count;
+                badge.style = "background:red; color:white; border-radius:50%; padding:1px 5px; font-size:0.6rem; margin-left:5px; border:1px solid #000; vertical-align:top;";
+                link.appendChild(badge);
+            }
+        };
+
+        updateBadges();
+        setInterval(updateBadges, 15000);
     }
 }
 
-// Iniciar cabecera
 initHeader();

@@ -28,6 +28,7 @@ function isCategoryFavorite(catId) {
 }
 
 function renderProducts(products) {
+    const userRole = localStorage.getItem('userRole');
     if (products.length === 0) {
         grid.innerHTML = '<p>No se han encontrado productos.</p>'
         return
@@ -37,6 +38,15 @@ function renderProducts(products) {
         const fav = isFavorite(p.id)
         const imgUrl = p.product_images?.[0]?.url || 'https://via.placeholder.com/150'
         
+        // El admin no ve el botón de favoritos
+        const favButton = userRole === 'admin' ? '' : `
+            <button class="retro-button" 
+                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: ${fav ? '#d63031' : 'inherit'}; padding: 0;"
+                    onclick="event.stopPropagation(); window.handleFavorite('${p.id}')">
+                ${fav ? '♥' : '♡'}
+            </button>
+        `;
+
         return `
         <article class="product-card" 
                 tabindex="0"
@@ -46,7 +56,6 @@ function renderProducts(products) {
             <div style="position: relative; width: 100%; border-bottom: 2px solid #000;">
                 <img src="${imgUrl}" alt="${p.name}" style="display: block; width: 100%; object-fit: cover;">
                 
-                <!-- Badge de Estado arriba a la izquierda -->
                 <div class="product-card-status status-${p.status}" 
                      style="position: absolute; top: 10px; left: 10px; margin: 0; font-size: 0.7rem; z-index: 2;">
                     ${formatStatus(p.status)}
@@ -61,12 +70,7 @@ function renderProducts(products) {
                     <button class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 12px;">
                         VER DETALLES
                     </button>
-                    <!-- Corazón aquí abajo junto a detalles -->
-                    <button class="retro-button" 
-                            style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: ${fav ? '#d63031' : 'inherit'}; padding: 0;"
-                            onclick="event.stopPropagation(); window.handleFavorite('${p.id}')">
-                        ${fav ? '♥' : '♡'}
-                    </button>
+                    ${favButton}
                 </div>
             </div>
         </article>
@@ -74,7 +78,10 @@ function renderProducts(products) {
 }
 
 window.handleFavorite = async (productId) => {
-    const fav = userFavorites.find(f => f.product_id === productId)
+    const userRole = localStorage.getItem('userRole');
+    if (userRole === 'admin') return; // Seguridad extra
+    
+    const fav = userFavorite = Array.isArray(userFavorites) ? userFavorites.find(f => f.product_id === productId) : null;
     const btn = document.querySelector(`[onclick*="window.handleFavorite('${productId}')"]`)
     
     try {
@@ -103,8 +110,10 @@ window.handleFavorite = async (productId) => {
 
 // Lógica de Favoritos para CATEGORÍAS
 function updateCategoryFavUI() {
+    const userRole = localStorage.getItem('userRole');
     const catId = selectCategory.value
-    if (!catId) {
+    
+    if (!catId || userRole === 'admin') {
         btnFavCategory.style.display = 'none'
         return
     }

@@ -33,7 +33,7 @@ app.use('/api/pagos', pagosRouter)
 app.use('/api/admin', adminRouter)
 app.use('/api/messages', messagesRouter)
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 SERVIDOR ESCUCHANDO EN PUERTO: ${PORT}`);
 });

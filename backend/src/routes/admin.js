@@ -46,7 +46,11 @@ router.put('/:id/status', async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('products')
-            .update({ status, reserved_for: reserved_for || null })
+            .update({ 
+                status, 
+                reserved_for: reserved_for || null,
+                reserved_at: status === 'reserved' ? new Date() : null 
+            })
             .eq('id', id)
             .select()
         

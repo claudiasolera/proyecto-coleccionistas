@@ -1,6 +1,24 @@
-import { supabase } from '../lib/supabase.js'
+import { supabase } from '../db.js'
+
+export async function checkExpiredReservations() {
+    const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+    try {
+        await supabase
+            .from('products')
+            .update({ 
+                status: 'available', 
+                reserved_for: null, 
+                reserved_at: null 
+            })
+            .eq('status', 'reserved')
+            .lt('reserved_at', fortyEightHoursAgo);
+    } catch (err) {
+        console.error("Error en auto-liberación:", err);
+    }
+}
 
 export async function getProducts(req, res) {
+    await checkExpiredReservations();
     const { category, search, sort } = req.query
 
     let query = supabase
@@ -28,6 +46,7 @@ export async function getProducts(req, res) {
 
 export async function getProduct(req, res) {
     const { id } = req.params
+    await checkExpiredReservations();
 
     const { data, error } = await supabase
         .from('products')

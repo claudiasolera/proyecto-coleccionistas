@@ -77,8 +77,16 @@ async function loadProduct() {
     const btnFav = document.getElementById('btn-favourite');
     const btnChat = document.getElementById('btn-chat');
     const userId = localStorage.getItem('userId');
+    const userRole = localStorage.getItem('userRole');
 
-    if (!userId) {
+    if (userRole === 'admin') {
+        // El administrador no compra, ni pregunta, ni guarda favoritos
+        btnBuy.style.display = 'none';
+        btnFav.style.display = 'none';
+        btnChat.style.display = 'none';
+        
+        // Podríamos añadir un botón de "EDITAR" aquí en el futuro
+    } else if (!userId) {
         btnBuy.innerText = 'ENTRA PARA COMPRAR';
         btnBuy.onclick = () => window.location.href = '../../login.html';
         btnFav.style.display = 'none';
@@ -105,7 +113,7 @@ async function loadProduct() {
             }
         }
 
-        btnChat.onclick = () => location.href = 'chat.html';
+        btnChat.onclick = () => location.href = `chat.html?productId=${product.id}`;
 
         if (product.status === 'sold') {
             btnBuy.disabled = true;

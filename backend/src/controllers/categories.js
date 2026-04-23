@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase.js'
+import { supabase } from '../db.js'
 
 export async function getCategories(req, res) {
     const { data, error } = await supabase
