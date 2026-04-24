@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { supabase } from '../db.js'
 import { getCategories } from '../controllers/categories.js'
 
 const router = Router()

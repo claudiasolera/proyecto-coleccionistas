@@ -1,6 +1,7 @@
 import express from 'express'
 import bcrypt from 'bcryptjs'
 import { supabase } from '../db.js'
+import crypto from 'crypto'
 
 const router = express.Router()
 
@@ -106,6 +107,60 @@ router.put('/:id', async (req, res) => {
 
         if (error) throw error
         res.json(data[0])
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+router.post('/forgot-password', async (req, res) => {
+    const { email } = req.body
+    try {
+        const { data: user, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email)
+            .single()
+
+        if (error || !user) return res.status(404).json({ message: 'Email no encontrado' })
+
+        const token = crypto.randomBytes(32).toString('hex')
+        const expires = new Date(Date.now() + 3600000) // 1 hora
+
+        await supabase
+            .from('users')
+            .update({ reset_token: token, reset_token_expires: expires })
+            .eq('id', user.id)
+
+        const resetUrl = `http://localhost:3000/reset-password.html?token=${token}`
+        console.log('RESET URL (enviar por email):', resetUrl)
+
+        res.json({ message: 'Enlace enviado' })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+router.post('/reset-password', async (req, res) => {
+    const { token, password } = req.body
+    try {
+        const { data: user, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('reset_token', token)
+            .single()
+
+        if (error || !user) return res.status(400).json({ message: 'Token inválido' })
+        if (new Date(user.reset_token_expires) < new Date()) return res.status(400).json({ message: 'Token expirado' })
+
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt)
+
+        await supabase
+            .from('users')
+            .update({ password: hashedPassword, reset_token: null, reset_token_expires: null })
+            .eq('id', user.id)
+
+        res.json({ message: 'Contraseña actualizada' })
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
