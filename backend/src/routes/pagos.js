@@ -1,6 +1,7 @@
 import express from 'express'
 import Stripe from 'stripe'
 import dotenv from 'dotenv'
+import { supabase } from '../db.js'
 
 dotenv.config()
 
@@ -40,6 +41,39 @@ router.post('/create-checkout-session', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
+})
+
+router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+    const sig = req.headers['stripe-signature']
+    let event
+
+    try {
+        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET)
+    } catch (err) {
+        return res.status(400).send(`Webhook Error: ${err.message}`)
+    }
+
+    if (event.type === 'checkout.session.completed') {
+        const session = event.data.object
+        const { product_id, user_id, shipping_method } = session.metadata
+
+        await supabase
+            .from('products')
+            .update({ status: 'sold', sold_at: new Date() })
+            .eq('id', product_id)
+
+        await supabase
+            .from('orders')
+            .insert([{
+                user_id,
+                product_id,
+                shipping_method,
+                total_amount: session.amount_total / 100,
+                status: 'paid'
+            }])
+    }
+
+    res.json({ received: true })
 })
 
 export default router

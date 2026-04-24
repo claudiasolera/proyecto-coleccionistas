@@ -24,13 +24,19 @@ async function init() {
     try {
         const product = await apiFetch(`/products/${productId}`);
         productPrice = parseFloat(product.price);
+
+        const statusLabels = {
+            available: 'Disponible',
+            reserved: 'Reservado',
+            sold: 'Vendido'
+        };
         
         summaryContainer.innerHTML = `
-            <p><strong>${product.name}</strong></p>
-            <p>Estado: ${product.status}</p>
-            <p>Precio: ${formatCurrency(productPrice)}</p>
+            <p class="summary-product-name">${product.name}</p>
+            <p class="summary-product-status">Estado: ${statusLabels[product.status] || product.status}</p>
+            <p class="summary-product-price">${formatCurrency(productPrice)}</p>
         `;
-        
+
         updateTotal();
     } catch (err) {
         console.error(err);
@@ -92,5 +98,14 @@ btnPay.addEventListener('click', async () => {
         btnPay.innerText = 'PAGAR AHORA';
     }
 });
+
+document.querySelectorAll('.shipping-option').forEach(option => {
+    option.addEventListener('click', () => {
+        document.querySelectorAll('.shipping-option').forEach(o => o.classList.remove('selected'))
+        option.classList.add('selected')
+        option.querySelector('input[type="radio"]').checked = true
+        option.querySelector('input[type="radio"]').dispatchEvent(new Event('change', { bubbles: true }))
+    })
+})
 
 init();

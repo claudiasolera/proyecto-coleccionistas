@@ -6,65 +6,87 @@
     <link rel="stylesheet" href="../css/variables.css">
     <link rel="stylesheet" href="../css/layout.css">
     <link rel="stylesheet" href="../css/components.css">
-    <style>
-        .checkout-grid { display: grid; grid-template-columns: 1fr 300px; gap: 2rem; max-width: 900px; margin: 2rem auto; padding: 1rem; }
-        .summary-box { background: #fff; border: 2px solid #000; padding: 1rem; box-shadow: 4px 4px 0px #000; }
-        .shipping-option { border: 2px solid #ccc; padding: 10px; margin-bottom: 10px; cursor: pointer; }
-        .shipping-option:hover { border-color: #000; background: #f0f0f0; }
-        input[type="radio"]:checked + label { font-weight: bold; }
-    </style>
 </head>
-<body style="background: #808080;">
+<body>
 
     <header class="site-header">
         <h1 class="site-title">Tienda de Coleccionistas</h1>
         <nav class="site-nav">
-            <a href="/index.html">Catálogo</a>
-            <!-- Menú dinámico inyectado por header.js -->
         </nav>
     </header>
 
     <script type="module" src="../js/header.js"></script>
 
     <main class="checkout-grid">
-        <!-- Parte 1: Logística -->
+
         <section class="retro-container">
-            <h2>1. SELECCIONAR LOGÍSTICA</h2>
+            <h2 class="checkout-step-title">[ 1 ] Seleccionar metodo de envio</h2>
+
             <form id="shipping-form">
-                <div class="shipping-option">
+                <div class="shipping-option selected">
                     <input type="radio" id="mail" name="logistics" value="Certificado" checked>
-                    <label for="mail">📦 Envío Certificado (Correos / Courier) - 5,00 €</label>
+                    <div class="shipping-label">
+                        <strong>Envio Certificado</strong>
+                        <span>Correos / Courier — entrega en 2-5 dias habiles</span>
+                        <span>5,00 EUR</span>
+                    </div>
                 </div>
+
                 <div class="shipping-option">
                     <input type="radio" id="point" name="logistics" value="Punto de Recogida">
-                    <label for="point">📍 Punto de Recogida - 3,00 €</label>
+                    <div class="shipping-label">
+                        <strong>Punto de Recogida</strong>
+                        <span>Recoge en tu punto mas cercano</span>
+                        <span>3,00 EUR</span>
+                    </div>
                 </div>
+
                 <div class="shipping-option">
                     <input type="radio" id="store" name="logistics" value="Tienda">
-                    <label for="store">🏠 Recogida en Tienda Física - Gratis</label>
+                    <div class="shipping-label">
+                        <strong>Recogida en Tienda</strong>
+                        <span>Recoge en nuestro local fisico</span>
+                        <span>Gratis</span>
+                    </div>
                 </div>
             </form>
 
-            <h2 style="margin-top: 2rem;">2. PASARELA DE PAGO</h2>
-            <div class="summary-box" style="border-style: dashed;">
-                <p>Simulación de conexión con Stripe/PayPal...</p>
-                <button id="btn-pay" class="retro-button" style="width: 100%; background: #90ee90;">PAGAR AHORA</button>
+            <div class="payment-section">
+                <h2 class="checkout-step-title">[ 2 ] Pasarela de pago</h2>
+                <p class="payment-info">
+                    Será redirigido a la plataforma segura de Stripe para completar el pago.<br>
+                    Sus datos bancarios nunca son procesados por este servidor.
+                </p>
+                <button id="btn-pay" class="retro-button btn-pay"
+                    aria-label="Proceder al pago seguro con Stripe">
+                    PROCEDER AL PAGO SEGURO
+                </button>
             </div>
         </section>
 
-        <!-- Parte 2: Resumen -->
         <aside>
             <div class="summary-box">
-                <h3>TU PEDIDO</h3>
+                <h3>Tu Pedido</h3>
                 <div id="product-summary">
                     <p>Cargando producto...</p>
                 </div>
-                <hr>
-                <p>Envío: <span id="shipping-cost">5.00 €</span></p>
-                <h2 style="margin: 0;">Total: <span id="total-price">0.00 €</span></h2>
+                <hr class="summary-divider">
+                <div class="summary-row">
+                    <span>Envio</span>
+                    <span id="shipping-cost">5,00 EUR</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span id="total-price">0,00 EUR</span>
+                </div>
             </div>
-            <button class="retro-button" style="margin-top: 1rem; width: 100%;" onclick="location.href='../../index.html'">CANCELAR</button>
+            <button class="retro-button btn-cancel"
+                aria-label="Cancelar compra y volver al catalogo"
+                onclick="history.back()">
+                CANCELAR
+            </button>
         </aside>
+
     </main>
 
     <footer class="site-footer">
