@@ -7,13 +7,12 @@
     <link rel="stylesheet" href="src/css/layout.css">
     <link rel="stylesheet" href="src/css/components.css">
 </head>
-<body style="background: #c0c0c0;">
+<body>
 
     <header class="site-header">
         <h1 class="site-title">Tienda de Coleccionistas</h1>
         <nav class="site-nav">
             <a href="/index.html">Catálogo</a>
-            <!-- Menú dinámico -->
         </nav>
     </header>
 
@@ -21,41 +20,51 @@
 
     <main style="max-width: 500px; margin: 2rem auto; padding: 1rem;">
         <div class="retro-container">
-            <div style="background: #000080; color: #fff; padding: 5px; margin: -1.5rem -1.5rem 1rem -1.5rem; font-weight: bold;">
+            <div style="background: var(--clr-primary); color: #fff; padding: 5px 10px; margin: -1.5rem -1.5rem 1.5rem -1.5rem; font-weight: bold; font-family: var(--font-accent);">
                 NUEVO_USUARIO.EXE
             </div>
-            
-            <h2 style="font-size: 1.1rem; border-bottom: 2px solid #000; margin-bottom: 1rem;">CREAR CUENTA</h2>
-            
+
+            <h2 style="font-size: 1.1rem; border-bottom: 2px solid #000; padding-bottom: 0.5rem; margin-bottom: 1.5rem; font-family: var(--font-accent);">CREAR CUENTA</h2>
+
             <form id="register-form">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <label>Nombre:</label>
-                    <input type="text" name="name" class="retro-input" required>
-                    
-                    <label>Apellidos:</label>
-                    <input type="text" name="last_name" class="retro-input" required>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem;">
+                    <div>
+                        <label>Nombre:</label>
+                        <input type="text" name="name" class="retro-input" required>
+                    </div>
+                    <div>
+                        <label>Apellidos:</label>
+                        <input type="text" name="last_name" class="retro-input" required>
+                    </div>
                 </div>
 
-                <label style="margin-top: 1rem;">E-mail:</label>
+                <label>E-mail:</label>
                 <input type="email" name="email" class="retro-input" required>
 
-                <label style="margin-top: 1rem;">Contraseña:</label>
+                <label>Contraseña:</label>
                 <input type="password" name="password" class="retro-input" required minlength="6">
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem;">
-                    <label>DNI:</label>
-                    <input type="text" name="dni" class="retro-input" required>
-                    
-                    <label>Teléfono:</label>
-                    <input type="tel" name="phone" class="retro-input" required>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem;">
+                    <div>
+                        <label>DNI:</label>
+                        <input type="text" name="dni" class="retro-input" required>
+                    </div>
+                    <div>
+                        <label>Teléfono:</label>
+                        <input type="tel" name="phone" class="retro-input" required>
+                    </div>
                 </div>
 
-                <label style="margin-top: 1rem;">Dirección de Envío:</label>
+                <label>Dirección de Envío:</label>
                 <input type="text" name="address" class="retro-input" required>
 
-                <button type="submit" class="retro-button" style="width: 100%; margin-top: 1.5rem; background: #90ee90; font-weight: bold;">
+                <button type="submit" class="retro-button" style="width: 100%; margin-top: 1.5rem;">
                     FINALIZAR REGISTRO
                 </button>
+
+                <p style="text-align:center; margin-top:1rem; font-family:var(--font-accent); font-size:0.85rem;">
+                    ¿Ya tienes cuenta? <a href="/login.html" style="color:var(--clr-primary);">ENTRAR</a>
+                </p>
             </form>
         </div>
     </main>
@@ -74,7 +83,6 @@
             e.preventDefault();
             const data = Object.fromEntries(new FormData(form).entries());
 
-            // Validaciones básicas
             if (!validators.email(data.email)) return alert('Email no válido');
             if (!validators.phone(data.phone)) return alert('Teléfono debe tener 9 dígitos');
 
@@ -83,13 +91,11 @@
                     method: 'POST',
                     body: JSON.stringify(data)
                 });
-                
-                // Autologin: Guardamos la sesión al instante
+
                 localStorage.setItem('userId', user.id);
                 localStorage.setItem('userName', user.name);
                 localStorage.setItem('userRole', user.role || 'user');
 
-                // Redirección directa al catálogo
                 window.location.href = 'index.html';
             } catch (err) {
                 alert('Error al registrar: ' + err.message);

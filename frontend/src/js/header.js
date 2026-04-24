@@ -7,7 +7,7 @@ export async function initHeader() {
     const nav = header.querySelector('.site-nav');
     if (!nav) return;
 
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
     const userRole = localStorage.getItem('userRole');
     
     const getNavHTML = (role) => {

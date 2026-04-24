@@ -57,7 +57,9 @@
                         </div>
                     </div>
                     <label>Descripción:</label><textarea name="description" class="retro-input" style="height: 60px;"></textarea>
-                    <label>Galería URLs:</label><textarea id="img-urls" class="retro-input" style="height: 60px;"></textarea>
+                    <label>Imágenes del producto:</label>
+                    <input type="file" name="images" id="img-upload" class="retro-input" multiple accept="image/*">
+                    <div id="img-preview" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.5rem;"></div>
                     <button type="submit" class="retro-button" style="width: 100%; background: #90ee90; margin-top: 1rem;">PUBLICAR</button>
                 </form>
             </div>
@@ -119,6 +121,39 @@
         const selectCategory = document.getElementById('select-category');
         const listCategory = document.getElementById('categories-list');
         const inventoryBody = document.getElementById('inventory-body');
+        const imgUpload = document.getElementById('img-upload');
+        const imgPreview = document.getElementById('img-preview');
+
+        let selectedFiles = []
+
+        imgUpload.addEventListener('change', (e) => {
+            const newFiles = Array.from(e.target.files)
+            selectedFiles = [...selectedFiles, ...newFiles]
+            renderPreview()
+        })
+
+        function renderPreview() {
+            imgPreview.innerHTML = selectedFiles.map((f, i) => `
+                <div style="position:relative; display:inline-block;">
+                    <img src="${URL.createObjectURL(f)}" 
+                        style="width:120px; height:120px; object-fit:cover; border: 2px solid #000; box-shadow: 3px 3px 0px #000;">
+                    <button type="button"
+                        onclick="removeImage(${i})"
+                        style="position:absolute; top:-6px; right:-6px; background:#fff; color:#cc0000; border: 2px solid #000; width:24px; height:24px; cursor:pointer; font-size:0.7rem; font-weight:bold; font-family: var(--font-accent); box-shadow: 2px 2px 0px #000; display:flex; align-items:center; justify-content:center;">
+                        [X]
+                    </button>
+                </div>
+            `).join('')
+
+            const dt = new DataTransfer()
+            selectedFiles.forEach(f => dt.items.add(f))
+            imgUpload.files = dt.files
+        }
+
+        window.removeImage = (index) => {
+            selectedFiles.splice(index, 1)
+            renderPreview()
+        }
 
         async function refreshData() {
             const categories = await apiFetch('/categories');
@@ -157,15 +192,34 @@
         categoryForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = Object.fromEntries(new FormData(categoryForm).entries());
-            try { await apiFetch('/categories', { method: 'POST', body: JSON.stringify(data) }); categoryForm.reset(); refreshData(); } catch (err) { alert(err.message); }
+            try { 
+                await apiFetch('/categories', { method: 'POST', body: JSON.stringify(data) }); 
+                categoryForm.reset(); 
+                refreshData(); 
+            } catch (err) { alert(err.message); }
         });
 
         productForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const data = Object.fromEntries(new FormData(productForm).entries());
-            data.images = document.getElementById('img-urls').value.split('\n').filter(u => u.trim());
-            try { await apiFetch('/admin', { method: 'POST', body: JSON.stringify(data) }); alert('¡Publicado!'); productForm.reset(); } catch (err) { alert(err.message); }
-        });
+            e.preventDefault()
+            
+            const formData = new FormData(productForm)
+            
+            try {
+                const res = await fetch('http://localhost:3000/api/admin', {
+                    method: 'POST',
+                    body: formData
+                })
+                
+                if (!res.ok) throw new Error('Error al publicar')
+                
+                alert('¡Publicado!')
+                productForm.reset()
+                selectedFiles = []
+                imgPreview.innerHTML = ''
+            } catch (err) {
+                alert(err.message)
+            }
+        })
 
         refreshData();
     </script>
