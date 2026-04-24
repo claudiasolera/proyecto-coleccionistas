@@ -87,10 +87,10 @@ async function loadProduct() {
         
         // Podríamos añadir un botón de "EDITAR" aquí en el futuro
     } else if (!userId) {
-        btnBuy.innerText = 'ENTRA PARA COMPRAR';
-        btnBuy.onclick = () => window.location.href = '../../login.html';
-        btnFav.style.display = 'none';
-        btnChat.style.display = 'none';
+        btnBuy.innerText = 'ENTRA PARA COMPRAR'
+        btnBuy.onclick = () => window.location.href = `/login.html?redirect=${window.location.pathname}`
+        btnFav.onclick = () => window.location.href = `/login.html?redirect=${window.location.pathname}`
+        btnChat.onclick = () => window.location.href = `/login.html?redirect=${window.location.pathname}`
     } else {
         const favorites = await getFavorites()
         const favEntry = favorites.find(f => f.product_id === product.id)

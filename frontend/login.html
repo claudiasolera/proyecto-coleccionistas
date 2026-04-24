@@ -68,6 +68,7 @@
 
         const form = document.getElementById('login-form');
         const errorMsg = document.getElementById('error-msg');
+        const redirect = new URLSearchParams(window.location.search).get('redirect');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault()
@@ -86,7 +87,7 @@
                 storage.setItem('userName', user.name)
                 storage.setItem('userRole', user.role)
 
-                window.location.href = 'index.html'
+                window.location.href = redirect || 'index.html'
             } catch (err) {
                 errorMsg.style.display = 'block'
                 errorMsg.innerText = err.message

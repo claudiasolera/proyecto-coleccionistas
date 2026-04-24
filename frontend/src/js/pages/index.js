@@ -79,8 +79,14 @@ function renderProducts(products) {
 
 window.handleFavorite = async (productId) => {
     const userRole = localStorage.getItem('userRole');
-    if (userRole === 'admin') return; // Seguridad extra
+    if (userRole === 'admin') return;
     
+    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
+    if (!userId) {
+        window.location.href = `/login.html?redirect=${window.location.pathname}`
+        return
+    }
+
     const fav = Array.isArray(userFavorites) ? userFavorites.find(f => f.product_id === productId) : null;
     const btn = document.querySelector(`[onclick*="window.handleFavorite('${productId}')"]`)
     

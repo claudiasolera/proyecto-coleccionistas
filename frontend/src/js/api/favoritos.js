@@ -1,10 +1,10 @@
 const API_URL = 'http://localhost:3000/api';
 
 export async function addFavorite(productId, categoryId) {
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
     if (!userId) {
-        alert('ℹ️ ACCESO DENEGADO: Por favor, identifícate en tu PERFIL para guardar tesoros.');
-        return;
+        window.location.href = `/login.html?redirect=${window.location.pathname}`
+        return
     }
 
     try {
