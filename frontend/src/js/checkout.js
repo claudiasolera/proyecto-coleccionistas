@@ -13,6 +13,7 @@ const userId = localStorage.getItem('userId');
 
 let productPrice = 0;
 let shippingPrice = 5.00;
+let productName = ''
 
 async function init() {
     if (!productId || !userId) {
@@ -23,6 +24,7 @@ async function init() {
 
     try {
         const product = await apiFetch(`/products/${productId}`);
+        productName = product.name
         productPrice = parseFloat(product.price);
 
         const statusLabels = {
@@ -73,7 +75,7 @@ btnPay.addEventListener('click', async () => {
         const session = await apiFetch('/pagos/create-checkout-session', {
             method: 'POST',
             body: JSON.stringify({
-                name: document.getElementById('product-summary').querySelector('strong').innerText,
+                name: productName,
                 price: total,
                 product_id: productId,
                 user_id: userId,

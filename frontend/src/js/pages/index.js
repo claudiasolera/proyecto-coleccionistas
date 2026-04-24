@@ -57,7 +57,7 @@ function renderProducts(products) {
                 <img src="${imgUrl}" alt="${p.name}" style="display: block; width: 100%; object-fit: cover;">
                 
                 <div class="product-card-status status-${p.status}" 
-                     style="position: absolute; top: 10px; left: 10px; margin: 0; font-size: 0.7rem; z-index: 2;">
+                    style="position: absolute; top: 10px; left: 10px; margin: 0; font-size: 0.7rem; z-index: 2;">
                     ${formatStatus(p.status)}
                 </div>
             </div>
@@ -81,7 +81,7 @@ window.handleFavorite = async (productId) => {
     const userRole = localStorage.getItem('userRole');
     if (userRole === 'admin') return; // Seguridad extra
     
-    const fav = userFavorite = Array.isArray(userFavorites) ? userFavorites.find(f => f.product_id === productId) : null;
+    const fav = Array.isArray(userFavorites) ? userFavorites.find(f => f.product_id === productId) : null;
     const btn = document.querySelector(`[onclick*="window.handleFavorite('${productId}')"]`)
     
     try {
