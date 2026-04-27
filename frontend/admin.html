@@ -160,19 +160,37 @@
 
             <!-- CATEGORÍAS -->
             <div id="category-tab" class="tab-content">
-                <h2>GESTIÓN DE CATEGORÍAS</h2>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem;">
-                    <form id="category-form">
-                        <label>Nombre:</label><input type="text" name="name" class="retro-input" required>
-                        <label>Descripción:</label><textarea name="description" class="retro-input"
-                            style="height: 60px;"></textarea>
-                        <button type="submit" class="retro-button" style="width: 100%; margin-top: 1rem;">CREAR
-                            CATEGORÍA</button>
-                    </form>
-                    <div
-                        style="background: #fff; border: 2px inset #808080; padding: 10px; height: 250px; overflow-y: auto;">
-                        <strong>Categorías existentes:</strong>
-                        <ul id="categories-list" style="margin-top: 10px;"></ul>
+                <h2>Gestión de Categorías</h2>
+                <p style="font-family: var(--font-accent); font-size: 0.8rem; margin-bottom: 1.5rem; opacity: 0.7;">
+                    SISTEMA DE CLASIFICACIÓN DE INVENTARIO</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+                    <!-- Formulario de Creación -->
+                    <div>
+                        <h3 style="font-size: 0.9rem; border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 1rem;">NUEVA CATEGORÍA</h3>
+                        <form id="category-form">
+                            <label>Nombre de la Categoría:</label>
+                            <input type="text" name="name" class="retro-input" placeholder="Ej: Consolas, Juegos..." required>
+                            
+                            <label>Descripción / Notas:</label>
+                            <textarea name="description" class="retro-input" style="height: 100px;" placeholder="Detalles sobre qué tipo de artículos incluye esta sección..."></textarea>
+                            
+                            <button type="submit" class="retro-button" style="width: 100%; background: #add8e6; margin-top: 1rem;">
+                                [ CREAR CLASIFICACIÓN ]
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Listado con Buscador -->
+                    <div>
+                        <h3 style="font-size: 0.9rem; border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 1rem;">LISTADO EXISTENTE</h3>
+                        <input type="text" id="category-list-search" class="retro-input" placeholder="Filtrar categorías..." style="margin-bottom: 0.5rem; height: 35px; font-size: 0.8rem;">
+                        
+                        <div id="categories-container" class="retro-container" style="background: #fff; padding: 10px; height: 300px; overflow-y: auto; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1);">
+                            <ul id="categories-list" style="list-style: none; padding: 0;">
+                                <!-- Se llena dinámicamente -->
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -218,11 +236,15 @@
 
         const productForm = document.getElementById('product-form');
         const categoryForm = document.getElementById('category-form');
-        const selectCategory = document.getElementById('select-category');
         const listCategory = document.getElementById('categories-list');
+        const categoryListSearch = document.getElementById('category-list-search');
         const inventoryBody = document.getElementById('inventory-body');
         const imgUpload = document.getElementById('img-upload');
         const imgPreview = document.getElementById('img-preview');
+        
+        let selectedFiles = []
+        let allCategories = []
+        let editCategoryId = null;
         
         const selectTrigger = document.getElementById('select-trigger');
         const selectedText = document.getElementById('selected-category-text');
@@ -230,9 +252,6 @@
         const selectDropdown = document.getElementById('select-dropdown');
         const selectSearch = document.getElementById('select-search');
         const selectOptions = document.getElementById('select-options');
-
-        let selectedFiles = []
-        let allCategories = []
 
         imgUpload.addEventListener('change', (e) => {
             const newFiles = Array.from(e.target.files)
@@ -303,12 +322,53 @@
             }
         });
 
+        function renderAdminCategoryList(categories) {
+            listCategory.innerHTML = categories.map(c => `
+                <li style="padding: 10px; border-bottom: 1px dashed #ccc; font-family: var(--font-accent); font-size: 0.9rem; display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold;">• ${c.name}</div>
+                        ${c.description ? `<div style="font-size: 0.75rem; opacity: 0.7; margin-top: 4px; padding-left: 15px;">${c.description}</div>` : ''}
+                    </div>
+                    <div style="display: flex; gap: 5px; flex-shrink: 0; margin-left: 10px;">
+                        <button onclick="prepareEditCategory('${c.id}', '${c.name}', '${c.description || ''}')" class="retro-button" style="padding: 2px 6px; font-size: 0.65rem; background: #fff;">EDITAR</button>
+                        <button onclick="deleteCategory('${c.id}')" class="retro-button" style="padding: 2px 6px; font-size: 0.65rem; background: #ffd0d0;">BORRAR</button>
+                    </div>
+                </li>
+            `).join('');
+            if (categories.length === 0) {
+                listCategory.innerHTML = '<li style="padding: 10px; opacity: 0.5; text-align: center;">Sin coincidencias</li>';
+            }
+        }
+
+        window.prepareEditCategory = (id, name, desc) => {
+            editCategoryId = id;
+            const form = document.getElementById('category-form');
+            form.querySelector('[name="name"]').value = name;
+            form.querySelector('[name="description"]').value = desc;
+            form.querySelector('button[type="submit"]').textContent = '[ ACTUALIZAR CATEGORÍA ]';
+            form.querySelector('button[type="submit"]').style.background = '#ffd700';
+            form.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.deleteCategory = async (id) => {
+            try {
+                const res = await apiFetch(`/categories/${id}`, { method: 'DELETE' });
+                showNotification('Categoría eliminada con éxito');
+                refreshData();
+            } catch (err) {
+                showNotification(err.message, 'error');
+            }
+        };
+
+        categoryListSearch.addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+            const filtered = allCategories.filter(c => c.name.toLowerCase().includes(search));
+            renderAdminCategoryList(filtered);
+        });
+
         async function refreshData() {
             allCategories = await apiFetch('/categories');
-            const listCat = document.getElementById('categories-list');
-            if (listCat) {
-                listCat.innerHTML = allCategories.map(c => `<li>• ${c.name}</li>`).join('');
-            }
+            renderAdminCategoryList(allCategories);
         }
 
         window.refreshInventory = async () => {
@@ -329,24 +389,40 @@
         };
 
         window.releaseStatus = async (id) => {
-            if (!confirm('¿Liberar este producto y ponerlo a la venta de nuevo?')) return;
             try {
                 await apiFetch(`/admin/${id}/status`, {
                     method: 'PUT',
                     body: JSON.stringify({ status: 'available', reserved_for: null })
                 });
+                showNotification('Producto liberado correctamente');
                 refreshInventory();
-            } catch (err) { alert(err.message); }
+            } catch (err) { 
+                showNotification(err.message, 'error');
+            }
         };
 
         categoryForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = Object.fromEntries(new FormData(categoryForm).entries());
             try {
-                await apiFetch('/categories', { method: 'POST', body: JSON.stringify(data) });
+                if (editCategoryId) {
+                    await apiFetch(`/categories/${editCategoryId}`, { 
+                        method: 'PUT', 
+                        body: JSON.stringify(data) 
+                    });
+                    showNotification('Categoría actualizada correctamente');
+                    editCategoryId = null;
+                    categoryForm.querySelector('button[type="submit"]').textContent = '[ CREAR CLASIFICACIÓN ]';
+                    categoryForm.querySelector('button[type="submit"]').style.background = '#add8e6';
+                } else {
+                    await apiFetch('/categories', { method: 'POST', body: JSON.stringify(data) });
+                    showNotification('Categoría creada correctamente');
+                }
                 categoryForm.reset();
                 refreshData();
-            } catch (err) { alert(err.message); }
+            } catch (err) { 
+                showNotification(err.message, 'error');
+            }
         });
 
         productForm.addEventListener('submit', async (e) => {
