@@ -1,5 +1,6 @@
 import { getProduct } from '../api/productos.js'
 import { addFavorite, getFavorites, removeFavorite } from '../api/favoritos.js'
+import { showNotification } from '../utils.js'
 
 // Intentamos obtener el ID de la query (?) o del hash (#)
 const params = new URLSearchParams(window.location.search)
@@ -122,16 +123,26 @@ async function loadProduct() {
         btnFav.classList.toggle('fav-active', isFav)
 
         btnFav.onclick = async () => {
-            if (isFav) {
-                await removeFavorite(favEntry.id)
-                isFav = false
-                btnFav.textContent = '♡ Añadir a Favoritos'
-                btnFav.classList.remove('fav-active')
-            } else {
-                await addFavorite(product.id)
-                isFav = true
-                btnFav.textContent = '♥ En Favoritos'
-                btnFav.classList.add('fav-active')
+            try {
+                if (isFav) {
+                    const favorites = await getFavorites();
+                    const currentFav = favorites.find(f => f.product_id === product.id);
+                    if (currentFav) {
+                        await removeFavorite(currentFav.id);
+                        isFav = false;
+                        btnFav.textContent = '♡ Añadir a Favoritos';
+                        btnFav.classList.remove('fav-active');
+                        showNotification('Quitado de favoritos', 'success');
+                    }
+                } else {
+                    await addFavorite(product.id);
+                    isFav = true;
+                    btnFav.textContent = '♥ En Favoritos';
+                    btnFav.classList.add('fav-active');
+                    showNotification('Añadido a favoritos', 'success');
+                }
+            } catch (err) {
+                showNotification('Error en el archivo: ' + err.message, 'error');
             }
         }
 
@@ -143,8 +154,8 @@ async function loadProduct() {
             btnBuy.innerText = 'PRODUCTO VENDIDO';
         } else if (product.status === 'reserved') {
             if (userId === product.reserved_for) {
-                btnBuy.innerText = 'COMPRAR MI RESERVA';
-                btnBuy.style.background = 'var(--clr-primary)';
+                btnBuy.innerText = '🛒 COMPRAR MI RESERVA';
+                btnBuy.style.background = '#90ee90';
                 btnBuy.onclick = () => location.href = `checkout.html?id=${product.id}`;
             } else {
                 btnBuy.disabled = true;

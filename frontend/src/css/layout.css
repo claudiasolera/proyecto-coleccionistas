@@ -30,18 +30,26 @@
     grid-template-columns: 1fr 1.2fr;
     gap: 3rem;
     padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
     align-items: start;
 }
 
-.product-gallery {
+.product-gallery > .carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5; /* Gris muy suave para dar profundidad */
+    border: var(--border-width) solid var(--clr-border);
+    box-shadow: var(--shadow-retro);
+    height: 500px; /* Altura más equilibrada */
+    position: relative;
     overflow: hidden;
-    min-width: 0;
 }
 
 .product-gallery > .carousel img#main-image {
-    width: 100%;
-    border: var(--border-width) solid var(--clr-border);
-    box-shadow: var(--shadow-retro);
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Evita que se corte la imagen */
+    display: block;
 }

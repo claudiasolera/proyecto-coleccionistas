@@ -106,14 +106,14 @@ window.handleFavorite = async (productId) => {
                 btn.innerHTML = '♡'
                 btn.style.color = 'inherit'
             }
-            showNotification('Elemento retirado del archivo', 'success')
+            showNotification('Quitado de favoritos', 'success')
         } else {
             await addFavorite(productId)
             if (btn) {
                 btn.innerHTML = '♥'
                 btn.style.color = '#d63031'
             }
-            showNotification('Objeto archivado correctamente', 'success')
+            showNotification('Añadido a favoritos', 'success')
         }
         
         userFavorites = await getFavorites()
@@ -149,10 +149,10 @@ btnFavCategory.addEventListener('click', async () => {
     try {
         if (fav) {
             await removeFavorite(fav.id)
-            showNotification('Categoría retirada del índice', 'success')
+            showNotification('Quitado de favoritos', 'success')
         } else {
             await addFavorite(null, catId)
-            showNotification('Colección guardada en favoritos', 'success')
+            showNotification('Añadido a favoritos', 'success')
         }
 
         userFavorites = await getFavorites()
