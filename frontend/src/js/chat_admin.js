@@ -92,7 +92,7 @@ async function loadHistory(userId) {
                 }
 
                 productHtml = `
-                    <div class="chat-product-card" onclick="window.open('producto.html?id=${p.id}', '_blank')" title="Ver ficha del tesoro">
+                    <div class="chat-product-card" onclick="window.open('producto.html#id=${p.id}', '_blank')" title="Ver ficha del tesoro">
                         <div class="chat-product-card-title" style="font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 6px;">
                             ARCHIVO: ${p.name.toUpperCase()}
                         </div>

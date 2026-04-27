@@ -38,24 +38,48 @@ async function init() {
         searchInput.addEventListener('input', (e) => renderProductList(e.target.value));
     }
 
-    // --- AUTO-ENVÍO DESDE FICHA DE PRODUCTO ---
+    // --- AUTO-ENVÍO DESDE FICHA DE PRODUCTO (Soporte dual ? y #) ---
     const params = new URLSearchParams(window.location.search);
-    const productId = params.get('productId');
+    let productId = params.get('productId');
+
+    if (!productId && window.location.hash) {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        productId = hashParams.get('productId');
+    }
+
     if (productId) {
-        // Limpiamos la URL para evitar re-envíos al refrescar
-        window.history.replaceState({}, document.title, window.location.pathname);
-        autoAttachProduct(productId);
+        setTimeout(() => autoAttachProduct(productId), 1000);
     }
 }
 
 async function autoAttachProduct(pId) {
+    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+    
     try {
         const p = await apiFetch(`/products/${pId}`);
         if (p && !p.error) {
-            await window.sendProduct(p.id, p.name);
+            const res = await fetch('http://localhost:3000/api/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sender_id: userId,
+                    receiver_id: 'admin',
+                    text: 'CONSULTA DE ARTÍCULO',
+                    product_id: p.id
+                })
+            });
+
+            if (res.ok) {
+                loadHistory();
+                window.history.replaceState({}, document.title, window.location.pathname);
+                showNotification('Consulta enviada correctamente', 'success');
+            } else {
+                throw new Error("Respuesta del servidor no OK");
+            }
         }
     } catch (err) {
         console.error("Error en auto-envío:", err);
+        showNotification('Fallo al enviar consulta automática', 'error');
     }
 }
 
@@ -71,7 +95,7 @@ async function loadHistory() {
             if (m.products) {
                 const p = m.products;
                 productHtml = `
-                    <div class="chat-product-card" onclick="location.href='producto.html?id=${p.id}'" title="Ver ficha del tesoro">
+                    <div class="chat-product-card" onclick="location.href='producto.html#id=${p.id}'" title="Ver ficha del tesoro">
                         <div class="chat-product-card-title" style="font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 6px;">
                             ARCHIVO: ${p.name.toUpperCase()}
                         </div>

@@ -146,7 +146,7 @@ async function loadProduct() {
             }
         }
 
-        btnChat.onclick = () => location.href = `chat.html?productId=${product.id}`;
+        btnChat.onclick = () => location.href = `chat.html#productId=${product.id}`;
 
         if (product.status === 'sold') {
             btnBuy.disabled = true;
