@@ -78,27 +78,34 @@ async function renderTab() {
                     const imgUrl = p.product_images?.[0]?.url || 'https://via.placeholder.com/150';
                     const article = document.createElement('article');
                     article.className = 'product-card';
-                    article.onclick = () => location.href = `producto.html?id=${p.id}`;
+                    article.style.display = 'flex';
+                    article.style.flexDirection = 'column';
+                    article.style.minHeight = '100%';
                     article.innerHTML = `
-                        <div style="position: relative; width: 100%; border-bottom: 2px solid #000;">
+                        <a href="/src/pages/producto.html#id=${p.id}" style="display: block; position: relative; width: 100%; border-bottom: 2px solid #000; text-decoration: none; color: inherit;">
                             <img src="${imgUrl}" alt="${p.name}" style="display: block; width: 100%; object-fit: cover;">
                             <!-- Badge de Estado -->
                             <div class="product-card-status status-${p.status}" 
                                  style="position: absolute; top: 10px; left: 10px; margin: 0; font-size: 0.7rem; z-index: 2;">
                                 ${formatStatus(p.status)}
                             </div>
-                        </div>
+                        </a>
 
-                        <div class="product-card-body" style="padding: 15px; flex: 1; display: flex; flex-direction: column;">
-                            <h2 class="product-card-title" style="margin-bottom: 5px;">${p.name}</h2>
-                            <p class="product-card-price" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 15px;">${Number(p.price).toFixed(2)} €</p>
+                        <div class="product-card-body" style="padding: 15px; flex: 1; display: flex; flex-direction: column; min-height: 140px;">
+                            <h2 class="product-card-title" style="margin-bottom: 5px; font-size: 1rem; line-height: 1.2;">${p.name}</h2>
                             
-                            <div style="display: flex; gap: 8px; margin-top: auto;">
-                                <button class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 12px;">
+                            <div style="flex: 1; display: flex; align-items: center;">
+                                <p class="product-card-price" style="font-weight: bold; font-size: 1.2rem; color: var(--clr-accent); margin: 0;">
+                                    ${Number(p.price).toFixed(2)} €
+                                </p>
+                            </div>
+                            
+                            <div style="display: flex; gap: 8px; margin-top: 10px; align-items: stretch;">
+                                <a href="/src/pages/producto.html#id=${p.id}" class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 0; height: 44px; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
                                     VER DETALLES
-                                </button>
+                                </a>
                                 <button class="retro-button" 
-                                        style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #d63031; padding: 0;"
+                                        style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #d63031; padding: 0; flex-shrink: 0; box-sizing: border-box;"
                                         onclick="event.stopPropagation(); window.removeFavorite('${fav.id}')">
                                     ♥
                                 </button>
@@ -116,23 +123,27 @@ async function renderTab() {
                 if (c) {
                     const article = document.createElement('article');
                     article.className = 'product-card';
-                    article.style.cursor = 'pointer';
-                    article.onclick = () => location.href = `../../index.html?category=${c.id}`;
+                    article.style.display = 'flex';
+                    article.style.flexDirection = 'column';
+                    article.style.minHeight = '100%';
                     article.innerHTML = `
-                        <div style="height: 250px; background: #fcfcfc; display: flex; align-items: center; justify-content: center; border-bottom: 2px solid #000; position: relative;">
+                        <div onclick="window.goToCategory('${c.id}')" style="cursor: pointer; height: 250px; background: #fcfcfc; display: flex; align-items: center; justify-content: center; border-bottom: 2px solid #000; position: relative; text-decoration: none;">
                             <span style="font-size: 6rem; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1));">📁</span>
                             <div class="product-card-status status-available" style="position: absolute; top: 10px; left: 10px;">CATEGORÍA</div>
                         </div>
-                        <div class="product-card-body" style="padding: 15px; flex: 1; display: flex; flex-direction: column;">
-                            <h2 class="product-card-title" style="margin-bottom: 5px;">${c.name}</h2>
-                            <p class="product-card-price" style="font-size: 0.8rem; height: 1.2rem; margin-bottom: 15px;">Colección Completa</p>
+                        <div class="product-card-body" style="padding: 15px; flex: 1; display: flex; flex-direction: column; min-height: 140px;">
+                            <h2 class="product-card-title" style="margin-bottom: 5px; font-size: 1rem; line-height: 1.2;">${c.name}</h2>
                             
-                            <div style="display: flex; gap: 8px; margin-top: auto;">
-                                <button class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 12px;">
+                            <div style="flex: 1; display: flex; align-items: center;">
+                                <p class="product-card-price" style="font-size: 0.8rem; margin: 0; color: #666;">Colección Completa</p>
+                            </div>
+                            
+                            <div style="display: flex; gap: 8px; margin-top: 10px; align-items: stretch;">
+                                <button onclick="window.goToCategory('${c.id}')" class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 0; height: 44px; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
                                     VER COLECCIÓN
                                 </button>
                                 <button class="retro-button" 
-                                        style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #d63031; padding: 0;"
+                                        style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #d63031; padding: 0; flex-shrink: 0; box-sizing: border-box;"
                                         onclick="event.stopPropagation(); window.removeFavorite('${fav.id}')">
                                     ♥
                                 </button>
@@ -168,6 +179,10 @@ window.removeFavorite = async (id) => {
     } catch (err) {
         showNotification('ERROR AL RETIRAR ELEMENTO: ' + err.message, 'error');
     }
+};
+window.goToCategory = (id) => {
+    localStorage.setItem('filterCategory', id);
+    location.href = '/index.html';
 };
 
 loadFavorites();

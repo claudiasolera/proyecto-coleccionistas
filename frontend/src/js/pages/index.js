@@ -203,15 +203,28 @@ btnClear.addEventListener('click', () => {
 async function init() {
     userFavorites = await getFavorites()
     
-    // Leer parámetros de la URL
-    const params = new URLSearchParams(window.location.search)
-    const categoryParam = params.get('category')
+    // 1. Mirar si venimos de Favoritos con una categoría guardada (Navegación Invisible)
+    let categoryParam = localStorage.getItem('filterCategory')
+    if (categoryParam) {
+        localStorage.removeItem('filterCategory') // Limpiamos para que no se repita
+    } else {
+        // Fallback: Leer de la URL solo si es necesario (aunque el usuario prefiere URL limpia)
+        const params = new URLSearchParams(window.location.search)
+        categoryParam = params.get('category')
+        if (!categoryParam && window.location.hash) {
+            const hashParams = new URLSearchParams(window.location.hash.substring(1))
+            categoryParam = hashParams.get('category')
+        }
+    }
 
     await loadCategories()
     
     if (categoryParam) {
         selectCategory.value = categoryParam
         await loadProducts({ category: categoryParam })
+        
+        // Si venía por URL (raro ahora), limpiamos la barra
+        window.history.replaceState({}, document.title, window.location.pathname);
     } else {
         await loadProducts()
     }
