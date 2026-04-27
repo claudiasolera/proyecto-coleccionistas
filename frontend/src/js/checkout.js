@@ -6,9 +6,14 @@ const shippingCostLabel = document.getElementById('shipping-cost');
 const btnPay = document.getElementById('btn-pay');
 const shippingForm = document.getElementById('shipping-form');
 
-// Obtener ID del producto desde la URL
+// Obtener ID del producto desde la URL (Soporte dual ? y # para evitar borrados del servidor)
 const urlParams = new URLSearchParams(window.location.search);
-const productId = urlParams.get('id');
+let productId = urlParams.get('id');
+
+if (!productId && window.location.hash) {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    productId = hashParams.get('id');
+}
 const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
 
 let productPrice = 0;

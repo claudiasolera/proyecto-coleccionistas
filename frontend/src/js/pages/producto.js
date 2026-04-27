@@ -156,14 +156,14 @@ async function loadProduct() {
             if (userId === product.reserved_for) {
                 btnBuy.innerText = '🛒 COMPRAR MI RESERVA';
                 btnBuy.style.background = '#90ee90';
-                btnBuy.onclick = () => location.href = `checkout.html?id=${product.id}`;
+                btnBuy.onclick = () => location.href = `checkout.html#id=${product.id}`;
             } else {
                 btnBuy.disabled = true;
                 btnBuy.style.background = 'orange';
                 btnBuy.innerText = 'PRODUCTO RESERVADO';
             }
         } else {
-            btnBuy.onclick = () => location.href = `checkout.html?id=${product.id}`;
+            btnBuy.onclick = () => location.href = `checkout.html#id=${product.id}`;
         }
     }
 
