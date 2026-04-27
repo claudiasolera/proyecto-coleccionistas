@@ -10,7 +10,7 @@ const closeModal = document.getElementById('close-modal');
 const productListAttach = document.getElementById('product-list-attach');
 const searchInput = document.getElementById('search-product-attach');
 
-const userId = localStorage.getItem('userId');
+const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
 
 let allProducts = [];
 let favIds = new Set();
@@ -137,7 +137,7 @@ function renderProductList(query = '') {
 
         return `
             <div class="product-select-item" onclick="sendProduct('${p.id}', '${p.name}')" 
-                 style="${isFav ? 'border-left: 5px solid #d63031;' : ''}">
+                style="${isFav ? 'border-left: 5px solid #d63031;' : ''}">
                 <div style="display: flex; align-items: center;">
                     ${favStar}
                     <span style="font-family: var(--font-accent);">
