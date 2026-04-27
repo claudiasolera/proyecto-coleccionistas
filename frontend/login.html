@@ -21,8 +21,13 @@
 
     <main style="flex: 1; display: flex; align-items: center; justify-content: center;">
         <div class="retro-container" style="max-width: 400px; width: 100%;">
-            <div style="background: var(--clr-primary); color: #fff; padding: 5px 10px; margin: -1.5rem -1.5rem 1.5rem -1.5rem; font-weight: bold;">
-                LOGIN_SESSION.EXE
+            <div class="retro-titlebar">
+                <span>LOGIN_SESSION.EXE</span>
+                <div class="retro-titlebar-buttons">
+                    <button class="win-button" style="padding-bottom:4px;">_</button>
+                    <button class="win-button">口</button>
+                    <button class="win-button" style="font-weight:bold;">X</button>
+                </div>
             </div>
             
             <form id="login-form">
@@ -33,8 +38,11 @@
                 <input type="password" id="password" class="retro-input" required placeholder="********">
                 
                 <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.75rem;">
-                    <input type="checkbox" id="remember" name="remember">
-                    <label for="remember" style="font-family: var(--font-accent); font-size:0.85rem;">RECORDARME</label>
+                    <input type="checkbox" id="remember" name="remember" 
+                        style="width:16px; height:16px; border:2px solid #000; accent-color:var(--clr-primary); cursor:pointer;">
+                    <label for="remember" style="font-family:var(--font-accent); font-size:0.85rem; cursor:pointer; text-transform:uppercase;">
+                        Recordarme
+                    </label>
                 </div>
 
                 <p style="text-align:right; margin-top:0.5rem;">
