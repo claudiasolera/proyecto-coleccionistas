@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>VERIFICANDO - El Bazar</title>
+    <link rel="stylesheet" href="src/css/variables.css">
+    <link rel="stylesheet" href="src/css/layout.css">
+    <link rel="stylesheet" href="src/css/components.css">
+</head>
+<body style="display:flex; flex-direction:column; min-height:100vh;">
+
+    <header class="site-header">
+        <h1 class="site-title">Tienda de Coleccionistas</h1>
+    </header>
+
+    <main style="flex:1; display:flex; align-items:center; justify-content:center;">
+        <div class="retro-container" style="max-width:400px; width:100%; text-align:center;">
+            <div style="background:var(--clr-primary); color:#fff; padding:5px 10px; margin:-1.5rem -1.5rem 1.5rem -1.5rem; font-weight:bold; font-family:var(--font-accent);">
+                VERIFICAR_EMAIL.EXE
+            </div>
+            <p id="message" style="font-family:var(--font-accent); margin-bottom:1.5rem;">
+                Verificando tu cuenta...
+            </p>
+            <a href="/login.html" class="retro-button" style="display:inline-block;">
+                IR AL LOGIN
+            </a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>© 2026 EL BAZAR DEL COLECCIONISTA - BUSCANDO TESOROS DESDE 1990</p>
+    </footer>
+
+    <script type="module">
+        const token = new URLSearchParams(window.location.search).get('token')
+        const message = document.getElementById('message')
+
+        if (!token) {
+            message.innerText = '[ERROR] Token no encontrado.'
+        } else {
+            fetch(`/api/users/verify-email?token=${token}`)
+                .then(res => {
+                    if (res.ok || res.redirected) {
+                        message.style.color = 'var(--clr-success)'
+                        message.innerText = '[OK] Email verificado. Ya puedes iniciar sesión.'
+                    } else {
+                        return res.json().then(data => {
+                            throw new Error(data.message)
+                        })
+                    }
+                })
+                .catch(err => {
+                    message.style.color = 'red'
+                    message.innerText = '[ERROR] ' + (err.message || 'Token inválido o expirado.')
+                })
+        }
+    </script>
+</body>
+</html>

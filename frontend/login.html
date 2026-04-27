@@ -69,6 +69,13 @@
         const form = document.getElementById('login-form');
         const errorMsg = document.getElementById('error-msg');
         const redirect = new URLSearchParams(window.location.search).get('redirect');
+        const verified = new URLSearchParams(window.location.search).get('verified')
+        if (verified) {
+            const msg = document.getElementById('error-msg')
+            msg.style.color = 'var(--clr-success)'
+            msg.style.display = 'block'
+            msg.innerText = '[OK] Email verificado. Ya puedes entrar.'
+        }
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault()

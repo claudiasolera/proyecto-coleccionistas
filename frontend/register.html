@@ -58,6 +58,8 @@
                 <label>Dirección de Envío:</label>
                 <input type="text" name="address" class="retro-input" required>
 
+                <p id="register-error" style="color:red; font-size:0.8rem; margin-top:0.5rem; display:none; font-family:var(--font-accent);"></p>
+
                 <button type="submit" class="retro-button" style="width: 100%; margin-top: 1.5rem;">
                     FINALIZAR REGISTRO
                 </button>
@@ -83,22 +85,43 @@
             e.preventDefault();
             const data = Object.fromEntries(new FormData(form).entries());
 
-            if (!validators.email(data.email)) return alert('Email no válido');
-            if (!validators.phone(data.phone)) return alert('Teléfono debe tener 9 dígitos');
+            if (!validators.email(data.email)) {
+                const err = document.getElementById('register-error')
+                err.style.display = 'block'
+                err.innerText = 'Email no válido.'
+                return
+            }
+            if (!validators.phone(data.phone)) {
+                const err = document.getElementById('register-error')
+                err.style.display = 'block'
+                err.innerText = 'El teléfono debe tener 9 dígitos.'
+                return
+            }
 
             try {
-                const user = await apiFetch('/users/register', {
+                await apiFetch('/users/register', {
                     method: 'POST',
                     body: JSON.stringify(data)
                 });
 
-                localStorage.setItem('userId', user.id);
-                localStorage.setItem('userName', user.name);
-                localStorage.setItem('userRole', user.role || 'user');
-
-                window.location.href = 'index.html';
+                form.innerHTML = `
+                    <div style="text-align:center; padding:2rem;">
+                        <p style="font-family:var(--font-accent); font-size:1.1rem; color:var(--clr-success); margin-bottom:1rem;">
+                            [OK] REGISTRO COMPLETADO
+                        </p>
+                        <p style="font-family:var(--font-accent); font-size:0.85rem; color:#555; margin-bottom:1.5rem;">
+                            Hemos enviado un email de verificación a <strong>${data.email}</strong>.<br>
+                            Verifica tu cuenta antes de iniciar sesión.
+                        </p>
+                        <a href="/login.html" class="retro-button" style="display:inline-block;">
+                            IR AL LOGIN
+                        </a>
+                    </div>
+                `
             } catch (err) {
-                alert('Error al registrar: ' + err.message);
+                const errorEl = document.getElementById('register-error')
+                errorEl.style.display = 'block'
+                errorEl.innerText = 'Error: ' + err.message
             }
         });
     </script>
