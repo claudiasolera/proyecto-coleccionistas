@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>GESTIÓN - El Bazar</title>
@@ -7,18 +8,74 @@
     <link rel="stylesheet" href="src/css/layout.css">
     <link rel="stylesheet" href="src/css/components.css">
     <style>
-        .tabs-container { display: flex; gap: 5px; margin-bottom: -2px; padding-left: 1rem; }
-        .tab-button { padding: 10px 20px; background: #d0d0d0; border: 2px solid #000; border-bottom: none; cursor: pointer; font-family: var(--font-accent); font-weight: bold; text-transform: uppercase; border-radius: 10px 10px 0 0; transition: 0.2s; }
-        .tab-button.active { background: var(--clr-bg); padding-top: 15px; margin-top: -5px; box-shadow: none; position: relative; z-index: 2; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .stock-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-        .stock-table th, .stock-table td { border: 1px solid #000; padding: 8px; text-align: left; }
-        .stock-table tr:nth-child(even) { background: #f0f0f0; }
+        .tabs-container {
+            display: flex;
+            gap: 5px;
+            margin-bottom: -2px;
+            padding-left: 1rem;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background: #d0d0d0;
+            border: 2px solid #000;
+            border-bottom: none;
+            cursor: pointer;
+            font-family: var(--font-accent);
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 10px 10px 0 0;
+            transition: 0.2s;
+        }
+
+        .tab-button.active {
+            background: var(--clr-bg);
+            padding-top: 15px;
+            margin-top: -5px;
+            box-shadow: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .stock-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .stock-table th,
+        .stock-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .stock-table tr:nth-child(even) {
+            background: #f0f0f0;
+        }
     </style>
 </head>
-<body style="background: #808080;">
+
+<body style="background: var(--clr-bg);">
 
     <header class="site-header">
         <h1 class="site-title">Tienda de Coleccionistas</h1>
@@ -30,37 +87,74 @@
 
     <script type="module" src="src/js/header.js"></script>
 
-    <main style="max-width: 1000px; margin: 3rem auto; padding: 0 1rem;">
-        
+    <main style="width: 100%; padding: 2rem; margin: 0;">
+
         <div class="tabs-container">
             <button class="tab-button active" onclick="showTab('product-tab', this)">📦 PRODUCTOS</button>
             <button class="tab-button" onclick="showTab('category-tab', this)">🏷️ CATEGORÍAS</button>
-            <button class="tab-button" onclick="showTab('inventory-tab', this); refreshInventory();">📜 INVENTARIO</button>
+            <button class="tab-button" onclick="showTab('inventory-tab', this); refreshInventory();">📜
+                INVENTARIO</button>
         </div>
 
-        <div class="retro-container" style="border-top-left-radius: 0; position: relative; z-index: 1; min-height: 500px;">
-            
+        <div class="retro-container"
+            style="border-top-left-radius: 0; position: relative; z-index: 1; min-height: 500px;">
+
             <!-- PRODUCTOS -->
             <div id="product-tab" class="tab-content active">
-                <h2>ALTA DE NUEVO ARTÍCULO</h2>
+                <h2>Alta de Nuevo Artículo</h2>
+                <p style="font-family: var(--font-accent); font-size: 0.8rem; margin-bottom: 1.5rem; opacity: 0.7;">
+                    REGISTRO DE MERCANCÍA EN EL SISTEMA CENTRAL</p>
+
                 <form id="product-form" style="margin-top: 1rem;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                         <div>
-                            <label>Nombre:</label><input type="text" name="name" class="retro-input" required>
-                            <label>Marca:</label><input type="text" name="brand" class="retro-input">
-                            <label>Precio (€):</label><input type="number" step="0.01" name="price" class="retro-input" required>
+                            <label>Nombre del Objeto:</label>
+                            <input type="text" name="name" class="retro-input" placeholder="Ej: Figura Kenner 1977"
+                                required>
+
+                            <label>Marca / Fabricante:</label>
+                            <input type="text" name="brand" class="retro-input" placeholder="Ej: Hasbro, Mattel...">
+
+                            <label>Precio de Venta (€):</label>
+                            <input type="number" step="0.01" name="price" class="retro-input" placeholder="0.00"
+                                required>
                         </div>
                         <div>
-                            <label>Categoría:</label><select id="select-category" name="category_id" class="retro-input" required></select>
-                            <label>Año:</label><input type="text" name="year" class="retro-input">
-                            <label>Medidas:</label><input type="text" name="dimensions" class="retro-input">
+                            <label>Categoría:</label>
+                            <div class="searchable-select" style="position: relative;">
+                                <div id="select-trigger" class="retro-input" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; height: 38px; padding-top: 0; padding-bottom: 0;">
+                                    <span id="selected-category-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Seleccionar categoría...</span>
+                                    <span style="font-size: 0.7rem; margin-left: 10px;">▼</span>
+                                </div>
+                                <input type="hidden" name="category_id" id="category-id-hidden" required>
+                                <div id="select-dropdown" class="retro-container" style="position: absolute; top: 100%; left: 0; width: 100%; z-index: 100; display: none; padding: 5px; margin-top: 2px; background: #fff;">
+                                    <input type="text" id="select-search" class="retro-input" placeholder="Escribe para filtrar..." autocomplete="off" style="margin-bottom: 5px; height: 30px; font-size: 0.8rem; width: 100%;">
+                                    <div id="select-options" style="max-height: 200px; overflow-y: auto;">
+                                        <!-- Opciones dinámicas -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <label>Año de Lanzamiento:</label>
+                            <input type="text" name="year" class="retro-input" placeholder="Ej: 1985">
+
+                            <label>Medidas / Dimensiones:</label>
+                            <input type="text" name="dimensions" class="retro-input" placeholder="Ej: 15cm x 10cm">
                         </div>
                     </div>
-                    <label>Descripción:</label><textarea name="description" class="retro-input" style="height: 60px;"></textarea>
-                    <label>Imágenes del producto:</label>
+
+                    <label>Descripción del Estado y Detalles:</label>
+                    <textarea name="description" class="retro-input" style="height: 100px;"
+                        placeholder="Describe el estado de conservación, rareza o cualquier detalle relevante..."></textarea>
+
+                    <label>Archivos Gráficos (Imágenes):</label>
                     <input type="file" name="images" id="img-upload" class="retro-input" multiple accept="image/*">
                     <div id="img-preview" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.5rem;"></div>
-                    <button type="submit" class="retro-button" style="width: 100%; background: #90ee90; margin-top: 1rem;">PUBLICAR</button>
+
+                    <button type="submit" class="retro-button"
+                        style="width: 100%; background: #90ee90; margin-top: 1rem; padding: 1rem; font-size: 1.1rem;">
+                        [ PUBLICAR EN EL CATÁLOGO ]
+                    </button>
                 </form>
             </div>
 
@@ -70,10 +164,13 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem;">
                     <form id="category-form">
                         <label>Nombre:</label><input type="text" name="name" class="retro-input" required>
-                        <label>Descripción:</label><textarea name="description" class="retro-input" style="height: 60px;"></textarea>
-                        <button type="submit" class="retro-button" style="width: 100%; margin-top: 1rem;">CREAR CATEGORÍA</button>
+                        <label>Descripción:</label><textarea name="description" class="retro-input"
+                            style="height: 60px;"></textarea>
+                        <button type="submit" class="retro-button" style="width: 100%; margin-top: 1rem;">CREAR
+                            CATEGORÍA</button>
                     </form>
-                    <div style="background: #fff; border: 2px inset #808080; padding: 10px; height: 250px; overflow-y: auto;">
+                    <div
+                        style="background: #fff; border: 2px inset #808080; padding: 10px; height: 250px; overflow-y: auto;">
                         <strong>Categorías existentes:</strong>
                         <ul id="categories-list" style="margin-top: 10px;"></ul>
                     </div>
@@ -83,7 +180,8 @@
             <!-- INVENTARIO -->
             <div id="inventory-tab" class="tab-content">
                 <h2>INVENTARIO Y STOCK</h2>
-                <div style="margin-top: 1rem; background: #fff; border: 2px inset #808080; max-height: 400px; overflow-y: auto;">
+                <div
+                    style="margin-top: 1rem; background: #fff; border: 2px inset #808080; max-height: 400px; overflow-y: auto;">
                     <table class="stock-table">
                         <thead>
                             <tr>
@@ -95,7 +193,8 @@
                         <tbody id="inventory-body"></tbody>
                     </table>
                 </div>
-                <p style="font-size: 0.7rem; color: #444; margin-top: 10px;">* Para reservar a un coleccionista específico, usa el botón de reserva dentro de los CHATS.</p>
+                <p style="font-size: 0.7rem; color: #444; margin-top: 10px;">* Para reservar a un coleccionista
+                    específico, usa el botón de reserva dentro de los CHATS.</p>
             </div>
 
         </div>
@@ -103,11 +202,12 @@
 
     <footer class="site-footer">
         <p>© 2026 EL BAZAR DEL COLECCIONISTA - BUSCANDO TESOROS DESDE 1990</p>
-        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">Terminal: COLEC_SYS_V2.0.1 | Conectado vía RT-Modem</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">Terminal: COLEC_SYS_V2.0.1 | Conectado vía
+            RT-Modem</p>
     </footer>
 
     <script type="module">
-        import { apiFetch } from './src/js/utils.js';
+        import { apiFetch, showNotification } from './src/js/utils.js';
 
         window.showTab = (tabId, btn) => {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -123,8 +223,16 @@
         const inventoryBody = document.getElementById('inventory-body');
         const imgUpload = document.getElementById('img-upload');
         const imgPreview = document.getElementById('img-preview');
+        
+        const selectTrigger = document.getElementById('select-trigger');
+        const selectedText = document.getElementById('selected-category-text');
+        const categoryIdHidden = document.getElementById('category-id-hidden');
+        const selectDropdown = document.getElementById('select-dropdown');
+        const selectSearch = document.getElementById('select-search');
+        const selectOptions = document.getElementById('select-options');
 
         let selectedFiles = []
+        let allCategories = []
 
         imgUpload.addEventListener('change', (e) => {
             const newFiles = Array.from(e.target.files)
@@ -155,10 +263,52 @@
             renderPreview()
         }
 
+        function renderSelectOptions(categories) {
+            selectOptions.innerHTML = categories.map(c => `
+                <div style="padding: 8px; cursor: pointer; border-bottom: 1px dashed #ccc; font-family: var(--font-accent); font-size: 0.9rem;"
+                     onclick="setCategory('${c.id}', '${c.name}')">
+                    ${c.name}
+                </div>
+            `).join('');
+            if (categories.length === 0) {
+                selectOptions.innerHTML = '<div style="padding: 8px; opacity: 0.5;">No hay resultados</div>';
+            }
+        }
+
+        window.setCategory = (id, name) => {
+            selectedText.textContent = name;
+            categoryIdHidden.value = id;
+            selectDropdown.style.display = 'none';
+            selectSearch.value = '';
+        };
+
+        selectTrigger.addEventListener('click', () => {
+            const isVisible = selectDropdown.style.display === 'block';
+            selectDropdown.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
+                renderSelectOptions(allCategories);
+                selectSearch.focus();
+            }
+        });
+
+        selectSearch.addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+            const filtered = allCategories.filter(c => c.name.toLowerCase().includes(search));
+            renderSelectOptions(filtered);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!selectTrigger.contains(e.target) && !selectDropdown.contains(e.target)) {
+                selectDropdown.style.display = 'none';
+            }
+        });
+
         async function refreshData() {
-            const categories = await apiFetch('/categories');
-            selectCategory.innerHTML = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-            listCategory.innerHTML = categories.map(c => `<li>• ${c.name}</li>`).join('');
+            allCategories = await apiFetch('/categories');
+            const listCat = document.getElementById('categories-list');
+            if (listCat) {
+                listCat.innerHTML = allCategories.map(c => `<li>• ${c.name}</li>`).join('');
+            }
         }
 
         window.refreshInventory = async () => {
@@ -170,9 +320,9 @@
                         ${p.status.toUpperCase()}
                     </td>
                     <td>
-                        ${p.status === 'reserved' ? 
-                            `<button onclick="releaseStatus('${p.id}')" class="retro-button" style="font-size:0.6rem; padding: 2px 5px; background: #90ee90;">LIBERAR</button>` 
-                            : '--'}
+                        ${p.status === 'reserved' ?
+                    `<button onclick="releaseStatus('${p.id}')" class="retro-button" style="font-size:0.6rem; padding: 2px 5px; background: #90ee90;">LIBERAR</button>`
+                    : '--'}
                     </td>
                 </tr>
             `).join('');
@@ -192,36 +342,50 @@
         categoryForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = Object.fromEntries(new FormData(categoryForm).entries());
-            try { 
-                await apiFetch('/categories', { method: 'POST', body: JSON.stringify(data) }); 
-                categoryForm.reset(); 
-                refreshData(); 
+            try {
+                await apiFetch('/categories', { method: 'POST', body: JSON.stringify(data) });
+                categoryForm.reset();
+                refreshData();
             } catch (err) { alert(err.message); }
         });
 
         productForm.addEventListener('submit', async (e) => {
             e.preventDefault()
-            
+
             const formData = new FormData(productForm)
-            
+
+            // Validación manual de categoría
+            if (!categoryIdHidden.value) {
+                showNotification('Debes seleccionar una categoría del listado', 'error');
+                return;
+            }
+
             try {
                 const res = await fetch('http://localhost:3000/api/admin', {
                     method: 'POST',
                     body: formData
                 })
-                
-                if (!res.ok) throw new Error('Error al publicar')
-                
-                alert('¡Publicado!')
+
+                if (!res.ok) {
+                    const errData = await res.json();
+                    throw new Error(errData.message || 'Error al publicar');
+                }
+
+                // Producto publicado con éxito
+                showNotification('Producto publicado correctamente');
                 productForm.reset()
+                selectedText.textContent = 'Seleccionar categoría...';
+                categoryIdHidden.value = '';
                 selectedFiles = []
                 imgPreview.innerHTML = ''
             } catch (err) {
-                alert(err.message)
+                console.error(err.message)
+                showNotification(err.message, 'error');
             }
         })
 
         refreshData();
     </script>
 </body>
+
 </html>

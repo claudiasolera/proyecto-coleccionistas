@@ -8,14 +8,26 @@ const upload = multer({ storage: multer.memoryStorage() })
 router.post('/', upload.array('images', 10), async (req, res) => {
     const { name, description, price, category_id, brand, year, dimensions } = req.body
 
+    const yearInt = parseInt(year);
+    const priceFloat = parseFloat(price);
+
+    // Limpiar campos vacíos y validar tipos para evitar errores en BD
+    const sanitizedData = {
+        name,
+        description: description || null,
+        price: !isNaN(priceFloat) ? priceFloat : 0,
+        category_id,
+        brand: brand || null,
+        year: !isNaN(yearInt) ? yearInt : null,
+        dimensions: dimensions || null,
+        status: 'available',
+        published_at: new Date()
+    }
+
     try {
         const { data: product, error: pError } = await supabase
             .from('products')
-            .insert([{ 
-                name, description, price, category_id, brand, year, dimensions,
-                status: 'available',
-                published_at: new Date()
-            }])
+            .insert([sanitizedData])
             .select()
             .single()
 
