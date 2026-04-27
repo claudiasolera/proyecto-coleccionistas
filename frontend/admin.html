@@ -94,6 +94,7 @@
             <button class="tab-button" onclick="showTab('category-tab', this)">🏷️ CATEGORÍAS</button>
             <button class="tab-button" onclick="showTab('inventory-tab', this); refreshInventory();">📜
                 INVENTARIO</button>
+            <button class="tab-button" onclick="showTab('shipping-tab', this); refreshShipping();">🚚 ENVÍOS</button>
         </div>
 
         <div class="retro-container"
@@ -151,9 +152,13 @@
                     <input type="file" name="images" id="img-upload" class="retro-input" multiple accept="image/*">
                     <div id="img-preview" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.5rem;"></div>
 
-                    <button type="submit" class="retro-button"
+                    <button type="submit" id="btn-save-product" class="retro-button"
                         style="width: 100%; background: #90ee90; margin-top: 1rem; padding: 1rem; font-size: 1.1rem;">
                         [ PUBLICAR EN EL CATÁLOGO ]
+                    </button>
+                    <button type="button" id="btn-cancel-product" class="retro-button"
+                        style="width: 100%; background: #ccc; margin-top: 0.5rem; padding: 0.8rem; display: none;">
+                        [ CANCELAR EDICIÓN ]
                     </button>
                 </form>
             </div>
@@ -175,8 +180,11 @@
                             <label>Descripción / Notas:</label>
                             <textarea name="description" class="retro-input" style="height: 100px;" placeholder="Detalles sobre qué tipo de artículos incluye esta sección..."></textarea>
                             
-                            <button type="submit" class="retro-button" style="width: 100%; background: #add8e6; margin-top: 1rem;">
+                            <button type="submit" id="btn-save-category" class="retro-button" style="width: 100%; background: #add8e6; margin-top: 1rem;">
                                 [ CREAR CLASIFICACIÓN ]
+                            </button>
+                            <button type="button" id="btn-cancel-category" class="retro-button" style="width: 100%; background: #ccc; margin-top: 0.5rem; display: none;">
+                                [ CANCELAR ]
                             </button>
                         </form>
                     </div>
@@ -246,6 +254,47 @@
                 </div>
             </div>
 
+            <!-- ENVÍOS -->
+            <div id="shipping-tab" class="tab-content">
+                <h2>Gestión de Métodos de Envío</h2>
+                <p style="font-family: var(--font-accent); font-size: 0.8rem; margin-bottom: 1.5rem; opacity: 0.7;">
+                    CONFIGURACIÓN DE LOGÍSTICA Y COSTES</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+                    <!-- Formulario de Creación/Edición -->
+                    <div>
+                        <h3 id="shipping-form-title" style="font-size: 0.9rem; border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 1rem;">NUEVO MÉTODO</h3>
+                        <form id="shipping-form-admin">
+                            <label>Nombre del Método:</label>
+                            <input type="text" name="name" class="retro-input" placeholder="Ej: Certificado, Express..." required>
+                            
+                            <label>Descripción:</label>
+                            <input type="text" name="description" class="retro-input" placeholder="Ej: Entrega en 2-3 días">
+                            
+                            <label>Precio (€):</label>
+                            <input type="number" step="0.01" name="price" class="retro-input" placeholder="0.00" required>
+                            
+                            <button type="submit" id="btn-save-shipping" class="retro-button" style="width: 100%; background: #ffb347; margin-top: 1rem;">
+                                [ GUARDAR MÉTODO ]
+                            </button>
+                            <button type="button" id="btn-cancel-shipping" class="retro-button" style="width: 100%; background: #ccc; margin-top: 0.5rem; display: none;">
+                                [ CANCELAR ]
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Listado -->
+                    <div>
+                        <h3 style="font-size: 0.9rem; border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 1rem;">MÉTODOS ACTIVOS</h3>
+                        <div id="shipping-list-container" class="retro-container" style="background: #fff; padding: 10px; min-height: 200px;">
+                            <ul id="shipping-list" style="list-style: none; padding: 0;">
+                                <!-- Se llena dinámicamente -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -281,11 +330,16 @@
         const imgUpload = document.getElementById('img-upload');
         const imgPreview = document.getElementById('img-preview');
         
+        const btnCancelProduct = document.getElementById('btn-cancel-product');
+        const btnCancelCategory = document.getElementById('btn-cancel-category');
+        
         let selectedFiles = []
         let allCategories = []
         let allProducts = []
+        let allShippingMethods = []
         let editCategoryId = null;
         let editProductId = null; // Para saber si estamos editando un producto
+        let editShippingId = null;
         
         const selectTrigger = document.getElementById('select-trigger');
         const selectedText = document.getElementById('selected-category-text');
@@ -388,7 +442,16 @@
             form.querySelector('[name="description"]').value = desc;
             form.querySelector('button[type="submit"]').textContent = '[ ACTUALIZAR CATEGORÍA ]';
             form.querySelector('button[type="submit"]').style.background = '#ffd700';
+            btnCancelCategory.style.display = 'block';
             form.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        btnCancelCategory.onclick = () => {
+            editCategoryId = null;
+            categoryForm.reset();
+            document.getElementById('btn-save-category').textContent = '[ CREAR CLASIFICACIÓN ]';
+            document.getElementById('btn-save-category').style.background = '#add8e6';
+            btnCancelCategory.style.display = 'none';
         };
 
         window.deleteCategory = async (id) => {
@@ -538,8 +601,23 @@
             const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.textContent = '[ ACTUALIZAR DATOS DEL PRODUCTO ]';
             submitBtn.style.background = '#ffd700';
+            btnCancelProduct.style.display = 'block';
             
             form.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        btnCancelProduct.onclick = () => {
+            editProductId = null;
+            productForm.reset();
+            selectedText.textContent = 'Seleccionar categoría...';
+            categoryIdHidden.value = '';
+            selectedFiles = [];
+            imgPreview.innerHTML = '';
+            
+            const submitBtn = productForm.querySelector('button[type="submit"]');
+            submitBtn.textContent = '[ PUBLICAR EN EL CATÁLOGO ]';
+            submitBtn.style.background = '#90ee90';
+            btnCancelProduct.style.display = 'none';
         };
 
         window.releaseStatus = async (id) => {
@@ -565,9 +643,7 @@
                         body: JSON.stringify(data) 
                     });
                     showNotification('Categoría actualizada correctamente');
-                    editCategoryId = null;
-                    categoryForm.querySelector('button[type="submit"]').textContent = '[ CREAR CLASIFICACIÓN ]';
-                    categoryForm.querySelector('button[type="submit"]').style.background = '#add8e6';
+                    btnCancelCategory.onclick();
                 } else {
                     await apiFetch('/categories', { method: 'POST', body: JSON.stringify(data) });
                     showNotification('Categoría creada correctamente');
@@ -609,17 +685,7 @@
 
                 showNotification(editProductId ? 'Producto actualizado correctamente' : 'Producto publicado correctamente');
                 
-                // Resetear estado
-                editProductId = null;
-                const submitBtn = productForm.querySelector('button[type="submit"]');
-                submitBtn.textContent = '[ PUBLICAR EN EL CATÁLOGO ]';
-                submitBtn.style.background = '#90ee90';
-
-                productForm.reset()
-                selectedText.textContent = 'Seleccionar categoría...';
-                categoryIdHidden.value = '';
-                selectedFiles = []
-                imgPreview.innerHTML = ''
+                btnCancelProduct.onclick();
                 
                 if (method === 'PUT') {
                     showTab('inventory-tab', document.querySelectorAll('.tab-button')[2]);
@@ -630,6 +696,91 @@
                 showNotification(err.message, 'error');
             }
         })
+
+        // Lógica de Envío
+        const shippingFormAdmin = document.getElementById('shipping-form-admin');
+        const shippingList = document.getElementById('shipping-list');
+        const btnCancelShipping = document.getElementById('btn-cancel-shipping');
+        const shippingFormTitle = document.getElementById('shipping-form-title');
+
+        window.refreshShipping = async () => {
+            try {
+                allShippingMethods = await apiFetch('/shipping');
+                renderShippingList();
+            } catch (err) {
+                showNotification('Error al cargar envíos', 'error');
+            }
+        };
+
+        function renderShippingList() {
+            shippingList.innerHTML = allShippingMethods.map(s => `
+                <li style="padding: 10px; border-bottom: 1px dashed #ccc; font-family: var(--font-accent); font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold;">${s.name} - ${parseFloat(s.price).toFixed(2)}€</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7;">${s.description || ''}</div>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <button onclick="prepareEditShipping('${s.id}')" class="retro-button" style="padding: 2px 6px; font-size: 0.65rem; background: #fff;">EDITAR</button>
+                        <button onclick="deleteShipping('${s.id}')" class="retro-button" style="padding: 2px 6px; font-size: 0.65rem; background: #ffd0d0;">BORRAR</button>
+                    </div>
+                </li>
+            `).join('');
+            if (allShippingMethods.length === 0) {
+                shippingList.innerHTML = '<li style="padding: 10px; opacity: 0.5; text-align: center;">No hay métodos configurados</li>';
+            }
+        }
+
+        window.prepareEditShipping = (id) => {
+            const method = allShippingMethods.find(m => m.id === id);
+            if (!method) return;
+
+            editShippingId = id;
+            shippingFormAdmin.name.value = method.name;
+            shippingFormAdmin.description.value = method.description || '';
+            shippingFormAdmin.price.value = method.price;
+            
+            shippingFormTitle.textContent = 'EDITAR MÉTODO';
+            document.getElementById('btn-save-shipping').textContent = '[ ACTUALIZAR MÉTODO ]';
+            btnCancelShipping.style.display = 'block';
+        };
+
+        btnCancelShipping.onclick = () => {
+            editShippingId = null;
+            shippingFormAdmin.reset();
+            shippingFormTitle.textContent = 'NUEVO MÉTODO';
+            document.getElementById('btn-save-shipping').textContent = '[ GUARDAR MÉTODO ]';
+            btnCancelShipping.style.display = 'none';
+        };
+
+        window.deleteShipping = async (id) => {
+            if (!confirm('¿Seguro que quieres eliminar este método de envío?')) return;
+            try {
+                await apiFetch(`/shipping/${id}`, { method: 'DELETE' });
+                showNotification('Método eliminado');
+                refreshShipping();
+            } catch (err) {
+                showNotification(err.message, 'error');
+            }
+        };
+
+        shippingFormAdmin.onsubmit = async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(shippingFormAdmin).entries());
+            
+            try {
+                if (editShippingId) {
+                    await apiFetch(`/shipping/${editShippingId}`, { method: 'PUT', body: JSON.stringify(data) });
+                    showNotification('Método actualizado');
+                } else {
+                    await apiFetch('/shipping', { method: 'POST', body: JSON.stringify(data) });
+                    showNotification('Método creado');
+                }
+                btnCancelShipping.onclick();
+                refreshShipping();
+            } catch (err) {
+                showNotification(err.message, 'error');
+            }
+        };
 
         refreshData();
     </script>

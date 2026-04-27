@@ -11,6 +11,7 @@ import pedidosRouter from './src/routes/pedidos.js'
 import pagosRouter from './src/routes/pagos.js'
 import adminRouter from './src/routes/admin.js'
 import messagesRouter from './src/routes/messages.js'
+import shippingRouter from './src/routes/shipping.js'
 
 dotenv.config()
 const app = express()
@@ -34,6 +35,7 @@ app.use('/api/pedidos', pedidosRouter)
 app.use('/api/pagos', pagosRouter)
 app.use('/api/admin', adminRouter)
 app.use('/api/messages', messagesRouter)
+app.use('/api/shipping', shippingRouter)
 
 const PORT = 3000;
 app.listen(PORT, '0.0.0.0', () => {

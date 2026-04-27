@@ -23,31 +23,8 @@
             <h2 class="checkout-step-title">[ 1 ] Seleccionar metodo de envio</h2>
 
             <form id="shipping-form">
-                <div class="shipping-option selected">
-                    <input type="radio" id="mail" name="logistics" value="Certificado" checked>
-                    <div class="shipping-label">
-                        <strong>Envio Certificado</strong>
-                        <span>Correos / Courier — entrega en 2-5 dias habiles</span>
-                        <span>5,00 EUR</span>
-                    </div>
-                </div>
-
-                <div class="shipping-option">
-                    <input type="radio" id="point" name="logistics" value="Punto de Recogida">
-                    <div class="shipping-label">
-                        <strong>Punto de Recogida</strong>
-                        <span>Recoge en tu punto mas cercano</span>
-                        <span>3,00 EUR</span>
-                    </div>
-                </div>
-
-                <div class="shipping-option">
-                    <input type="radio" id="store" name="logistics" value="Tienda">
-                    <div class="shipping-label">
-                        <strong>Recogida en Tienda</strong>
-                        <span>Recoge en nuestro local fisico</span>
-                        <span>Gratis</span>
-                    </div>
+                <div id="shipping-options-container">
+                    <p style="padding: 1rem; opacity: 0.7;">Cargando métodos de envío...</p>
                 </div>
             </form>
 
