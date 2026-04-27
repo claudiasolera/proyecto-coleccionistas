@@ -72,6 +72,71 @@ router.post('/', upload.array('images', 10), async (req, res) => {
     }
 })
 
+// Obtener todo el inventario (incluyendo vendidos/reservados)
+router.get('/inventory', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('products')
+            .select('*, product_images(*), categories(name)')
+            .order('published_at', { ascending: false })
+        
+        if (error) throw error
+        res.json(data)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+// Editar un producto existente
+router.put('/:id', upload.array('images', 10), async (req, res) => {
+    const { id } = req.params
+    const { name, description, price, category_id, brand, year, dimensions } = req.body
+
+    const yearInt = parseInt(year);
+    const priceFloat = parseFloat(price);
+
+    const sanitizedData = {
+        name,
+        description: description || null,
+        price: !isNaN(priceFloat) ? priceFloat : 0,
+        category_id,
+        brand: brand || null,
+        year: !isNaN(yearInt) ? yearInt : null,
+        dimensions: dimensions || null
+    }
+
+    try {
+        const { data: product, error: pError } = await supabase
+            .from('products')
+            .update(sanitizedData)
+            .eq('id', id)
+            .select()
+            .single()
+
+        if (pError) throw pError
+        res.json(product)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+// Borrar un producto
+router.delete('/:id', async (req, res) => {
+    const { id } = req.params
+    try {
+        const { error } = await supabase
+            .from('products')
+            .delete()
+            .eq('id', id)
+        
+        if (error) throw error
+        res.json({ message: 'Producto eliminado' })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+// Actualizar solo el estado (Usado por el Chat para reservas)
 router.put('/:id/status', async (req, res) => {
     const { id } = req.params
     const { status, reserved_for } = req.body

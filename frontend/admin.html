@@ -197,22 +197,53 @@
 
             <!-- INVENTARIO -->
             <div id="inventory-tab" class="tab-content">
-                <h2>INVENTARIO Y STOCK</h2>
-                <div
-                    style="margin-top: 1rem; background: #fff; border: 2px inset #808080; max-height: 400px; overflow-y: auto;">
-                    <table class="stock-table">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Estado</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inventory-body"></tbody>
-                    </table>
+                <h2>Inventario y Stock</h2>
+                <p style="font-family: var(--font-accent); font-size: 0.8rem; margin-bottom: 1.5rem; opacity: 0.7;">
+                    SISTEMA DE CONTROL DE EXISTENCIAS Y LOGÍSTICA</p>
+
+                <div style="margin-bottom: 1rem; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.5rem; align-items: start;">
+                    <!-- Buscador Nombre -->
+                    <input type="text" id="inventory-search" class="retro-input" placeholder="Buscar por nombre..." style="margin-bottom: 0; height: 38px; box-sizing: border-box;">
+                    
+                    <!-- Selector Categoría Custom -->
+                    <div style="position: relative;">
+                        <div id="inv-select-trigger" class="retro-input" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0; height: 38px; box-sizing: border-box; background: #fff;">
+                            <span id="inv-selected-text" style="font-size: 0.8rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">Todas las categorías</span>
+                            <span style="font-size: 0.6rem;">▼</span>
+                        </div>
+                        <input type="hidden" id="inv-category-id-hidden" value="">
+                        <div id="inv-select-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 2px solid #000; z-index: 100; box-shadow: 5px 5px 0px rgba(0,0,0,0.2);">
+                            <input type="text" id="inv-select-search" class="retro-input" placeholder="Filtrar..." style="border: none; border-bottom: 2px solid #000; margin-bottom: 0; width: 100%; border-radius: 0; height: 34px; box-sizing: border-box;">
+                            <div id="inv-select-options" style="max-height: 200px; overflow-y: auto;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Filtro Estado -->
+                    <select id="inventory-filter-status" class="retro-input" style="margin-bottom: 0; font-size: 0.8rem; padding: 4px; height: 38px; box-sizing: border-box; background: #fff;">
+                        <option value="">Todos los estados</option>
+                        <option value="available">DISPONIBLE</option>
+                        <option value="reserved">RESERVADO</option>
+                        <option value="sold">VENDIDO</option>
+                    </select>
                 </div>
-                <p style="font-size: 0.7rem; color: #444; margin-top: 10px;">* Para reservar a un coleccionista
-                    específico, usa el botón de reserva dentro de los CHATS.</p>
+
+                <div class="retro-container" style="background: #fff; padding: 0; overflow: hidden; border-radius: 0;">
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        <table class="stock-table" style="font-size: 0.85rem;">
+                            <thead style="position: sticky; top: 0; background: #e0e0e0; z-index: 5;">
+                                <tr>
+                                    <th>Artículo / Producto</th>
+                                    <th>Categoría</th>
+                                    <th>Estado</th>
+                                    <th style="width: 150px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-body">
+                                <!-- Se llena dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -239,12 +270,22 @@
         const listCategory = document.getElementById('categories-list');
         const categoryListSearch = document.getElementById('category-list-search');
         const inventoryBody = document.getElementById('inventory-body');
+        const inventorySearch = document.getElementById('inventory-search');
+        const invSelectTrigger = document.getElementById('inv-select-trigger');
+        const invSelectedText = document.getElementById('inv-selected-text');
+        const invCategoryIdHidden = document.getElementById('inv-category-id-hidden');
+        const invSelectDropdown = document.getElementById('inv-select-dropdown');
+        const invSelectSearch = document.getElementById('inv-select-search');
+        const invSelectOptions = document.getElementById('inv-select-options');
+        const inventoryFilterStatus = document.getElementById('inventory-filter-status');
         const imgUpload = document.getElementById('img-upload');
         const imgPreview = document.getElementById('img-preview');
         
         let selectedFiles = []
         let allCategories = []
+        let allProducts = []
         let editCategoryId = null;
+        let editProductId = null; // Para saber si estamos editando un producto
         
         const selectTrigger = document.getElementById('select-trigger');
         const selectedText = document.getElementById('selected-category-text');
@@ -369,23 +410,136 @@
         async function refreshData() {
             allCategories = await apiFetch('/categories');
             renderAdminCategoryList(allCategories);
+            // El selector del inventario se llena al abrirse
         }
 
         window.refreshInventory = async () => {
-            const products = await apiFetch('/products');
+            allProducts = await apiFetch('/admin/inventory');
+            renderInventoryTable(allProducts);
+        };
+
+        function renderInventoryTable(products) {
             inventoryBody.innerHTML = products.map(p => `
                 <tr>
-                    <td>${p.name}</td>
-                    <td style="font-weight:bold; color: ${p.status === 'available' ? 'green' : (p.status === 'reserved' ? 'orange' : 'red')}">
-                        ${p.status.toUpperCase()}
+                    <td style="font-weight: bold;">
+                        ${p.name}
+                    </td>
+                    <td style="font-family: var(--font-accent); font-size: 0.75rem;">
+                        ${p.categories?.name || 'S/C'}
                     </td>
                     <td>
-                        ${p.status === 'reserved' ?
-                    `<button onclick="releaseStatus('${p.id}')" class="retro-button" style="font-size:0.6rem; padding: 2px 5px; background: #90ee90;">LIBERAR</button>`
-                    : '--'}
+                        <span class="product-card-status status-${p.status}" style="font-size: 0.6rem; display: block; text-align: center;">
+                            ${p.status === 'available' ? 'DISPONIBLE' : (p.status === 'reserved' ? 'RESERVADO' : 'VENDIDO')}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                            <button onclick="prepareEditProduct('${p.id}')" class="retro-button" style="padding: 2px 4px; font-size: 0.6rem; background: #fff;">EDITAR</button>
+                            <button onclick="deleteProduct('${p.id}')" class="retro-button" style="padding: 2px 4px; font-size: 0.6rem; background: #ffd0d0;">BORRAR</button>
+                            ${p.status === 'reserved' ? `<button onclick="releaseStatus('${p.id}')" class="retro-button" style="padding: 2px 4px; font-size: 0.6rem; background: #90ee90;">LIBERAR</button>` : ''}
+                        </div>
                     </td>
                 </tr>
             `).join('');
+        }
+
+        function filterInventory() {
+            const search = inventorySearch.value.toLowerCase();
+            const catId = invCategoryIdHidden.value;
+            const status = inventoryFilterStatus.value;
+
+            const filtered = allProducts.filter(p => {
+                const matchName = p.name.toLowerCase().includes(search);
+                const matchCategory = !catId || p.category_id === catId;
+                const matchStatus = !status || p.status === status;
+                return matchName && matchCategory && matchStatus;
+            });
+
+            renderInventoryTable(filtered);
+        }
+
+        // Lógica para el Selector Custom del Inventario
+        function renderInvSelectOptions(categories) {
+            invSelectOptions.innerHTML = '<div style="padding: 8px; cursor: pointer; border-bottom: 1px dashed #ccc; font-family: var(--font-accent); font-size: 0.8rem; background: #f9f9f9;" onclick="setInvCategory(\'\', \'Todas las categorías\')">[ TODAS LAS CATEGORÍAS ]</div>' + 
+                categories.map(c => `
+                <div style="padding: 8px; cursor: pointer; border-bottom: 1px dashed #ccc; font-family: var(--font-accent); font-size: 0.9rem;"
+                     onclick="setInvCategory('${c.id}', '${c.name}')">
+                    ${c.name}
+                </div>
+            `).join('');
+        }
+
+        window.setInvCategory = (id, name) => {
+            invSelectedText.textContent = name;
+            invCategoryIdHidden.value = id;
+            invSelectDropdown.style.display = 'none';
+            invSelectSearch.value = '';
+            filterInventory();
+        };
+
+        invSelectTrigger.addEventListener('click', () => {
+            const isVisible = invSelectDropdown.style.display === 'block';
+            invSelectDropdown.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
+                renderInvSelectOptions(allCategories);
+                invSelectSearch.focus();
+            }
+        });
+
+        invSelectSearch.addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+            const filtered = allCategories.filter(c => c.name.toLowerCase().includes(search));
+            renderInvSelectOptions(filtered);
+        });
+
+        // Click fuera para cerrar ambos dropdowns
+        document.addEventListener('click', (e) => {
+            if (!selectTrigger.contains(e.target) && !selectDropdown.contains(e.target)) {
+                selectDropdown.style.display = 'none';
+            }
+            if (!invSelectTrigger.contains(e.target) && !invSelectDropdown.contains(e.target)) {
+                invSelectDropdown.style.display = 'none';
+            }
+        });
+
+        inventorySearch.addEventListener('input', filterInventory);
+        inventoryFilterStatus.addEventListener('change', filterInventory);
+
+        window.deleteProduct = async (id) => {
+            try {
+                await apiFetch(`/admin/${id}`, { method: 'DELETE' });
+                showNotification('Producto eliminado correctamente');
+                refreshInventory();
+            } catch (err) {
+                showNotification(err.message, 'error');
+            }
+        };
+
+        window.prepareEditProduct = async (id) => {
+            const product = allProducts.find(p => p.id === id);
+            if (!product) return;
+
+            editProductId = id;
+            showTab('product-tab', document.querySelector('.tab-button'));
+
+            // Llenar formulario
+            const form = productForm;
+            form.name.value = product.name;
+            form.brand.value = product.brand || '';
+            form.price.value = product.price;
+            form.year.value = product.year || '';
+            form.dimensions.value = product.dimensions || '';
+            form.description.value = product.description || '';
+            
+            // Setear categoría
+            setCategory(product.category_id, product.categories?.name || 'Seleccionar categoría...');
+
+            // Cambiar botón
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.textContent = '[ ACTUALIZAR DATOS DEL PRODUCTO ]';
+            submitBtn.style.background = '#ffd700';
+            
+            form.scrollIntoView({ behavior: 'smooth' });
         };
 
         window.releaseStatus = async (id) => {
@@ -427,33 +581,50 @@
 
         productForm.addEventListener('submit', async (e) => {
             e.preventDefault()
-
             const formData = new FormData(productForm)
 
-            // Validación manual de categoría
             if (!categoryIdHidden.value) {
                 showNotification('Debes seleccionar una categoría del listado', 'error');
                 return;
             }
 
             try {
-                const res = await fetch('http://localhost:3000/api/admin', {
-                    method: 'POST',
+                let url = 'http://localhost:3000/api/admin';
+                let method = 'POST';
+
+                if (editProductId) {
+                    url = `http://localhost:3000/api/admin/${editProductId}`;
+                    method = 'PUT';
+                }
+
+                const res = await fetch(url, {
+                    method: method,
                     body: formData
                 })
 
                 if (!res.ok) {
                     const errData = await res.json();
-                    throw new Error(errData.message || 'Error al publicar');
+                    throw new Error(errData.message || 'Error al procesar');
                 }
 
-                // Producto publicado con éxito
-                showNotification('Producto publicado correctamente');
+                showNotification(editProductId ? 'Producto actualizado correctamente' : 'Producto publicado correctamente');
+                
+                // Resetear estado
+                editProductId = null;
+                const submitBtn = productForm.querySelector('button[type="submit"]');
+                submitBtn.textContent = '[ PUBLICAR EN EL CATÁLOGO ]';
+                submitBtn.style.background = '#90ee90';
+
                 productForm.reset()
                 selectedText.textContent = 'Seleccionar categoría...';
                 categoryIdHidden.value = '';
                 selectedFiles = []
                 imgPreview.innerHTML = ''
+                
+                if (method === 'PUT') {
+                    showTab('inventory-tab', document.querySelectorAll('.tab-button')[2]);
+                    refreshInventory();
+                }
             } catch (err) {
                 console.error(err.message)
                 showNotification(err.message, 'error');
