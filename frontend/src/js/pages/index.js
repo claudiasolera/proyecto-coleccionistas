@@ -48,7 +48,7 @@ function renderProducts(products) {
         `;
 
         return `
-        <article class="product-card">
+        <article class="product-card" style="display: flex; flex-direction: column; min-height: 100%;">
             
             <a href="/src/pages/producto.html#id=${p.id}" style="display: block; position: relative; width: 100%; border-bottom: 2px solid #000; text-decoration: none; color: inherit;">
                 <img src="${imgUrl}" alt="${p.name}" style="display: block; width: 100%; object-fit: cover;">
@@ -59,15 +59,27 @@ function renderProducts(products) {
                 </div>
             </a>
  
-            <div class="product-card-body" style="padding: 15px; flex: 1; display: flex; flex-direction: column;">
-                <h2 class="product-card-title" style="margin-bottom: 5px;">${p.name}</h2>
-                <p class="product-card-price" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 15px;">${Number(p.price).toFixed(2)} €</p>
+            <div class="product-card-body" style="padding: 15px; flex: 1; display: flex; flex-direction: column; min-height: 140px;">
+                <h2 class="product-card-title" style="margin-bottom: 5px; font-size: 1rem; line-height: 1.2;">${p.name}</h2>
                 
-                <div style="display: flex; gap: 8px; margin-top: auto;">
-                    <a href="/src/pages/producto.html#id=${p.id}" class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 12px; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                <!-- El precio se centra verticalmente en el espacio sobrante -->
+                <div style="flex: 1; display: flex; align-items: center;">
+                    <p class="product-card-price" style="font-weight: bold; font-size: 1.2rem; color: var(--clr-accent); margin: 0;">
+                        ${Number(p.price).toFixed(2)} €
+                    </p>
+                </div>
+                
+                <div style="display: flex; gap: 8px; margin-top: 10px; align-items: stretch;">
+                    <a href="/src/pages/producto.html#id=${p.id}" class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 0; height: 44px; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
                         VER DETALLES
                     </a>
-                    ${favButton}
+                    ${userRole === 'admin' ? '' : `
+                        <button class="retro-button" 
+                                style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: ${fav ? '#d63031' : 'inherit'}; padding: 0; flex-shrink: 0; box-sizing: border-box;"
+                                onclick="event.stopPropagation(); window.handleFavorite('${p.id}')">
+                            ${fav ? '♥' : '♡'}
+                        </button>
+                    `}
                 </div>
             </div>
         </article>
