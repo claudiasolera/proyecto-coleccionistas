@@ -1,12 +1,34 @@
 import { getProduct } from '../api/productos.js'
 import { addFavorite, getFavorites, removeFavorite } from '../api/favoritos.js'
 
+// Intentamos obtener el ID de la query (?) o del hash (#)
 const params = new URLSearchParams(window.location.search)
-const id = params.get('id')
+let id = params.get('id')
 
-if (!id) window.location.href = '../../index.html'
+if (!id && window.location.hash) {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1))
+    id = hashParams.get('id')
+}
+
+console.log("DEPURACIÓN NAVEGACIÓN:", {
+    path: window.location.pathname,
+    search: window.location.search,
+    hash: window.location.hash,
+    id_encontrado: id
+});
 
 async function loadProduct() {
+    if (!id) {
+        document.querySelector('.product-detail-layout').innerHTML = `
+            <div style="text-align:center; padding: 40px; font-family: var(--font-accent);">
+                <h2 style="color: #d63031;">ERROR DE IDENTIFICACIÓN</h2>
+                <p>No se ha detectado el ID en la URL. Ruta actual: ${window.location.pathname}</p>
+                <p style="font-size: 0.8rem; opacity: 0.6;">Query: ${window.location.search || '(vacío)'} | Hash: ${window.location.hash || '(vacío)'}</p>
+                <button class="retro-button" onclick="location.href='/index.html'" style="margin-top: 20px;">VOLVER AL CATÁLOGO</button>
+            </div>
+        `
+        return
+    }
     const product = await getProduct(id)
 
     if (!product || product.error) {
@@ -84,7 +106,7 @@ async function loadProduct() {
         btnBuy.style.display = 'none';
         btnFav.style.display = 'none';
         btnChat.style.display = 'none';
-        
+
         // Podríamos añadir un botón de "EDITAR" aquí en el futuro
     } else if (!userId) {
         btnBuy.innerText = 'ENTRA PARA COMPRAR'

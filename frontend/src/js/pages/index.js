@@ -48,28 +48,25 @@ function renderProducts(products) {
         `;
 
         return `
-        <article class="product-card" 
-                tabindex="0"
-                role="button"
-                onclick="location.href='/src/pages/producto.html?id=${p.id}'">
+        <article class="product-card">
             
-            <div style="position: relative; width: 100%; border-bottom: 2px solid #000;">
+            <a href="/src/pages/producto.html#id=${p.id}" style="display: block; position: relative; width: 100%; border-bottom: 2px solid #000; text-decoration: none; color: inherit;">
                 <img src="${imgUrl}" alt="${p.name}" style="display: block; width: 100%; object-fit: cover;">
                 
                 <div class="product-card-status status-${p.status}" 
                     style="position: absolute; top: 10px; left: 10px; margin: 0; font-size: 0.7rem; z-index: 2;">
                     ${formatStatus(p.status)}
                 </div>
-            </div>
-
+            </a>
+ 
             <div class="product-card-body" style="padding: 15px; flex: 1; display: flex; flex-direction: column;">
                 <h2 class="product-card-title" style="margin-bottom: 5px;">${p.name}</h2>
                 <p class="product-card-price" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 15px;">${Number(p.price).toFixed(2)} €</p>
                 
                 <div style="display: flex; gap: 8px; margin-top: auto;">
-                    <button class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 12px;">
+                    <a href="/src/pages/producto.html#id=${p.id}" class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 12px; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
                         VER DETALLES
-                    </button>
+                    </a>
                     ${favButton}
                 </div>
             </div>
