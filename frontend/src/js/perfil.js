@@ -61,9 +61,8 @@ form.addEventListener('submit', async (e) => {
 // 3. LÓGICA DE CIERRE DE SESIÓN
 if (btnLogout) {
     btnLogout.addEventListener('click', () => {
-        if (confirm('¿Seguro que deseas salir del sistema?')) {
-            localStorage.clear();
-            window.location.href = '../../index.html';
-        }
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = '../../index.html';
     });
 }

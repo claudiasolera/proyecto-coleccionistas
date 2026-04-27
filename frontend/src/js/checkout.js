@@ -1,4 +1,4 @@
-import { apiFetch, formatCurrency } from './utils.js';
+import { apiFetch, formatCurrency, showNotification } from './utils.js';
 
 const summaryContainer = document.getElementById('product-summary');
 const totalContainer = document.getElementById('total-price');
@@ -17,8 +17,10 @@ let productName = ''
 
 async function init() {
     if (!productId || !userId) {
-        alert('Faltan datos del producto o usuario.');
-        window.location.href = '../../index.html';
+        showNotification('Faltan datos del producto o usuario.', 'error');
+        setTimeout(() => {
+            window.location.href = '../../index.html';
+        }, 2000);
         return;
     }
 
@@ -95,7 +97,7 @@ btnPay.addEventListener('click', async () => {
         window.location.href = session.url;
         
     } catch (err) {
-        alert('Error con Stripe: ' + err.message);
+        showNotification('Error con Stripe: ' + err.message, 'error');
         btnPay.disabled = false;
         btnPay.innerText = 'PAGAR AHORA';
     }
