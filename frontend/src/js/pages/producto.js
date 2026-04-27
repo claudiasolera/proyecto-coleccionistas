@@ -99,7 +99,7 @@ async function loadProduct() {
     const btnBuy = document.getElementById('btn-buy');
     const btnFav = document.getElementById('btn-favourite');
     const btnChat = document.getElementById('btn-chat');
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
     const userRole = localStorage.getItem('userRole');
 
     if (userRole === 'admin') {

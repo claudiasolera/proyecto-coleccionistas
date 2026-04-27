@@ -28,7 +28,7 @@ export async function addFavorite(productId, categoryId) {
 }
 
 export async function getFavorites() {
-    const userId = localStorage.getItem('userId')
+    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
     if (!userId) return []
 
     const res = await fetch(`${API_URL}/favoritos/${userId}`)

@@ -1,8 +1,8 @@
 import { apiFetch, showNotification } from './utils.js';
 
-const userId = localStorage.getItem('userId');
+const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
 let allFavorites = [];
-let currentTab = 'products'; // 'products' o 'categories'
+let currentTab = 'products';
 
 if (!userId) {
     window.location.href = '../../login.html';

@@ -9,7 +9,7 @@ const shippingForm = document.getElementById('shipping-form');
 // Obtener ID del producto desde la URL
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get('id');
-const userId = localStorage.getItem('userId');
+const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
 
 let productPrice = 0;
 let shippingPrice = 5.00;

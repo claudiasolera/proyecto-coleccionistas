@@ -8,7 +8,7 @@ export async function initHeader() {
     if (!nav) return;
 
     const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
-    const userRole = localStorage.getItem('userRole');
+    const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole')
     
     const getNavHTML = (role) => {
         let html = `<a href="/index.html">Catálogo</a>`;

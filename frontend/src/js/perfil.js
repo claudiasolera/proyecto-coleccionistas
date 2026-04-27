@@ -1,11 +1,11 @@
 import { apiFetch, showNotification } from './utils.js';
 
 const form = document.getElementById('profile-form');
-const userId = localStorage.getItem('userId');
+const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
 const btnLogout = document.getElementById('btn-logout');
 
 if (!userId) {
-    window.location.href = '../../login.html';
+    window.location.href = '/login.html'
 }
 
 // 1. CARGAR DATOS AL INICIAR
