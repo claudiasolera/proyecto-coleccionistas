@@ -293,11 +293,12 @@
 /* CHECKOUT */
 .checkout-grid {
     display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 2rem;
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 1rem;
+    grid-template-columns: 1fr 350px; /* Un poco más de ancho para el resumen */
+    gap: 3rem;
+    width: 100%;
+    padding: 2rem;
+    box-sizing: border-box;
+    align-items: start;
 }
 
 .checkout-step-title {

@@ -201,7 +201,12 @@ btnClear.addEventListener('click', () => {
 })
 
 async function init() {
-    userFavorites = await getFavorites()
+    try {
+        userFavorites = await getFavorites()
+    } catch (err) {
+        console.warn("No se pudieron cargar los favoritos, continuando carga general...");
+        userFavorites = []
+    }
     
     // 1. Mirar si venimos de Favoritos con una categoría guardada (Navegación Invisible)
     let categoryParam = localStorage.getItem('filterCategory')

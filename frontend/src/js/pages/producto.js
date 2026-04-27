@@ -1,24 +1,37 @@
 import { getProduct } from '../api/productos.js'
 import { addFavorite, getFavorites, removeFavorite } from '../api/favoritos.js'
-import { showNotification } from '../utils.js'
+import { showNotification, apiFetch } from '../utils.js'
 
 // Intentamos obtener el ID de la query (?) o del hash (#)
 const params = new URLSearchParams(window.location.search)
 let id = params.get('id')
+let isSuccess = params.get('success') === 'true'
 
-if (!id && window.location.hash) {
+if (window.location.hash) {
     const hashParams = new URLSearchParams(window.location.hash.substring(1))
-    id = hashParams.get('id')
+    if (!id) id = hashParams.get('id')
+    if (!isSuccess) isSuccess = hashParams.get('success') === 'true'
 }
 
-console.log("DEPURACIÓN NAVEGACIÓN:", {
-    path: window.location.pathname,
-    search: window.location.search,
-    hash: window.location.hash,
-    id_encontrado: id
-});
+async function checkSuccess() {
+    if (isSuccess && id) {
+        try {
+            // Forzamos el estado a vendido si venimos de un pago exitoso
+            await apiFetch(`/admin/${id}/status`, {
+                method: 'PUT',
+                body: JSON.stringify({ status: 'sold' })
+            });
+            showNotification('¡COMPRA REALIZADA CON ÉXITO! EL ARTÍCULO ES SUYO.', 'success');
+            // Limpiamos el éxito de la URL para no repetir el proceso
+            window.history.replaceState({}, document.title, window.location.pathname + window.location.hash.split('&')[0]);
+        } catch (err) {
+            console.error("Error al confirmar venta:", err);
+        }
+    }
+}
 
 async function loadProduct() {
+    await checkSuccess(); // Verificamos si acabamos de comprarlo
     if (!id) {
         document.querySelector('.product-detail-layout').innerHTML = `
             <div style="text-align:center; padding: 40px; font-family: var(--font-accent);">

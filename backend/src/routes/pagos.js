@@ -28,8 +28,8 @@ router.post('/create-checkout-session', async (req, res) => {
                 },
             ],
             mode: 'payment',
-            success_url: `http://localhost:3000/src/pages/perfil.html?success=true&product_id=${product_id}`,
-            cancel_url: `http://localhost:3000/src/pages/checkout.html?id=${product_id}`,
+            success_url: `http://localhost:3000/src/pages/producto.html#id=${product_id}&success=true`,
+            cancel_url: `http://localhost:3000/src/pages/checkout.html#id=${product_id}`,
             metadata: {
                 product_id,
                 user_id,
@@ -57,10 +57,16 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
         const session = event.data.object
         const { product_id, user_id, shipping_method } = session.metadata
 
-        await supabase
+        const { data, error } = await supabase
             .from('products')
             .update({ status: 'sold', sold_at: new Date() })
             .eq('id', product_id)
+
+        if (error) {
+            console.error("ERROR AL ACTUALIZAR PRODUCTO A VENDIDO:", error);
+        } else {
+            console.log("PRODUCTO MARCADO COMO VENDIDO CON ÉXITO:", product_id);
+        }
 
         await supabase
             .from('orders')
