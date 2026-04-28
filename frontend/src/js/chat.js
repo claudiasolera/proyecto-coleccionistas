@@ -87,7 +87,7 @@ async function loadHistory() {
     try {
         const messages = await apiFetch(`/messages/history/${userId}`);
         chatWindow.innerHTML = messages.map(m => {
-            const isMe = m.sender_id === userId;
+            const isMe = !m.is_from_admin && m.sender_id === userId;
             const bubbleClass = isMe ? 'message-me' : 'message-vendedor';
             const time = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 

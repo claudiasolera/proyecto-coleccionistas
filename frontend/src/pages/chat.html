@@ -6,101 +6,58 @@
     <link rel="stylesheet" href="../css/variables.css">
     <link rel="stylesheet" href="../css/layout.css">
     <link rel="stylesheet" href="../css/components.css">
-<style>
-    #chat-container { 
-        max-width: 100%; 
-        margin: 1rem 2rem; 
-        display: flex; 
-        flex-direction: column; 
-        flex: 1;
-    }
-    .chat-header-bar {
-        background: linear-gradient(to right, #000080, #1084d0);
-        color: #fff;
-        padding: 4px 5px 4px 10px;
-        font-weight: bold;
-        font-family: var(--font-accent);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 2px solid #000;
-        text-shadow: 1px 1px #000;
-    }
-    .win-button {
-        width: 18px;
-        height: 16px;
-        background: #c0c0c0;
-        border: 2px outset #fff;
-        color: #000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        cursor: pointer;
-        font-family: 'Arial', sans-serif;
-        text-shadow: none;
-    }
-    .win-button:active {
-        border: 2px inset #fff;
-    }
-</style>
-
-<body style="background-color: var(--clr-bg); display: flex; flex-direction: column; min-height: 100vh;">
+</head>
+<body>
 
     <header class="site-header">
         <h1 class="site-title">Tienda de Coleccionistas</h1>
         <nav class="site-nav">
             <a href="/index.html">Catálogo</a>
-            <!-- Menú dinámico inyectado por header.js -->
         </nav>
     </header>
 
     <script type="module" src="../js/header.js"></script>
 
     <main id="chat-container">
-        <div class="retro-container" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; flex: 1;">
-            <div class="chat-header-bar">
-                <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
-                    <span style="font-size: 1.1rem; filter: sepia(1);">📟</span>
+        <div class="retro-container" style="padding:0; overflow:hidden; display:flex; flex-direction:column; flex:1;">
+            
+            <div class="chat-titlebar">
+                <div style="display:flex; align-items:center; gap:8px; font-size:0.85rem;">
+                    <span style="font-size:1.1rem; filter:sepia(1);">📟</span>
                     <span>COM_TERMINAL.EXE - [SESIÓN_ACTIVA]</span>
                 </div>
-                <div style="display: flex; gap: 2px;">
-                    <button class="win-button" style="padding-bottom: 4px;">_</button>
+                <div class="retro-titlebar-buttons">
+                    <button class="win-button" style="padding-bottom:4px;">_</button>
                     <button class="win-button">口</button>
-                    <button class="win-button" style="font-weight: bold;">X</button>
+                    <button class="win-button" style="font-weight:bold;">X</button>
                 </div>
             </div>
-            
-            <div id="chat-window" class="chat-window" style="height: 550px;">
-                <!-- Mensajes inyectados por JS -->
-            </div>
-            
-            <form id="chat-form" style="display: flex; gap: 10px; padding: 1.5rem; background: #e5e5e5; border-top: 3px double #808080;">
-                <input type="text" id="chat-input" class="retro-input" style="flex: 1; margin-bottom: 0;" placeholder="Escribe tu mensaje oficial..." required>
-                <button type="button" id="btn-attach" class="retro-button" title="Adjuntar Tesoro" style="background: #ffffcc; min-width: 45px; font-size: 1.2rem;">📎</button>
-                <button type="submit" class="retro-button" style="padding: 0 25px;">ENVIAR</button>
+
+            <div id="chat-window" class="chat-window" style="height:550px;"></div>
+
+            <form id="chat-form" class="chat-form">
+                <input type="text" id="chat-input" class="retro-input" placeholder="Escribe tu mensaje oficial..." required>
+                <button type="button" id="btn-attach" class="retro-button btn-attach" title="Adjuntar Tesoro" style="font-size:1.2rem;">📎</button>
+                <button type="submit" class="retro-button" style="padding:0 25px;">ENVIAR</button>
             </form>
         </div>
     </main>
 
     <footer class="site-footer">
         <p>© 2026 EL BAZAR DEL COLECCIONISTA - BUSCANDO TESOROS DESDE 1990</p>
-        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">Terminal: COLEC_SYS_V2.0.1 | Conectado vía RT-Modem</p>
+        <p style="font-size:0.8rem; margin-top:0.5rem; opacity:0.7;">Terminal: COLEC_SYS_V2.0.1 | Conectado vía RT-Modem</p>
     </footer>
 
-    <!-- MODAL DE SELECCIÓN DE PRODUCTO -->
-    <div id="product-modal" class="product-modal" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; align-items:center; justify-content:center;">
-        <div class="modal-body" style="background: #c0c0c0; border: 3px outset #fff; padding: 1rem; width: 450px; max-height: 80vh; overflow-y: auto; box-shadow: 10px 10px 0px rgba(0,0,0,0.5);">
-            <div style="background: var(--clr-primary); color: #fff; padding: 8px 15px; margin: -1rem -1rem 1rem -1rem; font-weight: bold; display: flex; justify-content: space-between; font-family: var(--font-accent); border-bottom: 2px solid #000;">
+    <div id="product-modal" class="product-modal">
+        <div class="modal-body">
+            <div class="modal-header">
                 <span>SELECCIONAR REGISTRO</span>
-                <span id="close-modal" style="cursor: pointer;">[X]</span>
+                <span id="close-modal" style="cursor:pointer;">[X]</span>
             </div>
-            <div style="margin-bottom: 1rem;">
-                <input type="text" id="search-product-attach" class="retro-input" placeholder="BUSCAR ARCHIVO..." style="width: 100%; font-size: 0.8rem; margin: 0;">
+            <div style="margin-bottom:1rem;">
+                <input type="text" id="search-product-attach" class="retro-input" placeholder="BUSCAR ARCHIVO..." style="width:100%; font-size:0.8rem; margin:0;">
             </div>
-            <div id="product-list-attach">
-                <!-- Se carga por JS -->
-            </div>
+            <div id="product-list-attach"></div>
         </div>
     </div>
 

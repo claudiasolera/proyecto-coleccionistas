@@ -67,8 +67,8 @@ async function loadHistory(userId) {
     try {
         const messages = await apiFetch(`/messages/history/${userId}`);
         chatWindow.innerHTML = messages.map(m => {
-            const myId = localStorage.getItem('userId') || 'admin';
-            const isMe = m.sender_id === myId || m.is_from_admin;
+            const myId = localStorage.getItem('userId') || sessionStorage.getItem('userId') || 'admin';
+            const isMe = m.is_from_admin;
             const bubbleClass = isMe ? 'message-me' : 'message-vendedor';
             const time = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -128,7 +128,7 @@ async function loadHistory(userId) {
 // Función de reserva con MENSAJE AUTOMÁTICO DE SEGURIDAD
 window.reserveProduct = async (pId, pName) => {
     if (!activeUserId) return;
-    const myId = localStorage.getItem('userId') || 'admin';
+    const myId = localStorage.getItem('userId') || sessionStorage.getItem('userId') || 'admin';
 
     try {
         // 1. Efectuar la reserva en base de datos
@@ -208,7 +208,7 @@ function renderProductList(query = '') {
 
 window.sendProduct = async (pId, pName) => {
     productModal.style.display = 'none';
-    const myId = localStorage.getItem('userId') || 'admin';
+    const myId = localStorage.getItem('userId') || sessionStorage.getItem('userId') || 'admin';
     try {
         await apiFetch('/messages', {
             method: 'POST',
@@ -230,7 +230,7 @@ closeModal.onclick = () => productModal.style.display = 'none';
 replyForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const text = adminInput.value;
-    const myId = localStorage.getItem('userId') || 'admin';
+    const myId = localStorage.getItem('userId') || sessionStorage.getItem('userId') || 'admin';
     if (!activeUserId || !text) return;
     adminInput.value = '';
     try {
