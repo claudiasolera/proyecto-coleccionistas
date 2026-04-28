@@ -36,13 +36,23 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <div style="display: flex; flex-direction: column; gap: 5px;">
                             <label style="font-weight: bold; font-size: 0.9rem;">Nombre:</label>
-                            <input type="text" name="name" class="retro-input" style="width: 100%; display: block;"
-                                required>
+                            <input type="text" name="name" class="retro-input" required>
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 5px;">
                             <label style="font-weight: bold; font-size: 0.9rem;">Apellidos:</label>
-                            <input type="text" name="last_name" class="retro-input" style="width: 100%; display: block;"
-                                required>
+                            <input type="text" name="last_name" class="retro-input" required>
+                        </div>
+                    </div>
+
+                    <!-- BLOQUE EMAIL Y DNI -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label style="font-weight: bold; font-size: 0.9rem;">Email:</label>
+                            <input type="email" name="email" class="retro-input" required>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label style="font-weight: bold; font-size: 0.9rem;">DNI:</label>
+                            <input type="text" name="dni" class="retro-input" required>
                         </div>
                     </div>
 
@@ -59,11 +69,6 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: stretch;">
                             <input type="tel" name="phone" class="retro-input" style="width: 100%; display: block;"
                                 required>
-                            <div
-                                style="background: #ffffcc; border: 1px dashed #000; font-size: 0.8rem; display: flex; align-items: center; padding: 0 15px; height: 36px; box-sizing: border-box;">
-                                <p style="margin: 0;"><strong>Nota:</strong> Cambios de DNI/Email contacte con Admin.
-                                </p>
-                            </div>
                         </div>
                     </div>
 

@@ -179,15 +179,25 @@ router.get('/:id', async (req, res) => {
 
 // 6. ACTUALIZAR PERFIL
 router.put('/:id', async (req, res) => {
-    const { name, last_name, address, phone } = req.body
+    const { name, last_name, address, phone, email, dni } = req.body
     try {
         const { data, error } = await supabase
             .from('users')
-            .update({ name, last_name, address, phone })
+            .update({ name, last_name, address, phone, email, dni })
             .eq('id', req.params.id)
             .select()
 
-        if (error) throw error
+        if (error) {
+            const msg = error.message || ''
+            if (msg.includes('users_email_key') || msg.includes('email')) {
+                return res.status(400).json({ message: 'Este email ya está en uso.' })
+            }
+            if (msg.includes('users_dni_key') || msg.includes('dni')) {
+                return res.status(400).json({ message: 'Este DNI ya está en uso.' })
+            }
+            throw error
+        }
+
         res.json(data[0])
     } catch (error) {
         res.status(500).json({ message: error.message })
