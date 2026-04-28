@@ -53,3 +53,23 @@
     object-fit: contain; /* Evita que se corte la imagen */
     display: block;
 }
+
+/* RESPONSIVE LAYOUTS */
+@media (max-width: 850px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+    .sidebar {
+        position: relative;
+        top: 0;
+    }
+    .product-detail-layout {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+    .product-gallery > .carousel {
+        height: 350px;
+    }
+}

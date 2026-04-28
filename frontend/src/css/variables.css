@@ -157,6 +157,10 @@ body {
 @media (max-width: 850px) {
     .site-header {
         position: relative;
+        padding: 1rem 1rem;
+    }
+    .site-title {
+        font-size: 1.1rem;
     }
     .hamburger-btn {
         display: block;
