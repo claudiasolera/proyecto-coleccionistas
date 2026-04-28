@@ -43,7 +43,6 @@ async function init() {
         
         summaryContainer.innerHTML = `
             <p class="summary-product-name">${product.name}</p>
-            <p class="summary-product-status">Estado: ${statusLabels[product.status] || product.status}</p>
             <p class="summary-product-price">${formatCurrency(productPrice)}</p>
         `;
 

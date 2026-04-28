@@ -64,6 +64,25 @@
         position: relative;
         top: 0;
     }
+    .admin-chat-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: 180px 1fr;
+        height: 85vh;
+        margin: 0.5rem;
+        padding: 0.5rem !important;
+        gap: 1rem;
+    }
+    .checkout-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+        padding: 1rem !important;
+    }
+    .checkout-grid > aside {
+        order: -1;
+    }
+    .checkout-grid > section {
+        order: 1;
+    }
     .product-detail-layout {
         grid-template-columns: 1fr;
         padding: 1rem;
