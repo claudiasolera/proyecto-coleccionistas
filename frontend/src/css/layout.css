@@ -112,6 +112,16 @@ main, .main-layout, .container, .checkout-grid, .admin-chat-layout, .product-det
     .tabs-container::-webkit-scrollbar {
         display: none;
     }
+    .hamburger-btn {
+        display: block !important;
+        background: none;
+        border: none;
+        color: var(--clr-bg);
+        font-size: 1.8rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        position: relative;
+    }
     .tab-button {
         flex: 0 0 auto;
         font-size: 0.8rem;

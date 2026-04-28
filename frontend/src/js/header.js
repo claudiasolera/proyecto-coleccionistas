@@ -90,12 +90,29 @@ export async function initHeader() {
             if (!link) return;
             const oldBadge = link.querySelector('.unread-badge-mini');
             if (oldBadge) oldBadge.remove();
+
+            // Actualizar también la hamburguesa para el móvil
+            const hamburger = document.querySelector('.hamburger-btn');
+            const oldHamBadge = hamburger?.querySelector('.unread-badge-mini');
+            if (oldHamBadge) oldHamBadge.remove();
+
             if (count > 0) {
                 const badge = document.createElement('span');
                 badge.className = 'unread-badge-mini';
                 badge.innerText = count;
                 badge.style = "background:red; color:white; border-radius:50%; padding:1px 5px; font-size:0.6rem; margin-left:5px; border:1px solid #000; vertical-align:top;";
                 link.appendChild(badge);
+
+                // Si hay hamburguesa (móvil), le ponemos también el aviso
+                if (hamburger) {
+                    const hamBadge = badge.cloneNode(true);
+                    hamBadge.style.position = 'absolute';
+                    hamBadge.style.top = '2px';
+                    hamBadge.style.right = '2px';
+                    hamBadge.style.margin = '0';
+                    hamBadge.style.boxShadow = '2px 2px 0px rgba(0,0,0,0.5)';
+                    hamburger.appendChild(hamBadge);
+                }
             }
         };
 
