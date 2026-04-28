@@ -1,4 +1,8 @@
 /* ESTRUCTURA GLOBAL */
+main, .main-layout, .container, .checkout-grid, .admin-chat-layout, .product-detail-layout {
+    flex: 1;
+}
+
 .main-layout {
     display: grid;
     grid-template-columns: 260px 1fr;
