@@ -631,7 +631,8 @@ input[type="checkbox"]:checked::after {
     background: #c0c0c0;
     border: 3px outset #fff;
     padding: 1rem;
-    width: 450px;
+    width: 90%;
+    max-width: 450px;
     max-height: 80vh;
     overflow-y: auto;
     box-shadow: 10px 10px 0px rgba(0,0,0,0.5);
@@ -645,6 +646,7 @@ input[type="checkbox"]:checked::after {
     font-weight: bold;
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     font-family: var(--font-accent);
     border-bottom: 2px solid #000;
 }
@@ -773,4 +775,27 @@ input[type="checkbox"]:checked::after {
 
 .stock-table tr:nth-child(even) {
     background: #f0f0f0;
+}
+
+/* CHAT ADMIN RESPONSIVE */
+@media (max-width: 850px) {
+    .admin-chat-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: 250px 85vh;
+        height: auto;
+        margin: 0.5rem;
+        padding: 0.5rem !important;
+        gap: 1rem;
+    }
+    .admin-chat-form {
+        flex-wrap: wrap;
+        padding: 0.8rem;
+    }
+    .admin-chat-form .retro-input {
+        min-width: 100%;
+        margin-bottom: 5px;
+    }
+    #btn-send {
+        flex: 1;
+    }
 }
