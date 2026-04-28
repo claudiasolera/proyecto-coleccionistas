@@ -161,14 +161,14 @@ function renderProductList(query = '') {
 
         return `
             <div class="product-select-item" onclick="sendProduct('${p.id}', '${p.name}')" 
-                style="${isFav ? 'border-left: 5px solid #d63031;' : ''}">
-                <div style="display: flex; align-items: center;">
+                style="gap: 10px; ${isFav ? 'border-left: 5px solid #d63031;' : ''}">
+                <div style="display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0;">
                     ${favStar}
-                    <span style="font-family: var(--font-accent);">
+                    <span style="font-family: var(--font-accent); word-break: break-word; line-height: 1.4;">
                         ${statusText}ARCHIVO: ${p.name.toUpperCase()}
                     </span>
                 </div>
-                <strong style="color: var(--clr-accent);">${Number(p.price).toFixed(2)} €</strong>
+                <strong style="color: var(--clr-accent); flex-shrink: 0; white-space: nowrap;">${Number(p.price).toFixed(2)} €</strong>
             </div>
         `;
     }).join('');

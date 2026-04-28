@@ -16,7 +16,6 @@ const searchInput = document.getElementById('search-product-attach');
 
 let activeUserId = null;
 let allProducts = [];
-let customerFavIds = new Set();
 
 async function init() {
     loadConversations();
@@ -34,10 +33,12 @@ async function loadConversations() {
                  onclick="selectUser('${u.id}', '${u.name}')" 
                  id="user-item-${u.id}">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                    <strong>${u.name.toUpperCase()}</strong>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.2rem; filter: grayscale(1);">📁</span>
+                        <strong>${u.name.toUpperCase()}</strong>
+                    </div>
                     ${u.unreadCount > 0 ? `<span class="unread-badge" style="background:red; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; border:2px solid #000;">${u.unreadCount}</span>` : ''}
                 </div>
-                <small style="opacity: 0.7;">ID_EXPEDIENTE: ${u.id.slice(0,8)}</small>
             </div>
         `).join('');
     } catch (err) {
@@ -47,7 +48,7 @@ async function loadConversations() {
 
 window.selectUser = async (id, name) => {
     activeUserId = id;
-    if (infoBar) infoBar.innerText = `EXPEDIENTE: ${name.toUpperCase()} | ID: ${id.slice(0,8)}`;
+    if (infoBar) infoBar.innerText = `EXPEDIENTE: ${name.toUpperCase()}`;
     document.querySelectorAll('.user-item').forEach(i => i.classList.remove('active'));
     const item = document.getElementById(`user-item-${id}`);
     if (item) item.classList.add('active');
@@ -165,12 +166,8 @@ btnAttach.onclick = async () => {
         searchInput.focus();
     }
     try {
-        const [products, favorites] = await Promise.all([
-            apiFetch('/products'),
-            apiFetch(`/favoritos/${activeUserId}`)
-        ]);
+        const products = await apiFetch('/products');
         allProducts = products.filter(p => p.status !== 'sold');
-        customerFavIds = new Set(favorites.map(f => f.product_id));
         renderProductList();
     } catch (err) {
         showNotification('Error al cargar catálogo', 'error');
@@ -180,7 +177,6 @@ btnAttach.onclick = async () => {
 function renderProductList(query = '') {
     const q = query.toLowerCase();
     let filtered = allProducts.filter(p => p.name.toLowerCase().includes(q));
-    filtered.sort((a, b) => (customerFavIds.has(b.id) ? 1 : 0) - (customerFavIds.has(a.id) ? 1 : 0));
     
     // Añadimos aviso de 48h en la parte superior de la lista
     productListAttach.innerHTML = `
@@ -188,14 +184,10 @@ function renderProductList(query = '') {
             ⚠️ AVISO: LAS RESERVAS TIENEN UNA VALIDEZ DE 48 HORAS
         </div>
     ` + filtered.map(p => {
-        const isCustomerFav = customerFavIds.has(p.id);
         const statusText = p.status === 'reserved' ? '[RESERVADO] ' : '';
-        const favStar = isCustomerFav ? '<span title="En favoritos del cliente" style="color: #d63031; margin-right: 5px;">⭐</span>' : '';
         return `
-            <div class="product-select-item" onclick="sendProduct('${p.id}', '${p.name}')"
-                 style="${isCustomerFav ? 'border-left: 5px solid #d63031; background: #fffdf0;' : ''}">
+            <div class="product-select-item" onclick="sendProduct('${p.id}', '${p.name}')">
                 <div style="display: flex; align-items: center;">
-                    ${favStar}
                     <span style="font-family: var(--font-accent);">
                         ${statusText}ARCHIVO: ${p.name.toUpperCase()}
                     </span>

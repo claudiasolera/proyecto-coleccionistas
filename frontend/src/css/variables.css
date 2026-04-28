@@ -107,7 +107,7 @@ body {
 
 .site-nav {
     display: flex;
-    gap: 1.5rem;
+    gap: 0.8rem;
 }
 
 .site-nav a {
