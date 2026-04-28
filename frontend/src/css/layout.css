@@ -73,3 +73,33 @@
         height: 350px;
     }
 }
+
+/* ADMIN PANEL RESPONSIVE (< 600px) */
+@media (max-width: 600px) {
+    .admin-main {
+        padding: 1rem !important;
+    }
+    .tabs-container {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-top: 5px;
+        padding-bottom: 2px;
+    }
+    /* Hide scrollbar for clean look */
+    .tabs-container::-webkit-scrollbar {
+        display: none;
+    }
+    .tab-button {
+        flex: 0 0 auto;
+        font-size: 0.8rem;
+        padding: 10px 15px;
+        text-align: center;
+    }
+    .admin-form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    .admin-filter-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
