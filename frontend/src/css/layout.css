@@ -102,4 +102,15 @@
     .admin-filter-grid {
         grid-template-columns: 1fr !important;
     }
+    /* Perfil */
+    .profile-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    .profile-title {
+        font-size: 1.5rem !important;
+    }
+    main.container {
+        padding: 1rem !important;
+    }
 }
