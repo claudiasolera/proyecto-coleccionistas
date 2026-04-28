@@ -17,7 +17,7 @@ export async function initHeader() {
         } else if (role === 'admin') {
             html += `
                 <a href="/admin.html">PANEL ADMIN</a>
-                <a href="/src/pages/chat_admin.html">CENTRAL DE CHATS</a>
+                <a href="/src/pages/chat_admin.html">CHATS</a>
                 <a href="/src/pages/perfil.html">MI PERFIL</a>
             `;
         } else {
@@ -32,6 +32,18 @@ export async function initHeader() {
 
     // 1. Renderizado instantáneo
     nav.innerHTML = getNavHTML(userRole);
+
+    let hamburgerBtn = header.querySelector('.hamburger-btn');
+    if (!hamburgerBtn) {
+        hamburgerBtn = document.createElement('button');
+        hamburgerBtn.className = 'hamburger-btn';
+        hamburgerBtn.innerHTML = '☰';
+        header.insertBefore(hamburgerBtn, nav);
+        
+        hamburgerBtn.addEventListener('click', () => {
+            nav.classList.toggle('open');
+        });
+    }
 
     // 2. Marcar link activo
     const currentPath = window.location.pathname;

@@ -91,7 +91,6 @@ body {
     background-color: var(--clr-text);
     color: var(--clr-bg);
     padding: 1rem 2rem;
-    border-bottom: 4px solid var(--clr-primary);
     margin-bottom: 2rem;
     display: flex;
     justify-content: space-between;
@@ -99,7 +98,7 @@ body {
 }
 
 .site-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 2px;
     margin: 0;
@@ -143,4 +142,41 @@ body {
 :focus-visible {
     outline: 3px solid var(--clr-primary);
     outline-offset: 2px;
+}
+
+/* HAMBURGER MENU */
+.hamburger-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--clr-bg);
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+@media (max-width: 850px) {
+    .site-header {
+        position: relative;
+    }
+    .hamburger-btn {
+        display: block;
+    }
+    .site-nav {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--clr-text);
+        padding: 1rem;
+        border-top: none;
+        z-index: 1000;
+        gap: 1rem;
+        text-align: center;
+        align-items: center;
+    }
+    .site-nav.open {
+        display: flex;
+    }
 }
