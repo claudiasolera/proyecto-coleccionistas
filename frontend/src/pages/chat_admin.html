@@ -6,140 +6,68 @@
     <link rel="stylesheet" href="../css/variables.css">
     <link rel="stylesheet" href="../css/layout.css">
     <link rel="stylesheet" href="../css/components.css">
-<style>
-    .admin-chat-layout {
-        display: grid;
-        grid-template-columns: 350px 1fr;
-        height: 75vh;
-        gap: 1.5rem;
-        max-width: 100%;
-        margin: 1rem 2rem;
-    }
-    .user-list {
-        background: #fff;
-        border: 3px inset #808080;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-    }
-    .user-item {
-        padding: 1.2rem;
-        border-bottom: 1px dashed #ccc;
-        cursor: pointer;
-        font-family: var(--font-accent);
-        background: #f9f9f9;
-        transition: 0.1s;
-    }
-    .user-item:hover { background: #eef2ff; }
-    .user-item.active {
-        background: var(--clr-primary);
-        color: #fff;
-        border-left: 5px solid var(--clr-accent);
-    }
-    .chat-area {
-        display: flex;
-        flex-direction: column;
-        background: #c0c0c0;
-        border: 3px outset #fff;
-        overflow: hidden;
-    }
-    .win-title-bar {
-        background: linear-gradient(to right, #000080, #1084d0);
-        color: #fff;
-        padding: 4px 5px 4px 10px;
-        font-weight: bold;
-        font-family: var(--font-accent);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 2px solid #000;
-        text-shadow: 1px 1px #000;
-    }
-    .win-button {
-        width: 18px;
-        height: 16px;
-        background: #c0c0c0;
-        border: 2px outset #fff;
-        color: #000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        cursor: pointer;
-        font-family: 'Arial', sans-serif;
-        text-shadow: none;
-    }
-</style>
 </head>
-<body style="background-color: var(--clr-bg); display: flex; flex-direction: column; min-height: 100vh;">
+<body>
 
     <header class="site-header">
         <h1 class="site-title">Tienda de Coleccionistas</h1>
         <nav class="site-nav">
             <a href="/index.html">Catálogo</a>
-            <!-- Menú dinámico inyectado por header.js -->
         </nav>
     </header>
 
     <script type="module" src="../js/header.js"></script>
 
-    <main class="admin-chat-layout" style="padding: 0 2rem;">
-        <!-- Lista de Usuarios -->
+    <main class="admin-chat-layout" style="padding:0 2rem;">
+
         <aside class="user-list">
-            <div style="padding: 10px; background: #808080; color: #fff; font-weight: bold; font-size: 0.8rem;">
-                CONVERSACIONES ACTIVAS
-            </div>
-            <div id="users-items">
-                <!-- Se cargan por JS -->
-            </div>
+            <div class="user-list-header">CONVERSACIONES ACTIVAS</div>
+            <div id="users-items"></div>
         </aside>
 
-        <!-- Ventana de Chat -->
         <section class="chat-area">
-            <div class="win-title-bar">
-                <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
-                    <span style="font-size: 1.1rem; filter: sepia(1);">🗄️</span>
+            <div class="chat-titlebar">
+                <div style="display:flex; align-items:center; gap:8px; font-size:0.85rem;">
+                    <span style="font-size:1.1rem; filter:sepia(1);">🗄️</span>
                     <span id="user-info-bar">CENTRAL_DE_COMUNICACIONES.EXE - [ESPERANDO_CLIENTE]</span>
                 </div>
-                <div style="display: flex; gap: 2px;">
-                    <button class="win-button" style="padding-bottom: 4px;">_</button>
+                <div class="retro-titlebar-buttons">
+                    <button class="win-button" style="padding-bottom:4px;">_</button>
                     <button class="win-button">口</button>
-                    <button class="win-button" style="font-weight: bold;">X</button>
+                    <button class="win-button" style="font-weight:bold;">X</button>
                 </div>
             </div>
-            
+
             <div id="chat-window" class="chat-window">
-                <p style="color: #666; text-align: center; margin-top: 5rem; font-family: var(--font-accent); opacity: 0.5;">
+                <p style="color:#666; text-align:center; margin-top:5rem; font-family:var(--font-accent); opacity:0.5;">
                     [ COMUNICACIÓN NO INICIADA ]<br>Selecciona un usuario de la izquierda para responder...
                 </p>
             </div>
-            
-            <form id="admin-reply-form" style="padding: 1.5rem; display: flex; gap: 10px; background: #e5e5e5; border-top: 3px double #808080;">
-                <input type="text" id="admin-input" class="retro-input" style="flex: 1; margin-bottom: 0;" placeholder="Escribe tu respuesta oficial..." required disabled>
-                <button type="button" id="btn-attach" class="retro-button" title="Adjuntar Tesoro" style="background: #ffffcc; min-width: 45px; font-size: 1.2rem;" disabled>📎</button>
-                <button type="submit" id="btn-send" class="retro-button" style="padding: 0 25px;" disabled>RESPONDER</button>
+
+            <form id="admin-reply-form" class="admin-chat-form">
+                <input type="text" id="admin-input" class="retro-input" placeholder="Escribe tu respuesta oficial..." required disabled>
+                <button type="button" id="btn-attach" class="retro-button btn-attach" title="Adjuntar Tesoro" style="font-size:1.2rem;" disabled>📎</button>
+                <button type="submit" id="btn-send" class="retro-button" style="padding:0 25px;" disabled>RESPONDER</button>
             </form>
         </section>
+
     </main>
 
     <footer class="site-footer">
         <p>© 2026 EL BAZAR DEL COLECCIONISTA - BUSCANDO TESOROS DESDE 1990</p>
-        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">Terminal: COLEC_SYS_V2.0.1 | Conectado vía RT-Modem</p>
+        <p style="font-size:0.8rem; margin-top:0.5rem; opacity:0.7;">Terminal: COLEC_SYS_V2.0.1 | Conectado vía RT-Modem</p>
     </footer>
 
-    <!-- MODAL DE SELECCIÓN DE PRODUCTO (ADMIN) -->
-    <div id="product-modal" class="product-modal" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; align-items:center; justify-content:center;">
-        <div class="modal-body" style="background: #c0c0c0; border: 3px outset #fff; padding: 1rem; width: 450px; max-height: 80vh; overflow-y: auto; box-shadow: 10px 10px 0px rgba(0,0,0,0.5);">
-            <div style="background: var(--clr-primary); color: #fff; padding: 8px 15px; margin: -1rem -1rem 1rem -1rem; font-weight: bold; display: flex; justify-content: space-between; font-family: var(--font-accent); border-bottom: 2px solid #000;">
+    <div id="product-modal" class="product-modal">
+        <div class="modal-body">
+            <div class="modal-header">
                 <span>SELECCIONAR REGISTRO PARA ADJUNTAR</span>
-                <span id="close-modal" style="cursor: pointer;">[X]</span>
+                <span id="close-modal" style="cursor:pointer;">[X]</span>
             </div>
-            <div style="margin-bottom: 1rem;">
-                <input type="text" id="search-product-attach" class="retro-input" placeholder="BUSCAR EN CATÁLOGO..." style="width: 100%; font-size: 0.8rem; margin: 0;">
+            <div style="margin-bottom:1rem;">
+                <input type="text" id="search-product-attach" class="retro-input" placeholder="BUSCAR EN CATÁLOGO..." style="width:100%; font-size:0.8rem; margin:0;">
             </div>
-            <div id="product-list-attach">
-                <!-- Se carga por JS -->
-            </div>
+            <div id="product-list-attach"></div>
         </div>
     </div>
 

@@ -73,7 +73,20 @@ router.post('/register', async (req, res) => {
         res.status(201).json({ message: 'Registro completado. Verifica tu email.' })
     } catch (error) {
         console.error('ERROR EN REGISTRO:', error)
-        res.status(500).json({ message: error.message })
+        
+        const msg = error.message || ''
+        
+        if (msg.includes('users_email_key') || msg.includes('email')) {
+            return res.status(400).json({ message: 'Este email ya está registrado.' })
+        }
+        if (msg.includes('users_dni_key') || msg.includes('dni')) {
+            return res.status(400).json({ message: 'Este DNI ya está registrado.' })
+        }
+        if (msg.includes('users_phone_key') || msg.includes('phone')) {
+            return res.status(400).json({ message: 'Este teléfono ya está registrado.' })
+        }
+        
+        res.status(500).json({ message: 'Error al registrar. Inténtalo de nuevo.' })
     }
 })
 

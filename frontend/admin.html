@@ -7,75 +7,9 @@
     <link rel="stylesheet" href="src/css/variables.css">
     <link rel="stylesheet" href="src/css/layout.css">
     <link rel="stylesheet" href="src/css/components.css">
-    <style>
-        .tabs-container {
-            display: flex;
-            gap: 5px;
-            margin-bottom: -2px;
-            padding-left: 1rem;
-        }
-
-        .tab-button {
-            padding: 10px 20px;
-            background: #d0d0d0;
-            border: 2px solid #000;
-            border-bottom: none;
-            cursor: pointer;
-            font-family: var(--font-accent);
-            font-weight: bold;
-            text-transform: uppercase;
-            border-radius: 10px 10px 0 0;
-            transition: 0.2s;
-        }
-
-        .tab-button.active {
-            background: var(--clr-bg);
-            padding-top: 15px;
-            margin-top: -5px;
-            box-shadow: none;
-            position: relative;
-            z-index: 2;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .stock-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.8rem;
-        }
-
-        .stock-table th,
-        .stock-table td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .stock-table tr:nth-child(even) {
-            background: #f0f0f0;
-        }
-    </style>
 </head>
 
-<body style="background: var(--clr-bg);">
+<body>
 
     <header class="site-header">
         <h1 class="site-title">Tienda de Coleccionistas</h1>
