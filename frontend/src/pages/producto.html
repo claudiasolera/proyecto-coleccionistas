@@ -63,7 +63,7 @@
 
             <p id="product-description" class="product-description"></p>
 
-            <div class="product-actions">
+            <div class="product-actions" id="auth-actions">
                 <button 
                     id="btn-favourite" 
                     class="retro-button"
@@ -82,6 +82,12 @@
                     class="retro-button"
                     aria-label="Ask the seller">
                     ✉ Preguntar al Vendedor
+                </button>
+            </div>
+
+            <div id="guest-actions" style="display: none; margin-top: 2rem;">
+                <button id="btn-login-to-buy" class="retro-button" style="width: 100%; background: #ffffcc; border: 2px solid var(--clr-primary); padding: 1rem;">
+                    🔒 INICIA SESIÓN PARA COMPRAR O CONSULTAR
                 </button>
             </div>
         </section>

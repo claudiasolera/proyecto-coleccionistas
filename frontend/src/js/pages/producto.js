@@ -123,10 +123,22 @@ async function loadProduct() {
 
         // Podríamos añadir un botón de "EDITAR" aquí en el futuro
     } else if (!userId) {
-        btnBuy.innerText = 'ENTRA PARA COMPRAR'
-        btnBuy.onclick = () => window.location.href = `/login.html?redirect=${window.location.pathname}`
-        btnFav.onclick = () => window.location.href = `/login.html?redirect=${window.location.pathname}`
-        btnChat.onclick = () => window.location.href = `/login.html?redirect=${window.location.pathname}`
+        // Usuario no logueado: Ocultar acciones reales y mostrar aviso de login
+        const authActions = document.getElementById('auth-actions');
+        const guestActions = document.getElementById('guest-actions');
+        const btnLoginToBuy = document.getElementById('btn-login-to-buy');
+
+        if (authActions) authActions.style.display = 'none';
+        if (guestActions) guestActions.style.display = 'block';
+
+        if (btnLoginToBuy) {
+            btnLoginToBuy.onclick = () => {
+                // Guardamos dónde estábamos para volver después
+                // Usamos location.href completo por si hay hashes o queries
+                sessionStorage.setItem('redirectAfterLogin', window.location.href);
+                window.location.href = '/login.html';
+            };
+        }
     } else {
         const favorites = await getFavorites()
         const favEntry = favorites.find(f => f.product_id === product.id)

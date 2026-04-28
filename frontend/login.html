@@ -103,7 +103,14 @@
                 storage.setItem('userName', user.name)
                 storage.setItem('userRole', user.role)
 
-                window.location.href = redirect || 'index.html'
+                // Comprobar si tenemos una URL guardada de una ficha de producto
+                const savedRedirect = sessionStorage.getItem('redirectAfterLogin');
+                if (savedRedirect) {
+                    sessionStorage.removeItem('redirectAfterLogin'); // Limpiamos para que no se repita
+                    window.location.href = savedRedirect;
+                } else {
+                    window.location.href = redirect || 'index.html';
+                }
             } catch (err) {
                 errorMsg.style.display = 'block'
                 errorMsg.innerText = err.message
