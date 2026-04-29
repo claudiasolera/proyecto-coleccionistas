@@ -13,6 +13,8 @@ const productModal = document.getElementById('product-modal');
 const closeModal = document.getElementById('close-modal');
 const productListAttach = document.getElementById('product-list-attach');
 const searchInput = document.getElementById('search-product-attach');
+const btnBack = document.getElementById('btn-back-list');
+const adminChatLayout = document.querySelector('.admin-chat-layout');
 
 let activeUserId = null;
 let activeUserName = ''
@@ -23,6 +25,17 @@ async function init() {
     subscribeToMessages();
     if (searchInput) {
         searchInput.addEventListener('input', (e) => renderProductList(e.target.value));
+    }
+    if (btnBack) {
+        btnBack.onclick = () => {
+            adminChatLayout.classList.remove('chat-active');
+            activeUserId = null;
+            // Opcional: limpiar chat al volver
+            chatWindow.innerHTML = `
+                <p style="color:#666; text-align:center; margin-top:5rem; font-family:var(--font-accent); opacity:0.5;">
+                    [ COMUNICACIÓN NO INICIADA ]<br>Selecciona un usuario de la izquierda para responder...
+                </p>`;
+        };
     }
 }
 
@@ -63,6 +76,9 @@ window.selectUser = async (id, name) => {
     btnSend.disabled = false;
     btnAttach.disabled = false;
     adminInput.focus();
+
+    // Activar vista de chat en móvil
+    if (adminChatLayout) adminChatLayout.classList.add('chat-active');
 };
 
 async function loadHistory(userId) {

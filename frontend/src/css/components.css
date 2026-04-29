@@ -347,8 +347,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 20px; /* Separación de seguridad entre título y precio */
     font-family: var(--font-accent);
     transition: all 0.1s;
+}
+
+.product-select-item > div:first-child {
+    flex: 1;
+    min-width: 0; /* Permite que el contenedor del título se reduzca si es necesario */
 }
 
 .product-select-item:hover {
@@ -891,7 +897,7 @@ input[type="checkbox"]:checked::after {
     }
 
     .chat-window {
-        height: 72vh !important;
+        height: 65vh !important; /* Igual que en admin */
         padding: 0.75rem;
         gap: 0.5rem;
     }
@@ -925,12 +931,19 @@ input[type="checkbox"]:checked::after {
     }
 
     .chat-form {
-        padding: 0.75rem;
-        gap: 6px;
+        flex-wrap: wrap; /* Permite que los botones bajen si no hay espacio */
+        padding: 0.6rem;
+        gap: 5px;
     }
 
     .chat-form .retro-input {
+        min-width: 100%; /* El input ocupa todo el ancho arriba */
+        margin-bottom: 4px;
         font-size: 0.8rem;
+    }
+
+    .chat-form button[type="submit"] {
+        flex: 1; /* El botón de enviar ocupa el resto del espacio */
     }
 
     .chat-product-card-actions {
@@ -950,36 +963,53 @@ input[type="checkbox"]:checked::after {
     }
 
     .admin-chat-layout {
-        grid-template-columns: 1fr;
-        grid-template-rows: 130px 1fr;
+        display: flex !important;
+        flex-direction: column;
         height: auto;
-        min-height: 85vh;
+        min-height: 90vh;
         margin: 0.5rem !important;
         padding: 0 !important;
         gap: 0.5rem;
     }
 
     .user-list {
-        max-height: 130px;
+        max-height: none !important;
         overflow-y: auto;
-    }
-
-    .user-list-header {
-        padding: 4px 8px;
-        font-size: 0.7rem;
-    }
-
-    .user-item {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.72rem;
+        flex: 1;
+        display: block;
     }
 
     .chat-area {
-        min-height: 65vh;
+        display: none !important; /* Oculto por defecto en móvil */
+        min-height: 75vh;
+        flex: 1;
+    }
+
+    /* Estado de chat activo en móvil */
+    .admin-chat-layout.chat-active .user-list {
+        display: none !important;
+    }
+
+    .admin-chat-layout.chat-active .chat-area {
+        display: flex !important;
+    }
+
+    .admin-chat-layout.chat-active #btn-back-list {
+        display: block !important;
+    }
+
+    .user-list-header {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
+    .user-item {
+        padding: 1.2rem; /* Más grandes en móvil para facilitar el tap */
+        font-size: 0.85rem;
     }
 
     .chat-window {
-        height: 50vh !important;
+        height: 65vh !important;
     }
 
     .message-bubble {
@@ -1020,7 +1050,7 @@ input[type="checkbox"]:checked::after {
 
 @media (max-width: 480px) {
     .chat-window {
-        height: 50vh !important;
+        height: 65vh !important; /* Aumentado para consistencia */
         padding: 0.75rem;
     }
 
