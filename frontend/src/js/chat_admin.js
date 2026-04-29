@@ -15,6 +15,7 @@ const productListAttach = document.getElementById('product-list-attach');
 const searchInput = document.getElementById('search-product-attach');
 
 let activeUserId = null;
+let activeUserName = ''
 let allProducts = [];
 
 async function init() {
@@ -48,6 +49,7 @@ async function loadConversations() {
 
 window.selectUser = async (id, name) => {
     activeUserId = id;
+    activeUserName = name;
     if (infoBar) infoBar.innerText = `EXPEDIENTE: ${name.toUpperCase()}`;
     document.querySelectorAll('.user-item').forEach(i => i.classList.remove('active'));
     const item = document.getElementById(`user-item-${id}`);
@@ -97,7 +99,7 @@ async function loadHistory(userId) {
                         <div class="chat-product-card-title" style="font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 6px;">
                             ARCHIVO: ${p.name.toUpperCase()}
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
                             <span style="color: var(--clr-accent); font-weight: bold; font-size: 0.9rem;">${Number(p.price).toFixed(2)} €</span>
                             <div style="display: flex; gap: 5px; align-items: center;">
                                 ${reserveBtn}
@@ -110,13 +112,12 @@ async function loadHistory(userId) {
 
             return `
                 <div class="message-bubble ${bubbleClass}">
+                    <span class="message-header">&lt;${isMe ? 'ADMIN' : activeUserName}&gt;</span>
                     <div class="message-text">
                         ${m.text}
                         ${productHtml}
                     </div>
-                    <div class="message-footer" style="text-align: right; font-size: 0.65rem; opacity: 0.6; margin-top: 5px;">
-                        ${time}
-                    </div>
+                    <div class="message-footer" style="text-align:right; font-size:0.65rem; opacity:0.5; margin-top:4px;">${time}</div>
                 </div>
             `;
         }).join('');
@@ -192,7 +193,7 @@ function renderProductList(query = '') {
                         ${statusText}ARCHIVO: ${p.name.toUpperCase()}
                     </span>
                 </div>
-                <strong style="color: var(--clr-accent);">${Number(p.price).toFixed(2)} €</strong>
+                <strong style="color: var(--clr-accent); white-space: nowrap; flex-shrink: 0;">${Number(p.price).toFixed(2)} €</strong>
             </div>
         `;
     }).join('');

@@ -85,6 +85,7 @@ async function autoAttachProduct(pId) {
 
 async function loadHistory() {
     try {
+        const userName = localStorage.getItem('userName') || sessionStorage.getItem('userName') || 'Tú'
         const messages = await apiFetch(`/messages/history/${userId}`);
         chatWindow.innerHTML = messages.map(m => {
             const isMe = !m.is_from_admin && m.sender_id === userId;
@@ -99,23 +100,24 @@ async function loadHistory() {
                         <div class="chat-product-card-title" style="font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 6px;">
                             ARCHIVO: ${p.name.toUpperCase()}
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: var(--clr-accent); font-weight: bold; font-size: 0.9rem;">${Number(p.price).toFixed(2)} €</span>
+                        <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
+                        <span style="color: var(--clr-accent); font-weight: bold; font-size: 0.9rem;">${Number(p.price).toFixed(2)} €</span>
+                        <div style="display: flex; gap: 5px; align-items: center;">
                             <button class="retro-button" style="padding: 2px 8px; font-size: 0.65rem; min-width: auto; margin:0;">VER DETALLES</button>
                         </div>
+                    </div>
                     </div>
                 `;
             }
 
             return `
                 <div class="message-bubble ${bubbleClass}">
+                    <span class="message-header">&lt;${isMe ? userName : 'ADMIN'}&gt;</span>
                     <div class="message-text">
                         ${m.text}
                         ${productHtml}
                     </div>
-                    <div class="message-footer" style="text-align: right; font-size: 0.65rem; opacity: 0.6; margin-top: 5px;">
-                        ${time}
-                    </div>
+                    <div class="message-footer" style="text-align:right; font-size:0.65rem; opacity:0.5; margin-top:4px;">${time}</div>
                 </div>
             `;
         }).join('');
@@ -160,15 +162,13 @@ function renderProductList(query = '') {
         const favStar = isFav ? '<span style="color: #d63031; margin-right: 5px;">⭐</span>' : '';
 
         return `
-            <div class="product-select-item" onclick="sendProduct('${p.id}', '${p.name}')" 
-                style="gap: 10px; ${isFav ? 'border-left: 5px solid #d63031;' : ''}">
-                <div style="display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0;">
-                    ${favStar}
-                    <span style="font-family: var(--font-accent); word-break: break-word; line-height: 1.4;">
+            <div class="product-select-item" onclick="sendProduct('${p.id}', '${p.name}')">
+                <div style="display: flex; align-items: center;">
+                    <span style="font-family: var(--font-accent);">
                         ${statusText}ARCHIVO: ${p.name.toUpperCase()}
                     </span>
                 </div>
-                <strong style="color: var(--clr-accent); flex-shrink: 0; white-space: nowrap;">${Number(p.price).toFixed(2)} €</strong>
+                <strong style="color: var(--clr-accent); white-space: nowrap; flex-shrink: 0;">${Number(p.price).toFixed(2)} €</strong>
             </div>
         `;
     }).join('');

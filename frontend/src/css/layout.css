@@ -71,7 +71,8 @@ main, .main-layout, .container, .checkout-grid, .admin-chat-layout, .product-det
     .admin-chat-layout {
         grid-template-columns: 1fr;
         grid-template-rows: 180px 1fr;
-        height: 85vh;
+        height: auto;
+        min-height: 85vh;
         margin: 0.5rem;
         padding: 0.5rem !important;
         gap: 1rem;
