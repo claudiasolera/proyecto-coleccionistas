@@ -177,7 +177,30 @@ main, .main-layout, .container, .checkout-grid, .admin-chat-layout, .product-det
     to { transform: translateY(0); opacity: 1; }
 }
 
-@keyframes slideDown {
-    from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(100%); opacity: 0; }
-}
+
+/* ESTILOS DE IMPRESIÓN (PARA LA FACTURA) */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #invoice-modal, #invoice-modal *, #invoice-print-area, #invoice-print-area * {
+        visibility: visible;
+    }
+    #invoice-modal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border: none;
+        display: block !important;
+    }
+    .no-print, .retro-titlebar, .retro-titlebar-buttons {
+        display: none !important;
+    }
+    #invoice-print-area {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+}
