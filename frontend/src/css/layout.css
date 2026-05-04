@@ -203,4 +203,35 @@ main, .main-layout, .container, .checkout-grid, .admin-chat-layout, .product-det
         padding: 0 !important;
         margin: 0 !important;
     }
-}
+}
+
+/* ── LAYOUT PEDIDOS ADMIN ── */
+.orders-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 1.5rem;
+    min-height: 500px;
+}
+
+@media (max-width: 850px) {
+    .orders-layout {
+        display: block;
+    }
+
+    .orders-layout .order-detail-panel {
+        display: none;
+    }
+
+    .orders-layout.detail-active .order-list-panel {
+        display: none;
+    }
+
+    .orders-layout.detail-active .order-detail-panel {
+        display: block;
+        max-height: none;
+    }
+
+    .btn-back-orders {
+        display: block !important;
+    }
+}

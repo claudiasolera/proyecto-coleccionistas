@@ -25,11 +25,24 @@
     <main class="admin-main" style="width: 100%; padding: 2rem; margin: 0;">
 
         <div class="tabs-container">
-            <button class="tab-button active" onclick="showTab('product-tab', this)">📦 PRODUCTOS</button>
-            <button class="tab-button" onclick="showTab('category-tab', this)">🏷️ CATEGORÍAS</button>
-            <button class="tab-button" onclick="showTab('inventory-tab', this); refreshInventory();">📜
-                INVENTARIO</button>
-            <button class="tab-button" onclick="showTab('shipping-tab', this); refreshShipping();">🚚 ENVÍOS</button>
+            <button class="tab-button active" onclick="showTab('product-tab', this)">
+                📦 PRODUCTOS
+            </button>
+            <button class="tab-button" onclick="showTab('category-tab', this)">
+                🏷️ CATEGORÍAS
+            </button>
+            <button class="tab-button" onclick="showTab('inventory-tab', this); refreshInventory();">
+                📜 INVENTARIO
+            </button>
+            <button class="tab-button" onclick="showTab('shipping-tab', this); refreshShipping();">
+                🚚 ENVÍOS
+            </button>
+            <button class="tab-button" onclick="showTab('orders-tab', this); window._pedidosInit && window._pedidosInit();" style="position: relative;">
+                🧾 PEDIDOS
+                <span id="orders-badge" class="orders-badge">
+                    0
+                </span>
+            </button>
         </div>
 
         <div class="retro-container"
@@ -227,6 +240,32 @@
                             </ul>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- PEDIDOS -->
+            <div id="orders-tab" class="tab-content">
+                <h2>Gestión de Pedidos</h2>
+                <p style="font-family: var(--font-accent); font-size: 0.8rem; margin-bottom: 1.5rem; opacity: 0.7;">
+                    SISTEMA DE SEGUIMIENTO Y LOGÍSTICA DE VENTAS
+                </p>
+
+                <div id="orders-layout" class="orders-layout">
+
+                    <div class="order-list-panel">
+                        <div class="order-list-panel-header">REGISTRO DE PEDIDOS</div>
+                        <div id="orders-list" class="order-list-scroll">
+                            <p class="order-detail-empty">Cargando...</p>
+                        </div>
+                    </div>
+
+                    <div id="order-detail-panel" class="order-detail-panel">
+                        <p class="order-detail-empty">
+                            [ SELECCIONA UN PEDIDO ]<br>
+                            <span style="font-size: 0.7rem;">Haz click en un pedido de la izquierda para ver su ficha</span>
+                        </p>
+                    </div>
+
                 </div>
             </div>
 
@@ -719,6 +758,16 @@
 
         refreshData();
     </script>
+
+    <script type="module">
+        import { initPedidos, loadOrders } from './src/js/pages/admin/admin_pedidos.js';
+        initPedidos().then(() => {
+            window._pedidosInit = loadOrders;
+        });
+    </script>
+
 </body>
+
+
 
 </html>

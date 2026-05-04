@@ -1142,3 +1142,236 @@ input[type="checkbox"]:checked::after {
         padding: 3px 8px;
     }
 }
+
+/* ── PEDIDOS ADMIN ── */
+.orders-badge {
+    display: none;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: red;
+    color: #fff;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.6rem;
+    font-weight: bold;
+    border: 2px solid #000;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-accent);
+}
+
+.order-list-item {
+    padding: 12px;
+    border-bottom: 1px dashed #ccc;
+    cursor: pointer;
+    background: #fff;
+    transition: background 0.15s;
+}
+
+.order-list-item:hover {
+    background: #f0f0f0;
+}
+
+.order-list-item.active {
+    background: #f0f0f0;
+}
+
+.order-list-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-list-item-name {
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.order-status-badge {
+    font-size: 0.6rem;
+    border: 1px solid #000;
+    padding: 1px 5px;
+    font-family: var(--font-accent);
+    white-space: nowrap;
+}
+
+.order-list-item-meta {
+    font-size: 0.72rem;
+    opacity: 0.7;
+    margin-top: 3px;
+    font-family: var(--font-accent);
+}
+
+.order-new-label {
+    font-size: 0.6rem;
+    color: red;
+    font-weight: bold;
+    font-family: var(--font-accent);
+}
+
+.order-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #000;
+}
+
+.order-detail-id {
+    font-size: 0.65rem;
+    font-family: var(--font-accent);
+    opacity: 0.6;
+    margin-bottom: 4px;
+}
+
+.order-detail-title {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.order-detail-date {
+    font-size: 0.75rem;
+    opacity: 0.6;
+    margin-top: 3px;
+    font-family: var(--font-accent);
+}
+
+.order-section-title {
+    font-size: 0.75rem;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+    font-family: var(--font-accent);
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.order-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px dashed #eee;
+    font-size: 0.85rem;
+}
+
+.order-total-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+.order-tracking-box {
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: #d1e3ff;
+    border: 1px solid #000;
+    font-size: 0.75rem;
+    font-family: monospace;
+}
+
+.order-client-data {
+    font-size: 0.85rem;
+    line-height: 1.8;
+    font-family: var(--font-accent);
+}
+
+.order-action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.order-action-btn {
+    width: 100%;
+    border: 2px solid #000;
+    padding: 10px;
+    font-size: 0.85rem;
+}
+
+.order-action-btn-preparing { background: #fff3cd; }
+.order-action-btn-ready     { background: #bbf7d0; }
+.order-action-btn-shipped   { background: #d1e3ff; }
+.order-action-btn-completed { background: #e2e2e2; }
+
+.order-completed-notice {
+    text-align: center;
+    padding: 10px;
+    font-family: var(--font-accent);
+    font-size: 0.8rem;
+    opacity: 0.6;
+    border: 1px dashed #ccc;
+}
+
+.order-tracking-form {
+    border: 2px solid #000;
+    padding: 12px;
+    background: #f9f9f9;
+}
+
+.order-tracking-form label {
+    font-size: 0.8rem;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+    font-family: var(--font-accent);
+}
+
+.order-tracking-form .retro-input {
+    margin-bottom: 8px;
+    height: 38px;
+    font-family: monospace;
+    text-transform: uppercase;
+}
+
+.order-tracking-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.order-list-panel {
+    border: 2px solid #000;
+    overflow: hidden;
+}
+
+.order-list-panel-header {
+    background: #000;
+    color: #fff;
+    padding: 8px 12px;
+    font-family: var(--font-accent);
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+.order-list-scroll {
+    overflow-y: auto;
+    max-height: 560px;
+}
+
+.order-detail-panel {
+    border: 2px solid #000;
+    padding: 1.5rem;
+    background: #fff;
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.order-detail-empty {
+    text-align: center;
+    padding: 3rem;
+    opacity: 0.4;
+    font-family: var(--font-accent);
+    font-size: 0.85rem;
+}
+
+/* status colors — reutilizados via JS */
+.order-status-paid      { background: #90ee90; }
+.order-status-preparing { background: #fff3cd; }
+.order-status-ready     { background: #bbf7d0; }
+.order-status-shipped   { background: #d1e3ff; }
+.order-status-completed { background: #e2e2e2; }

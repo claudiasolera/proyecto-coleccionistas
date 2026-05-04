@@ -28,7 +28,7 @@ router.post('/create-checkout-session', async (req, res) => {
                 },
             ],
             mode: 'payment',
-            success_url: `http://localhost:3000/src/pages/producto.html#id=${product_id}&success=true`,
+            success_url: `http://localhost:3000/src/pages/perfil.html?success=true`,
             cancel_url: `http://localhost:3000/src/pages/checkout.html#id=${product_id}`,
             metadata: {
                 product_id,
