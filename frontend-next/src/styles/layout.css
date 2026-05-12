@@ -1,0 +1,237 @@
+/* ESTRUCTURA GLOBAL */
+main, .main-layout, .container, .checkout-grid, .admin-chat-layout, .product-detail-layout {
+    flex: 1;
+}
+
+.main-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 100%;
+    width: 100%;
+}
+
+.sidebar {
+    position: sticky;
+    top: 2rem;
+}
+
+.catalogue {
+    min-height: 80vh;
+}
+
+/* GRILLAS */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+/* DETALLE DE PRODUCTO */
+.product-detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 3rem;
+    padding: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+    align-items: start;
+}
+
+.product-gallery > .carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5; /* Gris muy suave para dar profundidad */
+    border: var(--border-width) solid var(--clr-border);
+    box-shadow: var(--shadow-retro);
+    height: 500px; /* Altura más equilibrada */
+    position: relative;
+    overflow: hidden;
+}
+
+.product-gallery > .carousel img#main-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Evita que se corte la imagen */
+    display: block;
+}
+
+/* RESPONSIVE LAYOUTS */
+@media (max-width: 850px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+    .sidebar {
+        position: relative;
+        top: 0;
+    }
+    .admin-chat-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: 180px 1fr;
+        height: auto;
+        min-height: 85vh;
+        margin: 0.5rem;
+        padding: 0.5rem !important;
+        gap: 1rem;
+    }
+    .checkout-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+        padding: 1rem !important;
+    }
+    .checkout-grid > aside {
+        order: -1;
+    }
+    .checkout-grid > section {
+        order: 1;
+    }
+    .product-detail-layout {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+    .product-gallery > .carousel {
+        height: 350px;
+    }
+}
+
+/* ADMIN PANEL RESPONSIVE (< 600px) */
+@media (max-width: 600px) {
+    .admin-main {
+        padding: 1rem !important;
+    }
+    .tabs-container {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-top: 5px;
+        padding-bottom: 2px;
+    }
+    /* Hide scrollbar for clean look */
+    .tabs-container::-webkit-scrollbar {
+        display: none;
+    }
+    .hamburger-btn {
+        display: block !important;
+        background: none;
+        border: none;
+        color: var(--clr-bg);
+        font-size: 1.8rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        position: relative;
+    }
+    .tab-button {
+        flex: 0 0 auto;
+        font-size: 0.8rem;
+        padding: 10px 15px;
+        text-align: center;
+    }
+    .admin-form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    .admin-filter-grid {
+        grid-template-columns: 1fr !important;
+    }
+    /* Perfil */
+    .profile-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    .profile-title,
+    .fav-header h1 {
+        font-size: 1.5rem !important;
+    }
+    main.container {
+        padding: 1rem !important;
+    }
+}
+
+/* NOTIFICACIONES RESPONSIVE (< 500px) */
+@media (max-width: 500px) {
+    .retro-notification-container {
+        right: auto !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        bottom: 20px !important;
+        width: 90% !important;
+        align-items: center !important;
+    }
+    .retro-notification {
+        min-width: 0 !important;
+        width: 100% !important;
+        animation: slideUp 0.3s ease-out !important;
+        padding: 12px 20px !important;
+        box-shadow: 4px 4px 0px rgba(0,0,0,0.2) !important;
+    }
+    .retro-notification-fade-out {
+        animation: slideDown 0.3s ease-in forwards !important;
+    }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+
+/* ESTILOS DE IMPRESIÓN (PARA LA FACTURA) */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #invoice-modal, #invoice-modal *, #invoice-print-area, #invoice-print-area * {
+        visibility: visible;
+    }
+    #invoice-modal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border: none;
+        display: block !important;
+    }
+    .no-print, .retro-titlebar, .retro-titlebar-buttons {
+        display: none !important;
+    }
+    #invoice-print-area {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+}
+
+/* ── LAYOUT PEDIDOS ADMIN ── */
+.orders-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 1.5rem;
+    min-height: 500px;
+}
+
+@media (max-width: 850px) {
+    .orders-layout {
+        display: block;
+    }
+
+    .orders-layout .order-detail-panel {
+        display: none;
+    }
+
+    .orders-layout.detail-active .order-list-panel {
+        display: none;
+    }
+
+    .orders-layout.detail-active .order-detail-panel {
+        display: block;
+        max-height: none;
+    }
+
+    .btn-back-orders {
+        display: block !important;
+    }
+}

@@ -1,0 +1,28 @@
+@import '../styles/variables.css';
+@import '../styles/main.css';
+@import '../styles/layout.css';
+@import '../styles/components.css';
+
+/* Estilos adicionales para Next.js */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  min-height: calc(100vh - 140px);
+}
+
+.cart-badge,
+.unread-badge {
+  background: red;
+  color: white;
+  border-radius: 50%;
+  padding: 1px 5px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  border: 2px solid #000;
+  position: absolute;
+  top: -6px;
+  right: -8px;
+}
