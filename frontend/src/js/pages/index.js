@@ -1,6 +1,7 @@
 import { getProducts } from '../api/productos.js'
 import { addFavorite, getFavorites, removeFavorite } from '../api/favoritos.js'
 import { showNotification } from '../utils.js'
+import { addToCart, isInCart } from '../carrito.js'
 
 const grid = document.getElementById('products-grid')
 const btnFilter = document.getElementById('btn-filter')
@@ -69,12 +70,19 @@ function renderProducts(products) {
                     </p>
                 </div>
                 
-                <div style="display: flex; gap: 8px; margin-top: 10px; align-items: stretch;">
-                    <a href="/src/pages/producto.html#id=${p.id}" class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 0; height: 44px; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+                <div style="display: flex; gap: 8px; margin-top: 10px; align-items: stretch; flex-wrap:wrap;">
+                    <a href="/src/pages/producto.html#id=${p.id}" class="retro-button" style="flex: 1; font-size: 0.8rem; padding: 0; height: 44px; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box; min-width:80px;">
                         VER DETALLES
                     </a>
                     ${userRole === 'admin' ? '' : `
-                        <button class="retro-button" 
+                        ${p.status !== 'sold' ? `
+                        <button class="retro-button btn-add-cart-${p.id}"
+                                style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; padding:0; flex-shrink:0; box-sizing:border-box; background:${isInCart(p.id) ? '#90ee90' : '#ffffcc'}; title='${isInCart(p.id) ? 'En bolsa' : 'Añadir a la bolsa'}';"
+                                onclick="event.stopPropagation(); window.handleCart('${p.id}', this)">
+                            ${isInCart(p.id) ? '🛒' : '＋'}
+                        </button>
+                        ` : ''}
+                        <button class="retro-button"
                                 style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: ${fav ? '#d63031' : 'inherit'}; padding: 0; flex-shrink: 0; box-sizing: border-box;"
                                 onclick="event.stopPropagation(); window.handleFavorite('${p.id}')">
                             ${fav ? '♥' : '♡'}
@@ -85,6 +93,30 @@ function renderProducts(products) {
         </article>
     `}).join('')
 }
+
+window.handleCart = async (productId, btn) => {
+    const userRole = localStorage.getItem('userRole');
+    if (userRole === 'admin') return;
+    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+    if (!userId) {
+        window.location.href = `/login.html?redirect=${window.location.pathname}`;
+        return;
+    }
+    try {
+        const res = await fetch(`http://localhost:3000/api/products/${productId}`);
+        const product = await res.json();
+        const added = addToCart(product);
+        if (added) {
+            btn.textContent = '🛒';
+            btn.style.background = '#90ee90';
+            showNotification('Añadido a la bolsa', 'success');
+        } else {
+            window.location.href = '/src/pages/carrito.html';
+        }
+    } catch (err) {
+        showNotification('Error al añadir al carrito', 'error');
+    }
+};
 
 window.handleFavorite = async (productId) => {
     const userRole = localStorage.getItem('userRole');
@@ -184,10 +216,14 @@ btnFilter.addEventListener('click', () => {
     const category = selectCategory.value
     const search = document.getElementById('search').value
     const sort = document.getElementById('sort').value
+    const minPrice = document.getElementById('price-min').value
+    const maxPrice = document.getElementById('price-max').value
 
     if (category) filters.category = category
     if (search) filters.search = search
     if (sort) filters.sort = sort
+    if (minPrice) filters.min_price = minPrice
+    if (maxPrice) filters.max_price = maxPrice
 
     loadProducts(filters)
 })
@@ -196,6 +232,8 @@ btnClear.addEventListener('click', () => {
     selectCategory.value = ''
     document.getElementById('search').value = ''
     document.getElementById('sort').value = 'newest'
+    document.getElementById('price-min').value = ''
+    document.getElementById('price-max').value = ''
     updateCategoryFavUI()
     loadProducts({ sort: 'newest' })
 })

@@ -1,4 +1,5 @@
 import { apiFetch } from './utils.js';
+import { getCartCount } from './carrito.js';
 
 export async function initHeader() {
     const header = document.querySelector('.site-header');
@@ -9,11 +10,19 @@ export async function initHeader() {
 
     const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
     const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole')
-    
+
+    const cartCount = getCartCount();
+    const cartBadge = cartCount > 0
+        ? `<span style="background:red;color:#fff;border-radius:50%;padding:1px 5px;font-size:0.6rem;margin-left:4px;border:1px solid #000;vertical-align:top;">${cartCount}</span>`
+        : '';
+
     const getNavHTML = (role) => {
         let html = `<a href="/index.html">Catálogo</a>`;
         if (!userId) {
-            html += `<a href="/login.html" class="nav-highlight">ENTRAR</a>`;
+            html += `
+                <a href="/src/pages/carrito.html" id="nav-cart-link" style="position:relative;">🛒${cartBadge}</a>
+                <a href="/login.html" class="nav-highlight">ENTRAR</a>
+            `;
         } else if (role === 'admin') {
             html += `
                 <a href="/admin.html">PANEL ADMIN</a>
@@ -22,6 +31,7 @@ export async function initHeader() {
             `;
         } else {
             html += `
+                <a href="/src/pages/carrito.html" id="nav-cart-link" style="position:relative;">🛒${cartBadge}</a>
                 <a href="/src/pages/chat.html">CHAT</a>
                 <a href="/src/pages/favoritos.html">FAVORITOS</a>
                 <a href="/src/pages/perfil.html">MI PERFIL</a>
@@ -119,6 +129,21 @@ export async function initHeader() {
         updateBadges();
         setInterval(updateBadges, 15000);
     }
+
+    // Actualizar badge del carrito cuando cambia
+    window.addEventListener('cartUpdated', (e) => {
+        const cartLink = nav.querySelector('#nav-cart-link');
+        if (!cartLink) return;
+        const oldBadge = cartLink.querySelector('span');
+        if (oldBadge) oldBadge.remove();
+        const count = e.detail?.count || 0;
+        if (count > 0) {
+            const badge = document.createElement('span');
+            badge.style = 'background:red;color:#fff;border-radius:50%;padding:1px 5px;font-size:0.6rem;margin-left:4px;border:1px solid #000;vertical-align:top;';
+            badge.textContent = count;
+            cartLink.appendChild(badge);
+        }
+    });
 }
 
 initHeader();

@@ -1,6 +1,7 @@
 import { getProduct } from '../api/productos.js'
 import { addFavorite, getFavorites, removeFavorite } from '../api/favoritos.js'
 import { showNotification, apiFetch } from '../utils.js'
+import { addToCart, isInCart } from '../carrito.js'
 
 // Intentamos obtener el ID de la query (?) o del hash (#)
 const params = new URLSearchParams(window.location.search)
@@ -112,16 +113,18 @@ async function loadProduct() {
     const btnBuy = document.getElementById('btn-buy');
     const btnFav = document.getElementById('btn-favourite');
     const btnChat = document.getElementById('btn-chat');
+    const btnCartEl = document.getElementById('btn-cart');
     const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
     const userRole = localStorage.getItem('userRole');
 
+    // Sección vendedor (siempre visible)
+    loadSellerInfo(product);
+
     if (userRole === 'admin') {
-        // El administrador no compra, ni pregunta, ni guarda favoritos
         btnBuy.style.display = 'none';
         btnFav.style.display = 'none';
         btnChat.style.display = 'none';
-
-        // Podríamos añadir un botón de "EDITAR" aquí en el futuro
+        if (btnCartEl) btnCartEl.style.display = 'none';
     } else if (!userId) {
         // Usuario no logueado: Ocultar acciones reales y mostrar aviso de login
         const authActions = document.getElementById('auth-actions');
@@ -173,6 +176,26 @@ async function loadProduct() {
 
         btnChat.onclick = () => location.href = `chat.html#productId=${product.id}`;
 
+        // Botón carrito
+        if (btnCartEl) {
+            const updateCartBtn = () => {
+                const inCart = isInCart(product.id);
+                btnCartEl.textContent = inCart ? '🛒 EN TU BOLSA' : '＋ AÑADIR A LA BOLSA';
+                btnCartEl.style.background = inCart ? '#90ee90' : '#ffffcc';
+            };
+            updateCartBtn();
+            btnCartEl.onclick = () => {
+                if (isInCart(product.id)) {
+                    window.location.href = '/src/pages/carrito.html';
+                } else {
+                    addToCart(product);
+                    showNotification('Añadido a la bolsa', 'success');
+                    updateCartBtn();
+                }
+            };
+            window.addEventListener('cartUpdated', updateCartBtn);
+        }
+
         if (product.status === 'sold') {
             btnBuy.disabled = true;
             btnBuy.style.background = '#ccc';
@@ -193,6 +216,54 @@ async function loadProduct() {
     }
 
     document.title = `${product.name} — Tienda de Coleccionistas`
+}
+
+async function loadSellerInfo(product) {
+    const section = document.getElementById('seller-section');
+    if (!section) return;
+
+    try {
+        // Buscar el admin (el vendedor de la tienda)
+        const res = await fetch('http://localhost:3000/api/users?role=admin');
+        let sellerId = null;
+        let sellerName = 'El Bazar del Coleccionista';
+
+        if (res.ok) {
+            const users = await res.json();
+            const admin = users.find(u => u.role === 'admin');
+            if (admin) {
+                sellerId = admin.id;
+                sellerName = admin.name ? `${admin.name} ${admin.last_name || ''}`.trim() : sellerName;
+            }
+        }
+
+        document.getElementById('seller-name').textContent = sellerName;
+        document.getElementById('seller-stars').innerHTML = renderStars(4.8);
+        document.getElementById('seller-reviews').textContent = 'Vendedor verificado · Miembro fundador';
+
+        if (sellerId) {
+            document.getElementById('seller-link').href = `/src/pages/vendedor.html?id=${sellerId}`;
+        } else {
+            document.getElementById('seller-link').style.display = 'none';
+        }
+
+        section.style.display = 'block';
+    } catch (err) {
+        console.warn('No se pudo cargar la info del vendedor');
+    }
+}
+
+function renderStars(rating) {
+    const full = Math.floor(rating);
+    const half = rating % 1 >= 0.5;
+    let html = '';
+    for (let i = 0; i < 5; i++) {
+        if (i < full) html += '<span class="star star-full">★</span>';
+        else if (i === full && half) html += '<span class="star star-half">★</span>';
+        else html += '<span class="star star-empty">☆</span>';
+    }
+    html += `<span style="font-family:var(--font-accent); font-size:0.75rem; margin-left:6px; vertical-align:middle;">${rating.toFixed(1)}</span>`;
+    return html;
 }
 
 loadProduct()

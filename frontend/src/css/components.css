@@ -1375,3 +1375,189 @@ input[type="checkbox"]:checked::after {
 .order-status-ready     { background: #bbf7d0; }
 .order-status-shipped   { background: #d1e3ff; }
 .order-status-completed { background: #e2e2e2; }
+
+/* ── CARRITO ── */
+.cart-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 2rem;
+    align-items: start;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px dashed #ccc;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+/* ── PERFIL VENDEDOR ── */
+.seller-card {
+    background: var(--clr-panel);
+}
+
+.seller-avatar {
+    width: 52px;
+    height: 52px;
+    background: var(--clr-primary);
+    color: #fff;
+    font-family: var(--font-accent);
+    font-size: 0.65rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.3;
+    border: 2px solid #000;
+    flex-shrink: 0;
+}
+
+.seller-avatar-big {
+    width: 88px;
+    height: 88px;
+    background: var(--clr-primary);
+    color: #fff;
+    font-family: var(--font-accent);
+    font-size: 2.2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #000;
+    box-shadow: var(--shadow-retro);
+    flex-shrink: 0;
+}
+
+.stat-box {
+    background: #f9f9f9;
+    border: 2px solid var(--clr-border);
+    padding: 0.75rem 1rem;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: var(--font-accent);
+    margin-bottom: 0.2rem;
+}
+
+.stat-label {
+    font-size: 0.62rem;
+    font-family: var(--font-accent);
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ── ESTRELLAS DE VALORACIÓN ── */
+.star-rating { display: inline-flex; align-items: center; gap: 2px; }
+.star        { font-size: 1rem; }
+.star-full   { color: #f39c12; }
+.star-half   { color: #f39c12; opacity: 0.6; }
+.star-empty  { color: #ccc; }
+
+/* ── CHAT USUARIO — LAYOUT CON SIDEBAR ── */
+.chat-user-layout {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    height: 75vh;
+    gap: 1.5rem;
+    max-width: 100%;
+    margin: 1rem 2rem;
+}
+
+.chat-thread-list {
+    background: #fff;
+    border: 3px inset #808080;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-thread-list-header {
+    padding: 8px 12px;
+    background: #808080;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.8rem;
+    font-family: var(--font-accent);
+    flex-shrink: 0;
+}
+
+.thread-item {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px dashed #ccc;
+    cursor: pointer;
+    font-family: var(--font-accent);
+    background: #f9f9f9;
+    transition: background 0.1s;
+}
+
+.thread-item:hover { background: #eef2ff; }
+
+.thread-item.active {
+    background: var(--clr-primary);
+    color: #fff;
+    border-left: 4px solid var(--clr-accent);
+}
+
+.thread-item-title {
+    font-weight: bold;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.thread-item-meta {
+    font-size: 0.65rem;
+    opacity: 0.7;
+    margin-top: 3px;
+}
+
+.thread-item.active .thread-item-meta {
+    opacity: 0.85;
+}
+
+/* ── RESPONSIVE CARRITO Y VENDEDOR ── */
+@media (max-width: 700px) {
+    .cart-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── RESPONSIVE CHAT USUARIO ── */
+@media (max-width: 768px) {
+    .chat-user-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 85vh;
+        margin: 0.5rem;
+        gap: 0.5rem;
+    }
+
+    .chat-thread-list {
+        flex-direction: row;
+        max-height: 56px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .thread-item {
+        min-width: 130px;
+        border-bottom: none;
+        border-right: 1px dashed #ccc;
+        padding: 0.5rem 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .chat-user-layout .chat-window {
+        height: 60vh !important;
+    }
+}

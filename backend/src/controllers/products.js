@@ -19,7 +19,7 @@ export async function checkExpiredReservations() {
 
 export async function getProducts(req, res) {
     await checkExpiredReservations();
-    const { category, search, sort } = req.query
+    const { category, search, sort, min_price, max_price } = req.query
 
     let query = supabase
         .from('active_products')
@@ -27,6 +27,8 @@ export async function getProducts(req, res) {
 
     if (category) query = query.eq('category_id', category)
     if (search) query = query.ilike('name', `%${search}%`)
+    if (min_price) query = query.gte('price', parseFloat(min_price))
+    if (max_price) query = query.lte('price', parseFloat(max_price))
 
     if (sort === 'oldest') {
         query = query.order('published_at', { ascending: true })

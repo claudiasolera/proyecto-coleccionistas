@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil del Vendedor - El Bazar</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <h1 class="site-title">Tienda de Coleccionistas</h1>
+        <nav class="site-nav">
+            <a href="/index.html">Catálogo</a>
+        </nav>
+    </header>
+
+    <script type="module" src="../js/header.js"></script>
+
+    <main class="container" style="max-width:1000px; width:100%; padding:2rem; margin:0 auto; box-sizing:border-box;">
+
+        <!-- CABECERA DEL VENDEDOR -->
+        <div class="retro-container" style="padding:0; overflow:hidden; margin-bottom:2rem;">
+            <div class="retro-titlebar" style="margin:0;">
+                <span>🏪 FICHA_VENDEDOR.EXE — Perfil Público</span>
+                <div class="retro-titlebar-buttons">
+                    <button class="win-button">口</button>
+                    <button class="win-button" style="font-weight:bold;" onclick="history.back()">X</button>
+                </div>
+            </div>
+
+            <div id="seller-header" style="padding:2rem; display:flex; gap:2rem; align-items:center; flex-wrap:wrap;">
+                <div id="seller-avatar-big" class="seller-avatar-big">?</div>
+                <div style="flex:1; min-width:200px;">
+                    <h1 id="seller-display-name" style="font-size:1.5rem; margin-bottom:0.5rem;"></h1>
+                    <div id="seller-rating-display" style="margin-bottom:0.5rem;"></div>
+                    <p id="seller-meta" style="font-family:var(--font-accent); font-size:0.8rem; opacity:0.65;"></p>
+                    <div id="seller-badges" style="display:flex; gap:0.5rem; margin-top:0.75rem; flex-wrap:wrap;"></div>
+                </div>
+                <div id="seller-stats" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; text-align:center;">
+                    <div class="stat-box">
+                        <p id="stat-products" class="stat-number">—</p>
+                        <p class="stat-label">Artículos</p>
+                    </div>
+                    <div class="stat-box">
+                        <p id="stat-sales" class="stat-number">—</p>
+                        <p class="stat-label">Ventas</p>
+                    </div>
+                    <div class="stat-box">
+                        <p id="stat-rating" class="stat-number">—</p>
+                        <p class="stat-label">Valoración</p>
+                    </div>
+                    <div class="stat-box">
+                        <p id="stat-since" class="stat-number">—</p>
+                        <p class="stat-label">Miembro desde</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS: PRODUCTOS / VALORACIONES -->
+        <div class="fav-tabs" style="margin-top:0;">
+            <button class="fav-tab active" id="tab-productos">ESCAPARATE</button>
+            <button class="fav-tab" id="tab-valoraciones">VALORACIONES</button>
+        </div>
+
+        <section class="retro-container fav-archive" style="min-height:400px;">
+
+            <!-- PESTAÑA ESCAPARATE -->
+            <div id="content-productos" class="tab-content">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.5rem;">
+                    <h2 style="font-size:1rem; font-family:var(--font-accent); text-transform:uppercase; letter-spacing:1px;">
+                        ARTÍCULOS EN VENTA
+                    </h2>
+                    <input type="text" id="seller-search" class="retro-input" placeholder="Buscar en escaparate..."
+                        style="width:220px; margin-bottom:0;">
+                </div>
+                <div id="seller-products-grid" class="products-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));">
+                    <p style="opacity:0.5; font-family:var(--font-accent);">Cargando artículos...</p>
+                </div>
+            </div>
+
+            <!-- PESTAÑA VALORACIONES -->
+            <div id="content-valoraciones" class="tab-content" style="display:none;">
+                <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-bottom:2rem; align-items:center;">
+                    <div style="text-align:center;">
+                        <p id="big-rating" style="font-size:3rem; font-family:var(--font-accent); font-weight:bold; line-height:1;">4.8</p>
+                        <div id="big-stars" style="font-size:1.3rem; margin:0.25rem 0;"></div>
+                        <p style="font-family:var(--font-accent); font-size:0.75rem; opacity:0.6;">Puntuación media</p>
+                    </div>
+                    <div id="rating-bars" style="flex:1; min-width:200px;"></div>
+                </div>
+                <div id="reviews-list">
+                    <p style="text-align:center; opacity:0.5; padding:2rem; font-family:var(--font-accent);">
+                        [ Sin valoraciones todavía ]
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>© 2026 EL BAZAR DEL COLECCIONISTA - BUSCANDO TESOROS DESDE 1990</p>
+        <p style="font-size:0.8rem; margin-top:0.5rem; opacity:0.7;">Terminal: COLEC_SYS_V2.0.1 | Conectado vía RT-Modem</p>
+    </footer>
+
+    <script type="module" src="../js/pages/vendedor.js"></script>
+</body>
+</html>

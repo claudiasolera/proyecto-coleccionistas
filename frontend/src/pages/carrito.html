@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Bolsa - El Bazar del Coleccionista</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <h1 class="site-title">Tienda de Coleccionistas</h1>
+        <nav class="site-nav">
+            <a href="/index.html">Catálogo</a>
+        </nav>
+    </header>
+
+    <script type="module" src="../js/header.js"></script>
+
+    <main class="container" style="max-width:900px; width:100%; padding:2rem; margin:0 auto; box-sizing:border-box;">
+
+        <div style="margin-bottom:2rem;">
+            <h1 style="font-family:var(--font-accent); border-bottom:3px solid var(--clr-primary); display:inline-block; padding-bottom:4px;">
+                🛒 MI BOLSA DE COMPRA
+            </h1>
+            <p style="font-family:var(--font-accent); font-size:0.85rem; margin-top:0.5rem; opacity:0.7;">
+                CART_SYSTEM.EXE — Artículos seleccionados para adquisición
+            </p>
+        </div>
+
+        <div class="cart-layout">
+            <!-- LISTA DE ARTÍCULOS -->
+            <section class="retro-container" style="padding:0; overflow:hidden;">
+                <div class="retro-titlebar" style="margin:0;">
+                    <span>📦 ARTÍCULOS EN BOLSA</span>
+                    <div class="retro-titlebar-buttons">
+                        <button class="win-button">口</button>
+                    </div>
+                </div>
+                <div id="cart-items" style="padding:1.5rem; min-height:200px;">
+                    <p style="text-align:center; padding:3rem; opacity:0.5; font-family:var(--font-accent);">
+                        Cargando artículos...
+                    </p>
+                </div>
+                <div style="padding:1rem 1.5rem; border-top:2px dashed #ccc; background:#f9f9f9; display:flex; justify-content:space-between; align-items:center;">
+                    <button id="btn-clear-cart" class="retro-button" style="font-size:0.75rem; background:#ffd0d0; border-color:var(--clr-border);">
+                        VACIAR BOLSA
+                    </button>
+                    <a href="/index.html" class="retro-button" style="font-size:0.75rem; text-decoration:none; display:inline-flex; align-items:center;">
+                        ← SEGUIR COMPRANDO
+                    </a>
+                </div>
+            </section>
+
+            <!-- RESUMEN DEL PEDIDO -->
+            <aside class="summary-box" style="align-self:start;">
+                <h3>RESUMEN</h3>
+                <div id="cart-summary-items" style="font-family:var(--font-accent); font-size:0.85rem; margin-bottom:1rem;"></div>
+                <hr class="summary-divider">
+                <div class="summary-row">
+                    <span>Artículos</span>
+                    <span id="cart-count-display">0</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total estimado</span>
+                    <span id="cart-total">0,00 €</span>
+                </div>
+                <p style="font-family:var(--font-accent); font-size:0.65rem; opacity:0.6; margin-top:0.5rem;">
+                    * El envío se calcula en el proceso de pago.
+                </p>
+                <div id="cart-checkout-actions" style="margin-top:1.5rem; display:flex; flex-direction:column; gap:0.5rem;"></div>
+            </aside>
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <p>© 2026 EL BAZAR DEL COLECCIONISTA - BUSCANDO TESOROS DESDE 1990</p>
+        <p style="font-size:0.8rem; margin-top:0.5rem; opacity:0.7;">Terminal: COLEC_SYS_V2.0.1 | Conectado vía RT-Modem</p>
+    </footer>
+
+    <script type="module" src="../js/pages/carrito.js"></script>
+</body>
+</html>

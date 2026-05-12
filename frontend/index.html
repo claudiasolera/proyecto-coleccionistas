@@ -51,7 +51,13 @@
                     <option value="price_desc">Precio: mayor a menor</option>
                 </select>
 
-                <button id="btn-filter" class="retro-button" style="margin-top: 1rem; width: 100%">
+                <label>Precio (€)</label>
+                <div style="display:flex; gap:6px; margin-bottom:1rem;">
+                    <input type="number" id="price-min" class="retro-input" placeholder="Mín" style="width:50%; margin-bottom:0; -moz-appearance:textfield;" min="0">
+                    <input type="number" id="price-max" class="retro-input" placeholder="Máx" style="width:50%; margin-bottom:0; -moz-appearance:textfield;" min="0">
+                </div>
+
+                <button id="btn-filter" class="retro-button" style="margin-top: 0.5rem; width: 100%">
                     Aplicar Filtros
                 </button>
 

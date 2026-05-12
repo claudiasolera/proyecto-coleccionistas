@@ -9,11 +9,15 @@ const productModal = document.getElementById('product-modal');
 const closeModal = document.getElementById('close-modal');
 const productListAttach = document.getElementById('product-list-attach');
 const searchInput = document.getElementById('search-product-attach');
+const threadList = document.getElementById('thread-list');
+const chatThreadTitle = document.getElementById('chat-thread-title');
 
-const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
+const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
 
+let allMessages = [];
 let allProducts = [];
 let favIds = new Set();
+let activeThread = 'all'; // 'all' or a product_id string
 
 if (!userId) {
     window.location.href = '../../login.html';
@@ -24,21 +28,21 @@ async function init() {
         window.location.href = '/login.html';
         return;
     }
-    
+
     try {
         await apiFetch(`/messages/read-user/${userId}`, { method: 'PUT' });
     } catch (err) {
         console.warn("Fallo al marcar lectura inicial");
     }
 
-    loadHistory();
+    await loadHistory();
     subscribeToMessages();
 
     if (searchInput) {
         searchInput.addEventListener('input', (e) => renderProductList(e.target.value));
     }
 
-    // --- AUTO-ENVÍO DESDE FICHA DE PRODUCTO (Soporte dual ? y #) ---
+    // Auto-adjuntar producto desde ficha (soporta ? y #)
     const params = new URLSearchParams(window.location.search);
     let productId = params.get('productId');
 
@@ -53,8 +57,6 @@ async function init() {
 }
 
 async function autoAttachProduct(pId) {
-    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
-    
     try {
         const p = await apiFetch(`/products/${pId}`);
         if (p && !p.error) {
@@ -70,9 +72,10 @@ async function autoAttachProduct(pId) {
             });
 
             if (res.ok) {
-                loadHistory();
+                await loadHistory();
                 window.history.replaceState({}, document.title, window.location.pathname);
                 showNotification('Consulta enviada correctamente', 'success');
+                window.selectThread(pId);
             } else {
                 throw new Error("Respuesta del servidor no OK");
             }
@@ -83,45 +86,115 @@ async function autoAttachProduct(pId) {
     }
 }
 
+function renderMessages(messages) {
+    const userName = localStorage.getItem('userName') || sessionStorage.getItem('userName') || 'Tú';
+
+    if (messages.length === 0) {
+        chatWindow.innerHTML = `
+            <p style="text-align:center; opacity:0.5; margin-top:4rem; font-family:var(--font-accent);">
+                [ SIN MENSAJES EN ESTE EXPEDIENTE ]
+            </p>`;
+        return;
+    }
+
+    chatWindow.innerHTML = messages.map(m => {
+        const isMe = !m.is_from_admin && m.sender_id === userId;
+        const bubbleClass = isMe ? 'message-me' : 'message-vendedor';
+        const time = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        let productHtml = '';
+        if (m.products) {
+            const p = m.products;
+            productHtml = `
+                <div class="chat-product-card" onclick="location.href='producto.html#id=${p.id}'" title="Ver ficha del tesoro">
+                    <div class="chat-product-card-title" style="font-weight:bold; border-bottom:1px solid #ccc; padding-bottom:4px; margin-bottom:6px;">
+                        ARCHIVO: ${p.name.toUpperCase()}
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+                        <span style="color:var(--clr-accent); font-weight:bold; font-size:0.9rem;">${Number(p.price).toFixed(2)} €</span>
+                        <div style="display:flex; gap:5px; align-items:center;">
+                            <button class="retro-button" style="padding:2px 8px; font-size:0.65rem; min-width:auto; margin:0;">VER DETALLES</button>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        return `
+            <div class="message-bubble ${bubbleClass}">
+                <span class="message-header">&lt;${isMe ? userName : 'ADMIN'}&gt;</span>
+                <div class="message-text">
+                    ${m.text}
+                    ${productHtml}
+                </div>
+                <div class="message-footer" style="text-align:right; font-size:0.65rem; opacity:0.5; margin-top:4px;">${time}</div>
+            </div>`;
+    }).join('');
+
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function renderThreadList() {
+    if (!threadList) return;
+
+    // Build a map of unique products in the conversation
+    const productMap = {};
+    allMessages.forEach(m => {
+        if (m.product_id && m.products) {
+            productMap[m.product_id] = m.products;
+        }
+    });
+
+    const generalCount = allMessages.filter(m => !m.product_id).length;
+
+    const items = [`
+        <div class="thread-item ${activeThread === 'all' ? 'active' : ''}" onclick="window.selectThread('all')">
+            <div class="thread-item-title">📋 GENERAL</div>
+            <div class="thread-item-meta">${allMessages.length} mensajes totales</div>
+        </div>`];
+
+    Object.entries(productMap).forEach(([pid, p]) => {
+        const count = allMessages.filter(m => m.product_id === pid).length;
+        const shortName = p.name.length > 20 ? p.name.substring(0, 20) + '…' : p.name;
+        items.push(`
+            <div class="thread-item ${activeThread === pid ? 'active' : ''}" onclick="window.selectThread('${pid}')">
+                <div class="thread-item-title">📦 ${shortName}</div>
+                <div class="thread-item-meta">${count} mensaje${count !== 1 ? 's' : ''}</div>
+            </div>`);
+    });
+
+    threadList.innerHTML = items.join('');
+}
+
+window.selectThread = (threadId) => {
+    activeThread = threadId;
+
+    if (chatThreadTitle) {
+        if (threadId === 'all') {
+            chatThreadTitle.textContent = 'COM_TERMINAL.EXE - [SESIÓN_ACTIVA]';
+        } else {
+            const product = allMessages.find(m => m.product_id === threadId)?.products;
+            chatThreadTitle.textContent = product
+                ? `EXPEDIENTE: ${product.name.toUpperCase()}`
+                : 'COM_TERMINAL.EXE - [EXPEDIENTE]';
+        }
+    }
+
+    renderThreadList();
+
+    const filtered = threadId === 'all'
+        ? allMessages
+        : allMessages.filter(m => m.product_id === threadId);
+    renderMessages(filtered);
+};
+
 async function loadHistory() {
     try {
-        const userName = localStorage.getItem('userName') || sessionStorage.getItem('userName') || 'Tú'
-        const messages = await apiFetch(`/messages/history/${userId}`);
-        chatWindow.innerHTML = messages.map(m => {
-            const isMe = !m.is_from_admin && m.sender_id === userId;
-            const bubbleClass = isMe ? 'message-me' : 'message-vendedor';
-            const time = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            let productHtml = '';
-            if (m.products) {
-                const p = m.products;
-                productHtml = `
-                    <div class="chat-product-card" onclick="location.href='producto.html#id=${p.id}'" title="Ver ficha del tesoro">
-                        <div class="chat-product-card-title" style="font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 6px;">
-                            ARCHIVO: ${p.name.toUpperCase()}
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
-                        <span style="color: var(--clr-accent); font-weight: bold; font-size: 0.9rem;">${Number(p.price).toFixed(2)} €</span>
-                        <div style="display: flex; gap: 5px; align-items: center;">
-                            <button class="retro-button" style="padding: 2px 8px; font-size: 0.65rem; min-width: auto; margin:0;">VER DETALLES</button>
-                        </div>
-                    </div>
-                    </div>
-                `;
-            }
-
-            return `
-                <div class="message-bubble ${bubbleClass}">
-                    <span class="message-header">&lt;${isMe ? userName : 'ADMIN'}&gt;</span>
-                    <div class="message-text">
-                        ${m.text}
-                        ${productHtml}
-                    </div>
-                    <div class="message-footer" style="text-align:right; font-size:0.65rem; opacity:0.5; margin-top:4px;">${time}</div>
-                </div>
-            `;
-        }).join('');
-        chatWindow.scrollTop = chatWindow.scrollHeight;
+        allMessages = await apiFetch(`/messages/history/${userId}`);
+        const filtered = activeThread === 'all'
+            ? allMessages
+            : allMessages.filter(m => m.product_id === activeThread);
+        renderMessages(filtered);
+        renderThreadList();
     } catch (err) {
         console.error("Error al cargar historial el usuario:", err);
     }
@@ -159,18 +232,17 @@ function renderProductList(query = '') {
     productListAttach.innerHTML = filtered.map(p => {
         const isFav = favIds.has(p.id);
         const statusText = p.status === 'reserved' ? '[RESERVADO] ' : '';
-        const favStar = isFav ? '<span style="color: #d63031; margin-right: 5px;">⭐</span>' : '';
+        const favStar = isFav ? '<span style="color:#d63031; margin-right:5px;">⭐</span>' : '';
 
         return `
             <div class="product-select-item" onclick="sendProduct('${p.id}', '${p.name}')">
-                <div style="display: flex; align-items: center;">
-                    <span style="font-family: var(--font-accent);">
-                        ${statusText}ARCHIVO: ${p.name.toUpperCase()}
+                <div style="display:flex; align-items:center;">
+                    <span style="font-family:var(--font-accent);">
+                        ${favStar}${statusText}ARCHIVO: ${p.name.toUpperCase()}
                     </span>
                 </div>
-                <strong style="color: var(--clr-accent); white-space: nowrap; flex-shrink: 0;">${Number(p.price).toFixed(2)} €</strong>
-            </div>
-        `;
+                <strong style="color:var(--clr-accent); white-space:nowrap; flex-shrink:0;">${Number(p.price).toFixed(2)} €</strong>
+            </div>`;
     }).join('');
 }
 
@@ -186,7 +258,8 @@ window.sendProduct = async (id, name) => {
                 product_id: id
             })
         });
-        loadHistory();
+        await loadHistory();
+        window.selectThread(id);
     } catch (err) {
         showNotification(err.message, 'error');
     }
@@ -196,22 +269,32 @@ closeModal.onclick = () => productModal.style.display = 'none';
 
 chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const text = chatInput.value;
+    const text = chatInput.value.trim();
     if (!text) return;
     chatInput.value = '';
+
+    const productId = activeThread !== 'all' ? activeThread : undefined;
+
     try {
         await apiFetch('/messages', {
             method: 'POST',
-            body: JSON.stringify({ sender_id: userId, receiver_id: 'admin', text: text })
+            body: JSON.stringify({
+                sender_id: userId,
+                receiver_id: 'admin',
+                text,
+                ...(productId && { product_id: productId })
+            })
         });
-        loadHistory();
+        await loadHistory();
     } catch (err) {
         showNotification(err.message, 'error');
     }
 });
 
 function subscribeToMessages() {
-    supabase.channel('public:messages').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+    supabase.channel('public:messages').on('postgres_changes', {
+        event: 'INSERT', schema: 'public', table: 'messages'
+    }, payload => {
         const newMsg = payload.new;
         if (newMsg.sender_id === userId || newMsg.receiver_id === userId) {
             loadHistory();

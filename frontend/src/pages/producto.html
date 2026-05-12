@@ -64,21 +64,28 @@
             <p id="product-description" class="product-description"></p>
 
             <div class="product-actions" id="auth-actions">
-                <button 
-                    id="btn-favourite" 
+                <button
+                    id="btn-favourite"
                     class="retro-button"
                     aria-label="Add to favourites">
                     ♡ Añadir a Favoritos
                 </button>
-                <button 
-                    id="btn-buy" 
+                <button
+                    id="btn-cart"
+                    class="retro-button"
+                    style="background: #ffffcc; font-weight: bold;"
+                    aria-label="Añadir a la bolsa">
+                    ＋ AÑADIR A LA BOLSA
+                </button>
+                <button
+                    id="btn-buy"
                     class="retro-button"
                     style="background: #90ee90; font-weight: bold;"
                     aria-label="Comprar este producto">
                     🛒 COMPRAR AHORA
                 </button>
-                <button 
-                    id="btn-chat" 
+                <button
+                    id="btn-chat"
                     class="retro-button"
                     aria-label="Ask the seller">
                     ✉ Preguntar al Vendedor
@@ -89,6 +96,24 @@
                 <button id="btn-login-to-buy" class="retro-button" style="width: 100%; background: #ffffcc; border: 2px solid var(--clr-primary); padding: 1rem;">
                     🔒 INICIA SESIÓN PARA COMPRAR O CONSULTAR
                 </button>
+            </div>
+
+            <!-- SECCIÓN VENDEDOR -->
+            <div id="seller-section" class="seller-card retro-container" style="margin-top:2rem; display:none;">
+                <div class="retro-titlebar" style="margin:-1.5rem -1.5rem 1rem -1.5rem;">
+                    <span>🏪 INFORMACIÓN DEL VENDEDOR</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+                    <div class="seller-avatar">EL<br>BAZAR</div>
+                    <div style="flex:1;">
+                        <strong id="seller-name" style="font-size:1rem; display:block; margin-bottom:4px;"></strong>
+                        <div id="seller-stars" class="star-rating"></div>
+                        <p id="seller-reviews" style="font-family:var(--font-accent); font-size:0.7rem; opacity:0.6; margin-top:4px;"></p>
+                    </div>
+                    <a id="seller-link" href="#" class="retro-button" style="font-size:0.75rem; text-decoration:none; white-space:nowrap;">
+                        VER ESCAPARATE
+                    </a>
+                </div>
             </div>
         </section>
 

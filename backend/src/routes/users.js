@@ -161,7 +161,23 @@ router.get('/', async (req, res) => {
     }
 })
 
-// 5. OBTENER USUARIO POR ID
+// 5. PERFIL PÚBLICO (solo campos seguros)
+router.get('/public/:id', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .select('id, name, last_name, role, created_at')
+            .eq('id', req.params.id)
+            .single()
+
+        if (error) throw error
+        res.json(data)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+// 6. OBTENER USUARIO POR ID
 router.get('/:id', async (req, res) => {
     try {
         const { data, error } = await supabase
@@ -177,7 +193,7 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-// 6. ACTUALIZAR PERFIL
+// 7. ACTUALIZAR PERFIL
 router.put('/:id', async (req, res) => {
     const { name, last_name, address, phone, email, dni } = req.body
     try {
@@ -204,7 +220,7 @@ router.put('/:id', async (req, res) => {
     }
 })
 
-// 7. RECUPERAR CONTRASEÑA
+// 8. RECUPERAR CONTRASEÑA
 router.post('/forgot-password', async (req, res) => {
     const { email } = req.body
     try {
@@ -256,7 +272,7 @@ router.post('/forgot-password', async (req, res) => {
     }
 })
 
-// 8. RESET CONTRASEÑA
+// 9. RESET CONTRASEÑA
 router.post('/reset-password', async (req, res) => {
     const { token, password } = req.body
     try {
